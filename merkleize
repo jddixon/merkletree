@@ -1,0 +1,220 @@
+#!/usr/bin/python
+
+# merkleize, part of merkletree 
+
+import binascii, hashlib, os, sys, time
+from merkletree     import *
+
+# In this preliminary version of the code we walk through a directory
+# in canonical order (ASCII collating sequence) building an SHA1 hash
+# of the files in the directory.  If a file name begins with DOT ('.')
+# it is ignored.  If it is an ordinary file we take its content hash
+# and add that to the hash we are building (we might want to also add
+# a line to .merkle containing the content hash and the file name).
+# If the file is a subdirectory we recurse to get its hash (and might
+# add a name+hash line to .merkle for that as well).  When there are 
+# no more files we will write the hash of hashes for files in the 
+# directory followed by a single dot, representing the file name.
+
+def merkleizeDirectory(options):
+
+    # get and check options; XXX should throw exceptions if problems 
+    # are encountered
+   
+    exclusions      = options['exclusions']
+    exRE            = MerkleDoc.makeExRE(exclusions)
+    hashOutput      = options['hashOutput']
+    inDir           = options['inDir']
+    justShow        = options['justShow']
+    matches         = options['matches']
+    matchRE         = MerkleDoc.makeMatchRE(matches)
+    outPath         = options['outPath']
+    showTimestamp   = options['showTimestamp']
+    showTree        = options['showTree']
+    showVersion     = options['showVersion']
+    timestamp       = options['timestamp']
+    verbose         = options['verbose']
+
+    (dirName, path) = (None, None)
+
+    if not justShow and not inDir:
+        raise RuntimeError("no inDir specified")
+    elif inDir and inDir.find('/') != -1:
+        (path, foo, dirName) = inDir.rpartition('/')
+    else:
+        path    = '.'
+        dirName = inDir
+
+    if justShow or verbose:
+        if exclusions and len(exclusions) > 0:
+            print "exclusions:"
+            for exclusion in exclusions:
+                print "    %s" % exclusion
+        if matches and len(matches) > 0:
+            print "matches:"
+            for match in matches:
+                print "    %s" % match
+
+        print "dirName:         %s" % dirName
+        print "hashOutput:      %s" % hashOutput
+        print "inDir:           %s" % inDir
+        print "outPath:         %s" % outPath
+        print "path:            %s" % path
+        print "showTimestamp:   %s" % showTimestamp
+        print "showTree:        %s" % showTree
+        print "timestamp:       %s" % timestamp
+        print "verbose:         %s" % verbose
+        print "version:         %s %s" % (__version__, __version_date__)
+    if justShow:
+        sys.exit(0)
+
+    pathToDir = os.path.join(path, dirName)
+    doc  = MerkleDoc.createFromFileSystem(pathToDir, exclusions, matches)
+    tree = doc.tree
+
+    s = []
+    if showTree:
+        s.append(tree.toString(''))                     # no top-level indent
+    if hashOutput:
+        #s.append("%s\r\n" % binascii.b2a_hex(tree.hash))   # ditto
+        s.append("%s\r\n" % tree.hash)                      # ditto
+
+    output = ''.join(s)
+    if outPath:
+        (outDir, junk, outFile) = outPath.rpartition('/')
+        print "OUTPATH: %s => %s %s" % (outPath, outDir, outFile)
+        if not os.path.exists(outDir):
+            os.makedirs(outDir)         # possile uncaught exception
+        with open(outPath, "w") as f:
+            f.write(output)
+    else:
+        sys.stdout.write(output)
+
+# MAIN ##############################################################
+if __name__ == '__main__':
+    import getopt
+
+    timestamp   = "%04d%02d%02d-%02d%02d%02d" % time.gmtime()[:6]
+
+    # DEFAULTS ######################################################
+    exclusions   = []
+    hashOutput   = False        # if true print hash to output
+    inDir        = None
+    justShow     = False
+    matches      = None
+    options      = {}
+    outPath      = None         # full path to file, or None
+    showTree     = False
+    showTimestamp= False        # UTC time in YYYYMMDD-HHMMSS format
+    showVersion  = False
+    verbose      = False
+
+    # DEFAULTS USED TO BUILD OPTIONS 
+    outDir       = None
+    outFileName  = timestamp
+
+    # INTERPRET COMMAND LINE ########################################
+    def usage(msg, arg = 1):
+        text = ''.join(['usage:\n', 
+            'merkleize [options]\n',
+            'where the options are\n',
+            '  -h, --help           to see this very useful message\n',
+            '  -d  --outDir DIR     write serialized merkletree here\n',
+            '  -i, --inDir DIR      where DIR names directory being scanned\n',
+            '  -j, --justShow       list options and exit\n',
+            '  -m  --showTree       output the merkletree hash/filename ',
+                                                                    'pairs\n',
+            '  -o, --outFile NAME   write output to this file name\n',
+            '  -P, --match PAT      include ONLY files with matching names\n',
+            '  -t, --showTimestamp  output UTC timestamp to command line\n',
+            '  -v, --verbose        verbose: whether the program is chatty\n',
+            '  -V, --version        show version information\n',
+            '  -x, --hashOutput     whether to output the top level hash\n',
+            '  -X, --exclude PAT    don\'t include files with matching names\n',
+            'The default output file name is the UTC timestamp.\n',
+            ])
+        if msg != None and len(msg) > 0:
+            print msg
+        print text
+        sys.exit(arg)
+
+    argVec = sys.argv[1:]
+    try:
+        opts, args = getopt.getopt(argVec, 'hd:i:jmo:P:tvVxX:', 
+                            ['help', 
+                             'outDir',
+                             'inDir',
+                             'justShow',
+                             'showTree',
+                             'outFileName',
+                             'match',
+                             'showTimestamp',
+                             'verbose',
+                             'version',
+                             'hashOutput',
+                             'exclude',
+                             ])
+    except getopt.GetoptError, e:
+        msg = 'illegal or invalid option %s' % str(e)
+        usage(msg)
+
+    for o, a in opts:
+        if   o in ('-h', '--help'):
+            usage('', 0)
+            sourceNodeID = a
+        
+        elif o in ('-d', '--outDir'):
+            outDir  = a
+        elif o in ('-i', '--inDir'):
+            inDir  = a
+        elif o in ('-j', '--justShow'):
+            justShow = True
+        elif o in ('-m', '--showTree'):
+            showTree = True
+        elif o in ('-o', '--outFileName'):
+            outFileName  = a
+        elif o in ('-P', '--match'):
+            print "DEBUG: matching on '%s'" % a
+            if matches == None:
+                matches = []
+            matches.append(a)               # should be regex
+        elif o in ('-t', '--showTimestamp'):
+            showTimestamp = True
+        elif o in ('-v', '--verbose'):
+            verbose = True
+        elif o in ('-V', '--version'):
+            showVersion = True
+            print "merkleize %s %s" % (__version__, __version_date__)
+        elif o in ('-x', '--hashOutput'):
+            hashOutput = True
+        elif o in ('-X', '--exclude'):
+            exclusions.append(a)            # should be regex
+        else:
+            msg = 'INTERNAL ERROR: illegal or invalid option %s' % str(o)
+            usage(msg)              # FOO
+
+    # FIXUPS ########################################################
+    if outDir:
+        outPath = os.path.join(outDir, outFileName)
+
+    # SANITY CHECKS #################################################
+    if not justShow:
+        if inDir == None or len(inDir) == 0:
+            usage("null or empty directory name")
+        if not os.path.exists(inDir):
+            usage("directory does not exist: %s" % inDir)
+
+    # SET UP COMMAND ################################################
+    options['exclusions']   = exclusions    # unordered list
+    options['hashOutput']   = hashOutput  
+    options['inDir']        = inDir  
+    options['justShow']     = justShow  
+    options['matches']      = matches       # unordered list
+    options['outPath']      = outPath  
+    options['showTimestamp']= showTimestamp  
+    options['showTree']     = showTree  
+    options['showVersion']  = showVersion  
+    options['timestamp']    = timestamp  
+    options['verbose']      = verbose  
+
+    merkleizeDirectory(options)

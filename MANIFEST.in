@@ -1,0 +1,9 @@
+# see http://docs.python.org/distutils/sourcedist.html
+
+include netDistrib.conf
+include CHANGES README TODO
+recursive-include merkletree *.py
+global-exclude junk* .*swp 
+prune   .svn
+
+
