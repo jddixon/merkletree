@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # merkletree/setup.py
 
 import re

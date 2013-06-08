@@ -6,6 +6,7 @@ import time, unittest
 from rnglib         import SimpleRNG
 from merkletree     import *
 
+# This is the SHA1 test
 class TestMerkleLeaf (unittest.TestCase):
 
     def setUp(self):
@@ -16,20 +17,24 @@ class TestMerkleLeaf (unittest.TestCase):
     # utility functions #############################################
     
     # actual unit tests #############################################
-    def testSimplestConstructor(self):
+    def doTestSimpleConstructor(self, usingSHA1):
         fileName = self.rng.nextFileName(8)
-        leaf0 = MerkleLeaf(fileName)
+        leaf0 = MerkleLeaf(fileName, usingSHA1)
         self.assertEquals( fileName, leaf0.name )
         self.assertEquals( None, leaf0.hash)
 
         fileName2 = fileName
         while fileName2 == fileName:
             fileName2 = self.rng.nextFileName(8)
-        leaf1 = MerkleLeaf(fileName2)
+        leaf1 = MerkleLeaf(fileName2, usingSHA1)
         self.assertEquals( fileName2, leaf1.name )
 
         self.assertTrue  ( leaf0.equals(leaf0) )
         self.assertFalse ( leaf0.equals(leaf1) )
+
+    def testSimplestConstructor(self):
+        self.doTestSimpleConstructor(True)          # using SHA1
+        self.doTestSimpleConstructor(False)         # not using SHA1
 
 if __name__ == '__main__':
     unittest.main()

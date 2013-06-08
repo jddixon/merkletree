@@ -33,6 +33,7 @@ def merkleizeDirectory(options):
     showTree        = options['showTree']
     showVersion     = options['showVersion']
     timestamp       = options['timestamp']
+    usingSHA1       = options['usingSHA1']
     verbose         = options['verbose']
 
     (dirName, path) = (None, None)
@@ -63,7 +64,7 @@ def merkleizeDirectory(options):
         print "showTimestamp:   %s" % showTimestamp
         print "showTree:        %s" % showTree
         print "timestamp:       %s" % timestamp
-        print "verbose:         %s" % verbose
+        print "usingSHA1:       %s" % usingSHA1
         print "version:         %s %s" % (__version__, __version_date__)
     if justShow:
         sys.exit(0)
@@ -107,6 +108,7 @@ if __name__ == '__main__':
     showTree     = False
     showTimestamp= False        # UTC time in YYYYMMDD-HHMMSS format
     showVersion  = False
+    usingSHA1    = False
     verbose      = False
 
     # DEFAULTS USED TO BUILD OPTIONS 
@@ -119,6 +121,7 @@ if __name__ == '__main__':
             'merkleize [options]\n',
             'where the options are\n',
             '  -h, --help           to see this very useful message\n',
+            '  -1, --usingSHA1      use SHA1 hash instead of default SHA3\n',
             '  -d  --outDir DIR     write serialized merkletree here\n',
             '  -i, --inDir DIR      where DIR names directory being scanned\n',
             '  -j, --justShow       list options and exit\n',
@@ -140,7 +143,7 @@ if __name__ == '__main__':
 
     argVec = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(argVec, 'hd:i:jmo:P:tvVxX:', 
+        opts, args = getopt.getopt(argVec, 'hd:i:jmo:P:t1vVxX:', 
                             ['help', 
                              'outDir',
                              'inDir',
@@ -149,6 +152,7 @@ if __name__ == '__main__':
                              'outFileName',
                              'match',
                              'showTimestamp',
+                             'usingSHA1',
                              'verbose',
                              'version',
                              'hashOutput',
@@ -180,6 +184,8 @@ if __name__ == '__main__':
             matches.append(a)               # should be regex
         elif o in ('-t', '--showTimestamp'):
             showTimestamp = True
+        elif o in ('-1', '--usingSHA1'):
+            usingSHA1 = True
         elif o in ('-v', '--verbose'):
             verbose = True
         elif o in ('-V', '--version'):
@@ -215,6 +221,7 @@ if __name__ == '__main__':
     options['showTree']     = showTree  
     options['showVersion']  = showVersion  
     options['timestamp']    = timestamp  
+    options['usingSHA1']    = usingSHA1  
     options['verbose']      = verbose  
 
     merkleizeDirectory(options)
