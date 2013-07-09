@@ -1,0 +1,36 @@
+~/dev/py/merkletree/TODO
+
+2013-06-07
+    * switch to argparse for parsing the command line
+
+2013-06-05
+    * dat.xlattice.org should either be dropped or should be added  # DONE
+        to the github repository
+
+2012-04-23
+    * get rid of the ABCMetadata package
+
+2012-01-28 
+    * -M option must be able to write .merkle files into a shadow
+        directory structure (see 20110726)
+
+2011-08-08 
+    * merkleize needs to be able to return doc (not just MerkleTree)
+    * indentation appears to be wrong if eg -i /usr/local/src/py
+
+2011-07-26 
+    * need -M, which writes .merkle files in each directory
+
+2011-07-25 i
+    * after using MerkleTree hash, set ptr to zero to ease GC
+
+2011-07-24 
+    * MerkleTree.bind() is STUBBED
+    * MerkleTree.equals() is STUBBED, needs recursion
+
+2011-07-13 
+    * MerkleTree constructor should not allow null exRE
+    * review code for missing try blocks, other obvious sloppy work
+    * add unit tests to source distribution
+    * add svn ignores for build/*, dist/*, tmp/* possibly others
+

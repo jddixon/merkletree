@@ -1,0 +1,80 @@
+~/dev/py/merkletree/CHANGES
+
+2.0.0
+    2013-06-07
+        * merged in what used to be merkle3, so all sha3 code       SLOC 1261
+1.1.1
+    2012-06-06
+        * deleted netDistrib.conf, which was not under version      SLOC  864
+            control, because it did not include new machines
+
+1.1.0
+    20120423 jdd
+        * added merkletree/ package
+        * moved version number and date to __init__.py there
+        * renamed VERSION, VERSION_DATE to __version__, __version_date__
+            in various places
+        * changed setup.py to read __version__ from there (not import)
+        * added MANIFEST.in, dropped manually maintained MANIFEST
+        * dropped local netDistrib script
+        * merged what is now merklelib.py into merkletree/__init__.py
+
+1.0.4 20111103 jdd * changed MerkleTree.createFromFileSystem() to follow 
+                       symlinks at the file level but not the directory level
+                       (S_ISREG(mode) replaced by os.path.isfile()).  This
+                       allows us to merkleize cv.dixons.org.
+
+1.0.3 20111101 jdd * corrected import statement in merkleize 
+                   * fixed bug in MerkleTree.createFromStringArray(), adding
+                       testXLatticeBug() to testMerkleTree and dat.xlattice.org
+                       data set
+
+1.0.2 20111031 jdd * added 'testGrayBoxesBug' test
+                   * corrected another bug in MerkleTree.createFromStringArray,
+                       which caused errors in handling subtree indentation
+
+1.0.1 20111027 jdd * fixed bug in MerkleTree.toString() tests (misinterpreted
+                       indent)
+                   * corrected 'pop from empty list' in 
+                       MerkleTree.createFromStringArray()
+                   * corrected MerkleTree.createFromFileSystem line 619 
+                       RuntimerError if directory empty
+
+
+1.0.0 20110811 jdd flattened, producing merklelib.py package
+
+0.9  20110807 jdd added MerkleDoc and tests
+                  dropped bind(), bound, parent, and path from MerkleNode,
+                    MerkleLeaf, MerkleTree
+
+0.8  20110804 jdd eliminated error when empty files encountered
+                  dropped reference to non-existent RuntimeException in 
+                    MerkleTree.py
+                  changed line breaks in build lists from LF to CR-LF
+
+0.7  20110724 jdd added version.py
+                  adding --match PAT option (consider only matching files)
+                  corrected bug in --exclude
+                  confirmed -G (just check gateway external IP address) works
+                  added -V, --showVersion to do just that
+
+0.6  20110722 jdd dropped u256x256 import
+
+0.5  20110716 jdd actually implemented and tested sending -m, -x output to file
+              jdd fixed bug (extra newline) in -x (hashOutput) 
+
+0.4  20110714 jdd fixed usage(), removing references to DIR
+              jdd add -m option to display serialized merkleized directory 
+                  before hash 
+              jdd add -d DIR to output this to directory DIR
+              jdd add -o NAME to specify the of a file to output to (default 
+                  is timestamp)
+
+0.3  20110713 jdd added --exclude and -j options; 
+                ^junk*, .*swp, ^.merkle, ^.svn always excluded
+
+0.2  20110712 jdd merkleize -x works; corrected error in handling bare
+                    directory names 
+     20110712 jdd purged remnants of HexBinary.py
+     20110711 jdd dropped HexBinary.py and its test package (in favor of 
+                  binascii)
