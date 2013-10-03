@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/TODO
 
+This package depends upon pysha3-0.2.1, which should be in /usr/local/src
+-------------------------------------------------------------------------
+
 2013-06-07
     * switch to argparse for parsing the command line
 

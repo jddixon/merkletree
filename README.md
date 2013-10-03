@@ -41,3 +41,9 @@ Verifying the integrity of file systems, of directory structures.
 	  -X, --exclude PAT    don't include files with matching names
 	The default output file name is the UTC timestamp.
 
+
+# Relationships
+
+Merkletree was implemented as part of the [XLattice](http://www.xlattice.org) 
+project.  A Go language implementation forms part of 
+[xlattice_go](https://gibhub.com/jddixon/xlattice_go).
