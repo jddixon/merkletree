@@ -3,6 +3,9 @@
 This package depends upon pysha3-0.2.1, which should be in /usr/local/src
 -------------------------------------------------------------------------
 
+2013-10-09
+    * URGENT: usingSHA1 flag is collected in merkleize, but then ignored
+
 2013-06-07
     * switch to argparse for parsing the command line
 
