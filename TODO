@@ -20,6 +20,11 @@ This package depends upon pysha3-0.2.1, which should be in /usr/local/src
     * -M option must be able to write .merkle files into a shadow
         directory structure (see 20110726)
 
+2011-10-27 
+    * FIX: merklelib is producing tree files whose first line is 
+        indented by two spaces, which MerkleTree.createFromStringArray() 
+        cannot handle
+
 2011-08-08 
     * merkleize needs to be able to return doc (not just MerkleTree)
     * indentation appears to be wrong if eg -i /usr/local/src/py
@@ -33,6 +38,9 @@ This package depends upon pysha3-0.2.1, which should be in /usr/local/src
 2011-07-24 
     * MerkleTree.bind() is STUBBED
     * MerkleTree.equals() is STUBBED, needs recursion
+
+2011-07-16 
+    * FIX: merkleize can't handle top level directory such as /upages
 
 2011-07-13 
     * MerkleTree constructor should not allow null exRE
