@@ -1,4 +1,4 @@
-The MIT License
+# The MIT License
 
 Copyright (c) 2013-2014 Jim Dixon
 
