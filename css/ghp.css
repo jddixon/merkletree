@@ -18,10 +18,11 @@ div.f div.project {
 div.f div.logo { float: right; width:33%;}
 
 /* possible conflicts here*/
-h1 {
-    background-color: red;
+
+h1 { background-color: seagreen;
     color: white;
     text-align: center;
     width: 100%;
 }
-
+h2 { border-bottom: solid 10px  #e5e4d9; }
+h3 { border-bottom: solid  5px  #e5e4d9; }
