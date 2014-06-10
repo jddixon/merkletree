@@ -1,0 +1,3 @@
+cd /home/jdd/dev/py/merkletree
+rm -rf build
+pySloc countem MANIFEST.in  merkleize 

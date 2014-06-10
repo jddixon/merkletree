@@ -1,7 +1,6 @@
-merkletree
-==========
+<h1 class="appTop">merkletree</h1>
 
-# What It Does
+## What It Does
 
 Merkletree is a Python package for creating a Merkle tree for a 
 directory structure.  This is a representation of the contents 
@@ -17,12 +16,12 @@ outputs a single hash, a hexadecimal number.  If any file in the
 directory structure has been changed, the output from the above 
 command will also change.
 
-# What It's Used For
+## What It's Used For
 
 Verifying the integrity of file systems, of directory structures.
 
 
-# Command Line
+## Command Line
 
 	usage: merkleize [options]
 	where the options are
@@ -42,7 +41,7 @@ Verifying the integrity of file systems, of directory structures.
 	The default output file name is the UTC timestamp.
 
 
-# Relationships
+## Relationships
 
 Merkletree was implemented as part of the [XLattice](http://www.xlattice.org) 
 project.  A Go language implementation forms part of 

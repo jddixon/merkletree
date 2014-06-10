@@ -4,21 +4,21 @@ This package depends upon pysha3-0.2.1, which should be in /usr/local/src
 -------------------------------------------------------------------------
 
 2013-10-09
-    * URGENT: usingSHA1 flag is collected in merkleize, but then ignored
+    * URGENT: usingSHA1 flag collected in merkleize, but then ignored   * FIXED
 
 2013-06-07
     * switch to argparse for parsing the command line
 
 2013-06-05
-    * dat.xlattice.org should either be dropped or should be added  # DONE
-        to the github repository
+    * dat.xlattice.org should either be dropped or should be added      * DONE
+        to the github repository                                        * DONE
 
 2012-04-23
     * get rid of the ABCMetadata package
 
 2012-01-28 
     * -M option must be able to write .merkle files into a shadow
-        directory structure (see 20110726)
+        directory structure (see 2011-07-26)
 
 2011-10-27 
     * FIX: merklelib is producing tree files whose first line is 

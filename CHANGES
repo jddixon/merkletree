@@ -1,6 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
 2.0.0
+    2013-06-10
+        * picked up usingSHA1 in merkleize, added countem           SLOC 1450
     2013-06-07
         * merged in what used to be merkle3, so all sha3 code       SLOC 1261
 1.1.1

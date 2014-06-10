@@ -70,14 +70,14 @@ def merkleizeDirectory(options):
         sys.exit(0)
 
     pathToDir = os.path.join(path, dirName)
-    doc  = MerkleDoc.createFromFileSystem(pathToDir, exclusions, matches)
+    doc  = MerkleDoc.createFromFileSystem(
+                pathToDir, usingSHA1,exclusions, matches)
     tree = doc.tree
 
     s = []
     if showTree:
         s.append(tree.toString(''))                     # no top-level indent
     if hashOutput:
-        #s.append("%s\r\n" % binascii.b2a_hex(tree.hash))   # ditto
         s.append("%s\r\n" % tree.hash)                      # ditto
 
     output = ''.join(s)
