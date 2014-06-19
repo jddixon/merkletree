@@ -1,2 +1,14 @@
+build
+.committed
+CVS
+dist
+*.egg-info
 junk*
+MANIFEST
+.merkle
+.posted
+*.pyc
+.svn*
 *.swp
+tmp
+*ZZZ
