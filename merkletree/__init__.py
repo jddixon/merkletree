@@ -12,8 +12,8 @@ __all__ = [ '__version__',  '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '2.0.0'
-__version_date__ = '2012-06-10'
+__version__      = '2.0.1'
+__version_date__ = '2012-06-21'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -375,11 +375,11 @@ class MerkleTree(MerkleNode):
     # notice the terminating forward slash and lack of newlines or CR-LF
     FIRST_LINE_PAT_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.]+/)$',
                                 re.IGNORECASE)
-    OTHER_LINE_PAT_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\-\.]+/?)$',
+    OTHER_LINE_PAT_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.]+/?)$',
                                 re.IGNORECASE)
     FIRST_LINE_PAT_3 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\-\.]+/)$',
                                 re.IGNORECASE)
-    OTHER_LINE_PAT_3 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\-\.]+/?)$',
+    OTHER_LINE_PAT_3 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\.]+/?)$',
                                 re.IGNORECASE)
     
 
@@ -459,7 +459,10 @@ class MerkleTree(MerkleNode):
         return self.toString('')
 
     def equals(self, other):
-        """considerably hacked about during debugging"""
+        """
+        This is quite wasteful.  Given the nature of the merkletree, 
+        it should only be necessary to compare top-level hashes.
+        """
         if other == None:
             return False
         if self == other:
@@ -669,7 +672,7 @@ class MerkleTree(MerkleNode):
                 line = line.rstrip()
                 if line == '':
                     continue
-                if self._usingSHA1:
+                if usingSHA1:
                     m = re.match(MerkleTree.OTHER_LINE_PAT_1, line)
                 else:
                     m = re.match(MerkleTree.OTHER_LINE_PAT_3, line)
@@ -694,7 +697,7 @@ class MerkleTree(MerkleNode):
             raise RuntimeError("cannot create a MerkleTree, no path set")
         if not os.path.exists(pathToDir):
             raise RuntimeError(
-                "MerkleTree: directory '%s' does not exist" % self._path)
+                "MerkleTree: directory '%s' does not exist" % pathToDir)
         (path, junk, name) = pathToDir.rpartition('/')
         if path == '':
             raise RuntimeError("cannot parse inclusive path " + pathToDir)

@@ -1,8 +1,8 @@
 build
 .committed
 CVS
-dist
 *.egg-info
+.git
 junk*
 MANIFEST
 .merkle
@@ -10,5 +10,6 @@ MANIFEST
 *.pyc
 .svn*
 *.swp
+THIS.IS.A.GIT*
 tmp
 *ZZZ

@@ -3,9 +3,24 @@
 This package depends upon pysha3-0.2.1, which should be in /usr/local/src
 -------------------------------------------------------------------------
 
+2014-06-24
+    * BUG in MerkleTree.createFromFile, line 675, use of                * FIXED
+        self._usingSHA1                                                 * FIXED
+    * NEED TO REVIEW: any use of self. in a static method is an error
+
+2014-06-21
+    * review code, dropping debug statements unless warranted
+    * search for 'tests at the binary level', which appears to have
+        been an elementary error (comparison of address instead of
+        value)
+    * MerkleDoc.createFromFileSystem() claims to return a MerkleTree
+        but actually returns a MerkleDoc containging the tree
+        - the doc appears to contain an extra line at the beginning
+            which contains the absolute path of the document and a
+            separate hash.
 2014-06-18
     * FIX: if the argument following the -i option, a directory name, 
-        has a trailing slash ('/'), it merkleize a runtime error.  
+        has a trailing slash ('/'), it returns a runtime error.  
         Remember that the directory name may be just '/'.
 
 2013-10-09
@@ -26,9 +41,9 @@ This package depends upon pysha3-0.2.1, which should be in /usr/local/src
         directory structure (see 2011-07-26)
 
 2011-10-27 
-    * FIX: merklelib is producing tree files whose first line is 
-        indented by two spaces, which MerkleTree.createFromStringArray() 
-        cannot handle
+    * FIX: merklelib is producing tree files whose first line is        * FIXED
+        indented by two spaces, which MerkleTree.createFromStringArray()* FIXED 
+        cannot handle                                                   * FIXED
 
 2011-08-08 
     * merkleize needs to be able to return doc (not just MerkleTree)
