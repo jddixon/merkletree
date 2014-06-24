@@ -680,6 +680,7 @@ class MerkleTree(MerkleNode):
                 if m == None:
                     raise RuntimeError(
                             "line '%s' does not match expected pattern" %  line)
+                # 2014-06-24 next line as found:
                 tree._add(m.group(3), m.group(2))
                 line = f.readline()
 

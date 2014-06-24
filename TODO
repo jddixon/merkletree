@@ -6,7 +6,10 @@ This package depends upon pysha3-0.2.1, which should be in /usr/local/src
 2014-06-24
     * BUG in MerkleTree.createFromFile, line 675, use of                * FIXED
         self._usingSHA1                                                 * FIXED
+
     * NEED TO REVIEW: any use of self. in a static method is an error
+    * another BUG in merkleTree.createFromFile, line 683
+    * add tests of createFromFile() to testMerkleTree.py
 
 2014-06-21
     * review code, dropping debug statements unless warranted
