@@ -3,12 +3,16 @@
 This package depends upon pysha3-0.2.1, which should be in /usr/local/src
 -------------------------------------------------------------------------
 
+2014-06-25
+    * make FIRST_LINE_RE_1 and _3 public                                * DONE
+    * these should be properties and so not assignable                  * DONE
+
 2014-06-24
     * BUG in MerkleTree.createFromFile, line 675, use of                * FIXED
         self._usingSHA1                                                 * FIXED
 
     * NEED TO REVIEW: any use of self. in a static method is an error
-    * another BUG in merkleTree.createFromFile, line 683
+    * another BUG in merkleTree.createFromFile, line 683                * FIXED
     * add tests of createFromFile() to testMerkleTree.py
 
 2014-06-21

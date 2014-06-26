@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+2.1.0
+    2013-06-25
+        * added firstLineRE_1 and _3                                SLOC 1459
 2.0.1
     2013-06-24
         * fixed two uses of self. in static method                  SLOC 1453

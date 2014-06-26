@@ -6,14 +6,14 @@ if sys.version_info < (3,4):
     import sha3
 from stat import *
 
-__all__ = [ '__version__',  '__version_date__', 
-            'SHA1_NONE',    'SHA3_NONE', 
+__all__ = [ '__version__',      '__version_date__', 
+            'SHA1_NONE',        'SHA3_NONE', 
             # classes
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '2.0.1'
-__version_date__ = '2012-06-21'
+__version__      = '2.1.0'
+__version_date__ = '2012-06-25'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -60,9 +60,9 @@ class MerkleDoc():
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     # THIS PATTERN WON"T CATCH SOME ERRORS; eg it permits '///' in paths
-    FIRST_LINE_PAT_1 = re.compile(r'^([0-9a-f]{40}) ([a-z0-9_\-\./]+/)$',
+    FIRST_LINE_RE_1 = re.compile(r'^([0-9a-f]{40}) ([a-z0-9_\-\./]+/)$',
                                 re.IGNORECASE)
-    FIRST_LINE_PAT_3 = re.compile(r'^([0-9a-f]{64}) ([a-z0-9_\-\./]+/)$',
+    FIRST_LINE_RE_3 = re.compile(r'^([0-9a-f]{64}) ([a-z0-9_\-\./]+/)$',
                                 re.IGNORECASE)
 
     # XXX MUST ADD matchRE and exRE and test on their values at this level
@@ -119,6 +119,13 @@ class MerkleDoc():
         else:
             return False
 
+    @property
+    def firstLineRE_1(self):
+        return FIRST_LINE_RE_1
+
+    @property
+    def firstLineRE_3(self):
+        return FIRST_LINE_RE_3
     @property
     def hash(self):
         return binascii.b2a_hex(self._hash)
@@ -220,9 +227,9 @@ class MerkleDoc():
     @staticmethod
     def parseFirstLine(line):
         line = line.rstrip()
-        m = re.match(MerkleDoc.FIRST_LINE_PAT_1, line)
+        m = re.match(MerkleDoc.FIRST_LINE_RE_1, line)
         if m == None:
-            m = re.match(MerkleDoc.FIRST_LINE_PAT_3, line)
+            m = re.match(MerkleDoc.FIRST_LINE_RE_3, line)
         if m == None:
             raise RuntimeError(
                     "MerkleDoc first line <%s> does not match expected pattern" %  line)
@@ -373,13 +380,13 @@ class MerkleTree(MerkleNode):
     __slots__ = ['_bound', '_name', '_exRE', '_hash', '_matchRE', '_nodes', '_usingSHA1', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
-    FIRST_LINE_PAT_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.]+/)$',
+    FIRST_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.]+/)$',
                                 re.IGNORECASE)
-    OTHER_LINE_PAT_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.]+/?)$',
+    OTHER_LINE_RE_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.]+/?)$',
                                 re.IGNORECASE)
-    FIRST_LINE_PAT_3 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\-\.]+/)$',
+    FIRST_LINE_RE_3 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\-\.]+/)$',
                                 re.IGNORECASE)
-    OTHER_LINE_PAT_3 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\.]+/?)$',
+    OTHER_LINE_RE_3 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\.]+/?)$',
                                 re.IGNORECASE)
     
 
@@ -520,9 +527,9 @@ class MerkleTree(MerkleNode):
     @staticmethod
     def parseFirstLine(line):
         line = line.rstrip()
-        m = re.match(MerkleTree.FIRST_LINE_PAT_1, line)
+        m = re.match(MerkleTree.FIRST_LINE_RE_1, line)
         if m == None:
-            m = re.match(MerkleTree.FIRST_LINE_PAT_3, line)
+            m = re.match(MerkleTree.FIRST_LINE_RE_3, line)
         if m == None:
             raise RuntimeError(
                     "MerkleTree first line <%s> does not match expected pattern" %  line)
@@ -534,9 +541,9 @@ class MerkleTree(MerkleNode):
 
     @staticmethod
     def parseOtherLine(line):
-        m = re.match(MerkleTree.OTHER_LINE_PAT_1, line)
+        m = re.match(MerkleTree.OTHER_LINE_RE_1, line)
         if m == None:
-            m = re.match(MerkleTree.OTHER_LINE_PAT_3, line)
+            m = re.match(MerkleTree.OTHER_LINE_RE_3, line)
         if m == None:
             raise RuntimeError(
                     "MerkleTree other line <%s> does not match expected pattern" %  line)
@@ -652,9 +659,9 @@ class MerkleTree(MerkleNode):
         with open(pathToFile, 'r') as f:
             line = f.readline()
             line = line.rstrip()
-            m = re.match(MerkleTree.FIRST_LINE_PAT_1, line)
+            m = re.match(MerkleTree.FIRST_LINE_RE_1, line)
             if m == None:
-                m = re.match(MerkleTree.FIRST_LINE_PAT_3, line)
+                m = re.match(MerkleTree.FIRST_LINE_RE_3, line)
                 usingSHA1 = False
             else:
                 usingSHA1 = True
@@ -673,9 +680,9 @@ class MerkleTree(MerkleNode):
                 if line == '':
                     continue
                 if usingSHA1:
-                    m = re.match(MerkleTree.OTHER_LINE_PAT_1, line)
+                    m = re.match(MerkleTree.OTHER_LINE_RE_1, line)
                 else:
-                    m = re.match(MerkleTree.OTHER_LINE_PAT_3, line)
+                    m = re.match(MerkleTree.OTHER_LINE_RE_3, line)
                     
                 if m == None:
                     raise RuntimeError(
