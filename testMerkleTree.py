@@ -236,6 +236,15 @@ class TestMerkleTree (unittest.TestCase):
 
         self.assertTrue(tree1.equals(tree2))            # GEEP
 
+        # 2014-06-26 tagged this on here to test firstLineRE_1()
+        firstLine = s[0]
+        m = MerkleTree.firstLineRE_1().match(firstLine)
+        self.assertTrue(m is not None)
+        self.assertEquals(m.group(1), '')               # indent
+        treeHash = m.group(2)
+        dirName  = m.group(3)
+        self.assertEquals(treeHash + ' ' + dirName, firstLine)
+
     def testXLatticeBug1(self):
         """ 
         this test relies on dat.xlattice.org being locally present
@@ -382,6 +391,15 @@ class TestMerkleTree (unittest.TestCase):
         self.assertEquals(serialization, ser1)
 
         self.assertTrue(tree1.equals(tree2))            # GEEP
+
+        # 2014-06-26 tagged this on here to test firstLineRE_1()
+        firstLine = s[0]
+        m = MerkleTree.firstLineRE_3().match(firstLine)
+        self.assertTrue(m is not None)
+        self.assertEquals(m.group(1), '')               # indent
+        treeHash = m.group(2)
+        dirName  = m.group(3)
+        self.assertEquals(treeHash + ' ' + dirName, firstLine)
 
     def testXLatticeBug3(self):
         """ 

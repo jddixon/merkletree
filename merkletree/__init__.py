@@ -120,13 +120,6 @@ class MerkleDoc():
             return False
 
     @property
-    def firstLineRE_1(self):
-        return FIRST_LINE_RE_1
-
-    @property
-    def firstLineRE_3(self):
-        return FIRST_LINE_RE_3
-    @property
     def hash(self):
         return binascii.b2a_hex(self._hash)
 
@@ -224,12 +217,32 @@ class MerkleDoc():
         return doc
 
     # CLASS METHODS #################################################
+    @classmethod
+    def firstLineRE_1(cls):
+        """ 
+        Returns a reference to the regexp for SHA1 first lines.  A
+        match finds (indent, treeHash, dirName), where indent is an
+        integer, the treeHash is a hex string, and dirName may have a
+        terminating slash.
+        """
+        return MerkleDoc.FIRST_LINE_RE_1
+
+    @classmethod
+    def firstLineRE_3(cls):
+        """ 
+        Returns a reference to the regexp for SHA3 first lines.  A
+        match finds (indent, treeHash, dirName), where indent is an
+        integer, the treeHash is a hex string, and dirName may have a
+        terminating slash.
+        """
+        return MerkleDoc.FIRST_LINE_RE_3
+
     @staticmethod
     def parseFirstLine(line):
         line = line.rstrip()
-        m = re.match(MerkleDoc.FIRST_LINE_RE_1, line)
+        m = MerkleDoc.FIRST_LINE_RE_1.match(line)
         if m == None:
-            m = re.match(MerkleDoc.FIRST_LINE_RE_3, line)
+            m = MerkleDoc.FIRST_LINE_RE_3.match(line)
         if m == None:
             raise RuntimeError(
                     "MerkleDoc first line <%s> does not match expected pattern" %  line)
@@ -527,9 +540,9 @@ class MerkleTree(MerkleNode):
     @staticmethod
     def parseFirstLine(line):
         line = line.rstrip()
-        m = re.match(MerkleTree.FIRST_LINE_RE_1, line)
+        m = MerkleTree.FIRST_LINE_RE_1.match(line)
         if m == None:
-            m = re.match(MerkleTree.FIRST_LINE_RE_3, line)
+            m = MerkleTree.FIRST_LINE_RE_3.match(line)
         if m == None:
             raise RuntimeError(
                     "MerkleTree first line <%s> does not match expected pattern" %  line)
@@ -659,9 +672,9 @@ class MerkleTree(MerkleNode):
         with open(pathToFile, 'r') as f:
             line = f.readline()
             line = line.rstrip()
-            m = re.match(MerkleTree.FIRST_LINE_RE_1, line)
+            m = MerkleTree.FIRST_LINE_RE_1.match(line)
             if m == None:
-                m = re.match(MerkleTree.FIRST_LINE_RE_3, line)
+                m = MerkleTree.FIRST_LINE_RE_3.match(line)
                 usingSHA1 = False
             else:
                 usingSHA1 = True
@@ -824,8 +837,32 @@ class MerkleTree(MerkleNode):
 #   # FOO
 
     # OTHER METHODS AND PROPERTIES ##################################
+    @classmethod
+    def firstLineRE_1(cls):
+        """ 
+        Returns a reference to the regexp for SHA1 first lines.  A
+        match finds (indent, treeHash, dirName), where indent is an
+        integer, the treeHash is a hex string, and dirName may have a
+        terminating slash.
+        """
+        return MerkleTree.FIRST_LINE_RE_1
+
+    @classmethod
+    def firstLineRE_3(cls):
+        """ 
+        Returns a reference to the regexp for SHA3 first lines.  A
+        match finds (indent, treeHash, dirName), where indent is an
+        integer, the treeHash is a hex string, and dirName may have a
+        terminating slash.
+        """
+        return MerkleTree.FIRST_LINE_RE_3
+
     @property
-    def nodes(self):        return self._nodes
+    def nodes(self):
+        """ 
+        DANGEROUS: returns a reference to the MerkleTree's node list.
+        """
+        return self._nodes
 
     def addNode(self, node):
         if node == None:

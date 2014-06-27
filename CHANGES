@@ -1,6 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
 2.1.0
+    2013-06-26
+        * MerkleDoc.firstLineRE_1 and _3 are class methods
+        * MerkleTree.firstLineRE_1 and _3 are class methods         SLOC 1507
     2013-06-25
         * added firstLineRE_1 and _3                                SLOC 1459
 2.0.1
