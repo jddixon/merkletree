@@ -11,4 +11,5 @@ MANIFEST
 .svn*
 *.swp
 tmp
+.wrapped
 *ZZZ
