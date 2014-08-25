@@ -26,6 +26,8 @@ This package depends upon pysha3-0.2.1, which should be in /usr/local/src
     * search for 'tests at the binary level', which appears to have
         been an elementary error (comparison of address instead of
         value)
+        - the question is whether equal values are being tested -- or 
+            identical values
     * MerkleDoc.createFromFileSystem() claims to return a MerkleTree
         but actually returns a MerkleDoc containging the tree
         - the doc appears to contain an extra line at the beginning

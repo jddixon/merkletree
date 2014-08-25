@@ -12,8 +12,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '2.1.0'
-__version_date__ = '2012-06-25'
+__version__      = '2.1.1'
+__version_date__ = '2012-08-24'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -203,8 +203,6 @@ class MerkleDoc():
 
         (docHash, docPath) = \
                             MerkleDoc.parseFirstLine(s[0].rstrip())
-#       print "DEBUG: doc first line: hash = %s, path = %s" % (
-#                               docHash, docPath)
         usingSHA1 = (40 == len(docHash))
 
         tree = MerkleTree.createFromStringArray( s[1:] )
@@ -341,9 +339,6 @@ class MerkleLeaf(MerkleNode):
             # XXX should use buffer
             data = f.read()
         if data == None:
-            # DEBUG
-            print "sha1File(%s) returning None" % pathToFile
-            # END
             return None
         sha1 = hashlib.sha1()
         sha1.update(data)
@@ -422,57 +417,6 @@ class MerkleTree(MerkleNode):
         self._matchRE   = matchRE
         self._nodes     = []
 
-#       if (binding):
-#           if not pathTo:
-#               raise RuntimeError("cannot bind, no path set")
-#           self._path = "%s/%s" % (pathTo, name)
-#           if not os.path.exists(self._path):
-#               raise RuntimeError(
-#                   "MerkleTree: directory '%s' does not exist" % self._path)
-
-#           # Create data structures for constituent files and subdirectories
-#           # These are sorted by the bare name
-#           files = os.listdir(self._path)  # empty if you just append .sort()
-#           files.sort()                    # sorts in place
-#           self._hash = None
-#           sha1 = hashlib.sha1()
-#           if files:
-#               sha1Count = 0
-#               # empty directories will still contain . and ..
-#               for file in files:
-#                   # exclusions take priority over matches
-#                   if exRE and exRE.search(file):
-#                       continue
-#                   if matchRE and not matchRE.search(file):
-#                       continue
-#                   node = None
-#                   pathToFile = os.path.join(self._path, file)
-#                   s = os.lstat(pathToFile)        # ignores symlinks
-#                   mode = s.st_mode
-#                   if S_ISDIR(mode):
-#                       node = MerkleTree (file, self, True, self._path)
-#                   elif S_ISREG(mode):
-#                       fSize = s.st_size
-#                       node = MerkleLeaf(file, self, True) # calculates hash
-#                   # otherwise, just ignore it ;-)
-
-#                   if node:
-#                       # update tree-level hash
-#                       if node.hash:
-#                           # note empty file has null hash
-#                           sha1Count = sha1Count + 1
-#                           sha1.update(node.hash)
-#                       # SKIP NEXT TO EASE GARBAGE COLLECTION ??? XXX
-#                       # but that won't be a good idea if we are
-#                       # invoking toString()
-#                       self._nodes.append(node)
-#               if sha1Count:
-#                   self._hash = sha1.digest()
-#           else:
-#               # this must be an error; . and .. are always present
-#               msg = "directory '%s' contains no files" % self._path
-#               raise RuntimeError(msg) GEEP
-
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
     @property
     def __str__(self):
@@ -491,11 +435,8 @@ class MerkleTree(MerkleNode):
         if (not isinstance(other, MerkleTree)) or \
            (self._name != other._name ):
             return False
-        # tests at the binary level sometimes fail
-#       if (self._hash != other._hash):
+        # old note: "tests at the binary level sometimes fail"
         if (self.hash != other.hash):
-            print "my hash:    " + self.hash
-            print "other hash: " + other.hash
             return False
         myNodes    = self.nodes
         otherNodes = other.nodes
@@ -505,8 +446,6 @@ class MerkleTree(MerkleNode):
             myNode    = myNodes[i]
             otherNode = otherNodes[i]
             if not myNode.equals(otherNode):    # RECURSES
-                print "DEBUG nodes %s and %s differ" % (        # DEBUG
-                        myNode._name, otherNode._name)          # DEBUG
                 return False
         return True
 
@@ -570,16 +509,6 @@ class MerkleTree(MerkleNode):
             isDir = False
         return (nodeDepth, nodeHash, nodeName, isDir)
 
-#   # DEBUG
-#   @staticmethod
-#   def showStack(stack):
-#       """ a stack of trees """
-#       s = []
-#       s.append( '     %d ' % len(stack) )
-#       for tree in stack:
-#           s.append( '[%s] ' % tree.name )
-#       print ''.join(s)
-#   # END
     @staticmethod
     def createFromStringArray(s):
         """
@@ -613,25 +542,16 @@ class MerkleTree(MerkleNode):
         # REMEMBER THAT PYTHON HANDLES LARGE RANGES BADLY
         for n in range(1, len(s)):
             line = s[n].rstrip()
-#           print "LINE: " + line       # DEBUG
             if len(line) == 0:
                 n += 1
                 continue
             # XXX SHOULD/COULD CHECK THAT HASHES ARE OF THE RIGHT TYPE
             (lineIndent, hash, name, isDir) = MerkleTree.parseOtherLine(line)
-#           print "DEBUG: item %d, lineIndent %d, stkDepth %d, name %s" % (
-#                           n, lineIndent, stkDepth, name)    # DEBUG
             if lineIndent < stkDepth:
                 while lineIndent < stkDepth:
                     stkDepth -= 1
                     stack.pop()
                 curTree = stack[-1]
-
-#               print "DEBUG: item %d, lineIndent %d, stkDepth %d BEYOND LOOP curTree is %s" % (
-#                           n, lineIndent, stkDepth, curTree.name)    # DEBUG
-
-#               MerkleTree.showStack(stack)         # DEBUG
-
                 if not stkDepth == lineIndent:
                     print "ERROR: stkDepth != lineIndent"
 
@@ -644,16 +564,11 @@ class MerkleTree(MerkleNode):
                 stack.append(newTree)
                 stkDepth += 1
                 curTree   = newTree
-#               # DEBUG
-#               MerkleTree.showStack( stack )
-#               # END
             else:
                 # create and set attributes of new node
                 newNode = MerkleLeaf(name, usingSHA1, hash)
                 # add the new node into the existing tree
                 curTree.addNode(newNode)
-#               print "DEBUG: added node %s to tree %s" % (newNode.name,
-#                                                          curTree.name)
             n += 1
         return rootTree         # BAR
 
@@ -776,66 +691,6 @@ class MerkleTree(MerkleNode):
 
         return tree
 
-    # XXX THIS SHOULD BE SOMEWHAT OLDER THAN THE CODE ABOVE
-#   @staticmethod
-#   def createFromFileSystem(pathToDir, exRE, matchRE):
-#       """
-#       Create a MerkleTree based on the information in the directory
-#       at pathToDir.  The name of the directory will be the last component
-#       of pathToDir.  It is also
-#       """
-#       if not pathToDir:
-#           raise RuntimeError("cannot create a MerkleTree, no path set")
-#       if not os.path.exists(pathToDir):
-#           raise RuntimeError(
-#               "MerkleTree: directory '%s' does not exist" % self._path)
-#       # XXX SHOULD VALIDATE exRE, matchRE
-
-#       # Create data structures for constituent files and subdirectories
-#       # These are sorted by the bare name
-#       files = os.listdir(self._path)  # empty if you just append .sort()
-#       files.sort()                    # sorts in place
-#       treeHash = None
-#       sha1     = hashlib.sha1()
-#       if files:
-#           sha1Count = 0
-#           # empty directories will still contain . and ..
-#           for file in files:
-#               # exclusions take priority over matches
-#               if exRE and exRE.search(file):
-#                   continue
-#               if matchRE and not matchRE.search(file):
-#                   continue
-#               node = None
-#               pathToFile = os.path.join(self._path, file)
-#               s = os.lstat(pathToFile)        # ignores symlinks
-#               mode = s.st_mode
-#               if S_ISDIR(mode):
-#                   node = MerkleTree (file, self, True, self._path)
-#               elif S_ISREG(mode):
-#                   fSize = s.st_size
-#                   node = MerkleLeaf(file, self, True) # calculates hash
-#               # otherwise, just ignore it ;-)
-
-#               if node:
-#                   # update tree-level hash
-#                   if node.hash:
-#                       # note empty file has null hash
-#                       sha1Count = sha1Count + 1
-#                       sha1.update(node.hash)
-#                   # SKIP NEXT TO EASE GARBAGE COLLECTION ??? XXX
-#                   # but that won't be a good idea if we are
-#                   # invoking toString()
-#                   self._nodes.append(node)
-#           if sha1Count:
-#               treeHash = sha1.digest()
-#       else:
-#           # this must be an error; . and .. are always present
-#           msg = "directory '%s' contains no files" % self._path
-#           raise RuntimeError(msg)
-
-#   # FOO
-
     # OTHER METHODS AND PROPERTIES ##################################
     @classmethod
     def firstLineRE_1(cls):
@@ -885,9 +740,6 @@ class MerkleTree(MerkleNode):
             top = "%s%s %s/\r\n" % (indent, binascii.b2a_hex(self._hash),
                               self.name)
         s.append(top)
-        # DEBUG
-        # print "toStringNotTop appends: %s" % top
-        # END
         indent = indent + '  '              # <--- LEVEL 2+ NODE
         for node in self.nodes:
             if isinstance(node, MerkleLeaf):

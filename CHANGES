@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+2.1.1
+    2014-08-24
+        * partial code cleanup                                      SLOC 1993
 2.1.0
     2013-06-26
         * MerkleDoc.firstLineRE_1 and _3 are class methods
