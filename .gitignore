@@ -2,7 +2,6 @@ build
 .committed
 CVS
 *.egg-info
-.git
 junk*
 MANIFEST
 .merkle
@@ -10,7 +9,8 @@ MANIFEST
 *.pyc
 .svn*
 *.swp
-THIS.IS.A.GIT*
 tmp
-*ZZZ
 .wrapped
+*ZZZ
+.sharedev
+THIS.IS.A.GIT.PROJECT*

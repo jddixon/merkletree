@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+2.1.2
+    2014-11-03
+        * permit ! in file names                                    SLOC 1502
 2.1.1
     2014-08-24
         * partial code cleanup                                      SLOC 1993

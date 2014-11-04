@@ -12,8 +12,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '2.1.1'
-__version_date__ = '2012-08-24'
+__version__      = '2.1.2'
+__version_date__ = '2012-11-03'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -60,9 +60,9 @@ class MerkleDoc():
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     # THIS PATTERN WON"T CATCH SOME ERRORS; eg it permits '///' in paths
-    FIRST_LINE_RE_1 = re.compile(r'^([0-9a-f]{40}) ([a-z0-9_\-\./]+/)$',
+    FIRST_LINE_RE_1 = re.compile(r'^([0-9a-f]{40}) ([a-z0-9_\-\./!]+/)$',
                                 re.IGNORECASE)
-    FIRST_LINE_RE_3 = re.compile(r'^([0-9a-f]{64}) ([a-z0-9_\-\./]+/)$',
+    FIRST_LINE_RE_3 = re.compile(r'^([0-9a-f]{64}) ([a-z0-9_\-\./!]+/)$',
                                 re.IGNORECASE)
 
     # XXX MUST ADD matchRE and exRE and test on their values at this level
