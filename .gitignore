@@ -9,6 +9,7 @@ MANIFEST
 *.pyc
 .svn*
 *.swp
+THIS.IS.A.GIT*
 tmp
 .wrapped
 *ZZZ
