@@ -12,8 +12,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '2.1.2'
-__version_date__ = '2012-11-03'
+__version__      = '2.1.3'
+__version_date__ = '2012-12-07'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -390,11 +390,11 @@ class MerkleTree(MerkleNode):
     # notice the terminating forward slash and lack of newlines or CR-LF
     FIRST_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.]+/)$',
                                 re.IGNORECASE)
-    OTHER_LINE_RE_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.]+/?)$',
+    OTHER_LINE_RE_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.~]+/?)$',
                                 re.IGNORECASE)
     FIRST_LINE_RE_3 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\-\.]+/)$',
                                 re.IGNORECASE)
-    OTHER_LINE_RE_3 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\.]+/?)$',
+    OTHER_LINE_RE_3 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\._]+/?)$',
                                 re.IGNORECASE)
     
 
