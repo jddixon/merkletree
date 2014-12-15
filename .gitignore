@@ -1,7 +1,6 @@
 build
 .committed
 CVS
-dist
 *.egg-info
 junk*
 MANIFEST
@@ -10,6 +9,8 @@ MANIFEST
 *.pyc
 .svn*
 *.swp
+THIS.IS.A.GIT*
 tmp
 .wrapped
 *ZZZ
+.sharedev
