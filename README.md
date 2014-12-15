@@ -5,8 +5,8 @@ merkletree
 
 Merkletree is a Python package for creating a Merkle tree for a 
 directory structure.  This is a representation of the contents 
-of the directory and its subdirectories in terms of SHA1 or SHA3
-(Keccak-256) hashes.  A file is represented by the hash of its 
+of the directory and its subdirectories in terms of SHA-1 or SHA-256
+hashes.  A file is represented by the hash of its 
 contents.  A directory is represented by the hash of the hashes
 of its members, sorted.  This makes it very easy to verify the
 contents of a directory:
@@ -27,7 +27,7 @@ Verifying the integrity of file systems, of directory structures.
 	usage: merkleize [options]
 	where the options are
 	  -h, --help           to see this very useful message
-	  -1, --usingSHA1      use SHA1 hash instead of default SHA3-256
+	  -1, --usingSHA1      use SHA-1 hash instead of default SHA1-256
 	  -d  --outDir DIR     write serialized merkletree here
 	  -i, --inDir DIR      where DIR names directory being scanned
 	  -j, --justShow       list options and exit
@@ -39,8 +39,10 @@ Verifying the integrity of file systems, of directory structures.
 	  -V, --version        show version information
 	  -x, --hashOutput     whether to output the top level hash
 	  -X, --exclude PAT    don't include files with matching names
-	The default output file name is the UTC timestamp.
+	
+The default output file name is the UTC timestamp.
 
+**NOTE that SHA-3 (Keccak) support has been withdrawn until it is supported by Python 3.**
 
 # Relationships
 

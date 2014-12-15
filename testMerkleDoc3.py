@@ -1,9 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # testMerkleDoc3.py
 import hashlib, os, re, shutil, sys, time, unittest
-if sys.version_info < (3,4):
-    import sha3
 
 from rnglib         import SimpleRNG
 from merkletree     import *
@@ -33,7 +31,7 @@ class TestMerkleDoc (unittest.TestCase):
     def makeOneNamedTestDirectory(self, name, depth, width):
         dirPath = "tmp/%s" % name
         if os.path.exists(dirPath):
-            print("DEBUG: directory '%s' already exists" % dirPath)
+            print(("DEBUG: directory '%s' already exists" % dirPath))
             shutil.rmtree(dirPath)
         self.rng.nextDataDir(dirPath, depth, width, 32)
         return dirPath
@@ -49,40 +47,40 @@ class TestMerkleDoc (unittest.TestCase):
 
         return (dirName1, dirPath1, dirName2, dirPath2)
 
-    def verifyLeafSHA3256(self, node, pathToFile):
+    def verifyLeafSHA256(self, node, pathToFile):
         self.assertTrue( os.path.exists(pathToFile) )
         with open(pathToFile, "rb") as f:
             data = f.read()
         self.assertFalse( data == None )
-        sha = hashlib.sha3_256()
+        sha = hashlib.sha256()
         sha.update(data)
         hash = sha.digest()
-        self.assertEquals( hash, node.hash )
+        self.assertEqual( hash, node.binHash )
 
-    def verifyTreeSHA3256(self, node, pathToTree):
+    def verifyTreeSHA256(self, node, pathToTree):
         # we assume that the node is a MerkleTree
         if node.nodes == None:
-            self.assertEquals(None, node.hash)
+            self.assertEqual(None, node.binHash)
         else:
             hashCount = 0
-            sha = hashlib.sha3_256()
+            sha = hashlib.sha256()
             for n in node.nodes:
                 pathToNode = os.path.join(pathToTree, n.name)
                 if isinstance(n, MerkleLeaf):
-                    self.verifyLeafSHA3256(n, pathToNode)
+                    self.verifyLeafSHA256(n, pathToNode)
                 elif isinstance(n, MerkleTree):
-                    self.verifyTreeSHA3256(n, pathToNode)
+                    self.verifyTreeSHA256(n, pathToNode)
                 else:
-                    print "DEBUG: unknown node type!"
+                    print("DEBUG: unknown node type!")
                     self.fail ("unknown node type!")
-                if (n.hash != None):
+                if (n.binHash != None):
                     hashCount += 1
-                    sha.update(n.hash)
+                    sha.update(n.binHash)
 
             if hashCount == 0:
-                self.assertEquals(None, node._hash)
+                self.assertEqual(None, node.binHash)
             else:
-                self.assertEquals(sha.digest(), node._hash)
+                self.assertEqual(sha.digest(), node.binHash)
 
     # actual unit tests #############################################
 
@@ -93,23 +91,23 @@ class TestMerkleDoc (unittest.TestCase):
 
         doc1   = MerkleDoc.createFromFileSystem(dirPath1)
         tree1  = doc1.tree
-        self.assertEquals( dirName1, tree1.name )
+        self.assertEqual( dirName1, tree1.name )
         self.assertTrue  ( doc1.bound )
-        self.assertEquals( ("tmp/%s" % dirName1), dirPath1)
+        self.assertEqual( ("tmp/%s" % dirName1), dirPath1)
         nodes1 = tree1.nodes
         self.assertTrue (nodes1 is not None)
-        self.assertEquals(FOUR, len(nodes1))
-        self.verifyTreeSHA3256(tree1, dirPath1)
+        self.assertEqual(FOUR, len(nodes1))
+        self.verifyTreeSHA256(tree1, dirPath1)
 
         doc2  = MerkleDoc.createFromFileSystem(dirPath2)
         tree2 = doc2.tree
-        self.assertEquals( dirName2, tree2.name )
+        self.assertEqual( dirName2, tree2.name )
         self.assertTrue  ( doc2.bound )
-        self.assertEquals( ("tmp/%s" % dirName2), dirPath2)
+        self.assertEqual( ("tmp/%s" % dirName2), dirPath2)
         nodes2 = tree2.nodes
         self.assertTrue (nodes2 is not None)
-        self.assertEquals(FOUR, len(nodes2))
-        self.verifyTreeSHA3256(tree2, dirPath2)
+        self.assertEqual(FOUR, len(nodes2))
+        self.verifyTreeSHA256(tree2, dirPath2)
 
         self.assertTrue  ( tree1.equals(tree1) )
         self.assertFalse ( tree1.equals(tree2) )
@@ -117,10 +115,6 @@ class TestMerkleDoc (unittest.TestCase):
 
         doc1Str     = doc1.toString()
         doc1Rebuilt = MerkleDoc.createFromSerialization(doc1Str)
-#       # DEBUG
-#       print "flat doc:\n" + doc1Str
-#       print "rebuilt flat doc:\n" + doc1Rebuilt.toString()
-#       # END
         self.assertTrue( doc1.equals(doc1Rebuilt) )       #  MANGO
 
     def testBoundNeedleDirs(self):
@@ -129,23 +123,23 @@ class TestMerkleDoc (unittest.TestCase):
                                     self.makeTwoTestDirectories(FOUR, ONE)
         doc1   = MerkleDoc.createFromFileSystem(dirPath1)
         tree1  = doc1.tree
-        self.assertEquals( dirName1, tree1.name )
+        self.assertEqual( dirName1, tree1.name )
         self.assertTrue  ( doc1.bound )
-        self.assertEquals( ("tmp/%s" % dirName1), dirPath1)
+        self.assertEqual( ("tmp/%s" % dirName1), dirPath1)
         nodes1 = tree1.nodes
         self.assertTrue (nodes1 is not None)
-        self.assertEquals(ONE, len(nodes1))
-        self.verifyTreeSHA3256(tree1, dirPath1)
+        self.assertEqual(ONE, len(nodes1))
+        self.verifyTreeSHA256(tree1, dirPath1)
 
         doc2   = MerkleDoc.createFromFileSystem(dirPath2)
         tree2  = doc2.tree
-        self.assertEquals( dirName2, tree2.name )
+        self.assertEqual( dirName2, tree2.name )
         self.assertTrue  ( doc2.bound )
-        self.assertEquals( ("tmp/%s" % dirName2), dirPath2)
+        self.assertEqual( ("tmp/%s" % dirName2), dirPath2)
         nodes2 = tree2.nodes
         self.assertTrue (nodes2 is not None)
-        self.assertEquals(ONE, len(nodes2))
-        self.verifyTreeSHA3256(tree2, dirPath2)
+        self.assertEqual(ONE, len(nodes2))
+        self.verifyTreeSHA256(tree2, dirPath2)
 
         self.assertTrue  ( doc1.equals(doc1) )
         self.assertFalse ( doc1.equals(doc2) )
@@ -175,8 +169,8 @@ class TestMerkleDoc (unittest.TestCase):
         for name in names:
             m = matchRE.search(name)
             if m:
-                print "WE HAVE A MATCH ON '%s'" % name
-            # self.assertEquals( None, where )
+                print("WE HAVE A MATCH ON '%s'" % name)
+            # self.assertEqual( None, where )
 
     def testMakeExRE(self):
         """test utility for making excluded file name regexes"""
@@ -210,7 +204,7 @@ class TestMerkleDoc (unittest.TestCase):
     def testMakeMatchRE(self):
         """test utility for making matched file name regexes"""
         matchRE = MerkleDoc.makeMatchRE(None)
-        self.assertEquals (None, matchRE)
+        self.assertEqual (None, matchRE)
 
         matches = []
         matches.append('^foo')

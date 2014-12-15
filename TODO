@@ -3,6 +3,10 @@
 This package depends upon pysha3-0.2.1, which should be in /usr/local/src
 -------------------------------------------------------------------------
 
+2014-12-15
+    * tests that write files should verify that file doesn't exist
+        before trying to create
+
 2014-09-16
     * regex should accept ! in file names                               * DONE
 
