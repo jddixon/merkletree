@@ -10,8 +10,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '3.0.0'
-__version_date__ = '2012-12-15'
+__version__      = '3.0.1'
+__version_date__ = '2012-12-17'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -608,8 +608,12 @@ class MerkleTree(MerkleNode):
 
     @staticmethod
     def createFromSerialization(s):
+        """ 
+        """
         if s == None:
             raise RuntimeError ("MerkleTree.createFromSerialization: no input")
+        if type(s) is not str:
+            s = str(s, 'utf-8')
         sArray = s.split('\r\n')                # note CR-LF
         return MerkleTree.createFromStringArray(sArray)
 
@@ -619,7 +623,7 @@ class MerkleTree(MerkleNode):
             raise RuntimeError(
                 "MerkleTree.createFromFile: file '%s' does not exist" % pathToFile)
         with open(pathToFile, 'r') as f:
-            line = f.readline()
+            line = f.readline()     # , 'utf-8')
             line = line.rstrip()
             m = MerkleTree.FIRST_LINE_RE_1.match(line)
             if m == None:
@@ -636,7 +640,7 @@ class MerkleTree(MerkleNode):
 #               raise RuntimeError(
 #                       "expected 'bind' in first line, found %s" % m.group(3))
             tree.binHash = m.group(2)
-            line = f.readline()
+            line = f.readline()     # , 'utf-8')
             while line:
                 line = line.rstrip()
                 if line == '':
@@ -651,7 +655,7 @@ class MerkleTree(MerkleNode):
                             "line '%s' does not match expected pattern" %  line)
                 # 2014-06-24 next line as found:
                 tree._add(m.group(3), m.group(2))
-                line = f.readline()
+                line = f.readline()     # , 'utf-8')
 
         return tree
 

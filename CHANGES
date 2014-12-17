@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+3.0.1
+    2014-12-17
+        * fix encoding bugs                                         SLOC 1536
 3.0.0
     2014-12-15
         * replace sha3 with sha256

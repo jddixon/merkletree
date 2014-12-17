@@ -1,11 +1,10 @@
 ~/dev/py/merkletree/TODO
 
-This package depends upon pysha3-0.2.1, which should be in /usr/local/src
--------------------------------------------------------------------------
-
 2014-12-15
     * tests that write files should verify that file doesn't exist
         before trying to create
+    * need to update github; have fixed several typos
+    * bring documentation up to vmmgr/__init__.py level
 
 2014-09-16
     * regex should accept ! in file names                               * DONE

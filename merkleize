@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # merkleize, part of merkletree 
 
@@ -121,7 +121,7 @@ if __name__ == '__main__':
             'merkleize [options]\n',
             'where the options are\n',
             '  -h, --help           to see this very useful message\n',
-            '  -1, --usingSHA1      use SHA1 hash instead of default SHA3\n',
+            '  -1, --usingSHA1      use SHA1 hash instead of default SHA256\n',
             '  -d  --outDir DIR     write serialized merkletree here\n',
             '  -i, --inDir DIR      where DIR names directory being scanned\n',
             '  -j, --justShow       list options and exit\n',
