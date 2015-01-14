@@ -1,6 +1,7 @@
 merkletree
 ==========
 
+
 # What It Does
 
 Merkletree is a Python package for creating a Merkle tree for a 
@@ -50,6 +51,7 @@ Merkletree was implemented as part of the [XLattice](http://www.xlattice.org)
 project.  A Go language implementation forms part of 
 [xlattice_go](https://gibhub.com/jddixon/xlattice_go).
 
-## On-line Documentation
 
-More information on the **merkletree** project can be found [here](https://jddixon.github.io/merkletree)
+## On-line Documentation
+More information on the **merkletree** project can be found 
+[here](https://jddixon.github.io/merkletree)
