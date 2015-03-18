@@ -10,8 +10,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '3.0.1'
-__version_date__ = '2012-12-17'
+__version__      = '3.1.0'
+__version_date__ = '2015-03-18'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -238,7 +238,7 @@ class MerkleDoc():
     @classmethod
     def firstLineRE_2(cls):
         """ 
-        Returns a reference to the regexp for SHA3 first lines.  A
+        Returns a reference to the regexp for SHA256 first lines.  A
         match finds (indent, treeHash, dirName), where indent is an
         integer, the treeHash is a hex string, and dirName may have a
         terminating slash.

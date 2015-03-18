@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# testMerkleDoc3.py
+# testMerkleDoc2.py
 import hashlib, os, re, shutil, sys, time, unittest
 
 from rnglib         import SimpleRNG

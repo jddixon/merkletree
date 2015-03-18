@@ -401,10 +401,10 @@ class TestMerkleTree (unittest.TestCase):
 
     def testXLatticeBug3(self):
         """
-        this test relies on dat3.xlattice.org being locally present
+        this test relies on dat2.xlattice.org being locally present
         and an internally consistent merkleization
         """
-        with open('./dat3.xlattice.org', 'rb') as f:
+        with open('./dat2.xlattice.org', 'rb') as f:
             serialization = str(f.read(), 'utf-8')
 
         # create from serialization ---------------------------------

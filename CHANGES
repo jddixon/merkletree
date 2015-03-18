@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+3.1.0
+    2015-03-18
+        * all refs to SHA3/Doc3 changed to SHA256/Doc2              SLOC 1536
 3.0.1
     2014-12-17
         * fix encoding bugs                                         SLOC 1536

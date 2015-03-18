@@ -1,5 +1,13 @@
 ~/dev/py/merkletree/TODO
 
+2015-03-18
+    * all references to SHA3 should be refs to SHA256                   * DONE
+    * all references to Doc3 should similarly be refs to Doc2           * DONE
+
+2015-02-12
+    * sdShare broke when file with bad name ':1:1' got into sharedev
+        subdirectory, because the colons were not permitted in the
+        .merkle line
 2014-12-15
     * tests that write files should verify that file doesn't exist
         before trying to create
