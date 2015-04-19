@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+3.1.1
+    2015-04-18
+        * fixed ref to self._path in static method                  SLOC 1544
 3.1.0
     2015-03-18
         * all refs to SHA3/Doc3 changed to SHA256/Doc2              SLOC 1536

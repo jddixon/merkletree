@@ -10,8 +10,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '3.1.0'
-__version_date__ = '2015-03-18'
+__version__      = '3.1.1'
+__version_date__ = '2015-04-18'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -173,7 +173,7 @@ class MerkleDoc():
             raise RuntimeError("cannot create a MerkleTree, no path set")
         if not os.path.exists(pathToDir):
             raise RuntimeError(
-                "MerkleTree: directory '%s' does not exist" % self._path)
+                "MerkleTree: directory '%s' does not exist" % pathToDir)
         (path, delim, name) = pathToDir.rpartition('/')
         if path == '':
             raise RuntimeError("cannot parse inclusive path " + pathToDir)
