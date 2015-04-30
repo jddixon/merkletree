@@ -248,7 +248,7 @@ class TestMerkleTree (unittest.TestCase):
         this test relies on dat.xlattice.org being locally present
         and an internally consistent merkleization
         """
-        with open('./dat.xlattice.org', 'rb') as f:
+        with open('testData/dat.xlattice.org', 'rb') as f:
             serialization = str(f.read(), 'utf-8')
 
         # create from serialization ---------------------------------
@@ -404,7 +404,7 @@ class TestMerkleTree (unittest.TestCase):
         this test relies on dat2.xlattice.org being locally present
         and an internally consistent merkleization
         """
-        with open('./dat2.xlattice.org', 'rb') as f:
+        with open('testData/dat2.xlattice.org', 'rb') as f:
             serialization = str(f.read(), 'utf-8')
 
         # create from serialization ---------------------------------

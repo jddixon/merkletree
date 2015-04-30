@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
+3.1.2
+    2015-04-30
+        * permit ':' in file names
+        * INDENT becomes symbolic constant, so to speak             SLOC 1545
 3.1.1
     2015-04-18
         * fixed ref to self._path in static method                  SLOC 1544

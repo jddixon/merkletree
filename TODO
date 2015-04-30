@@ -1,13 +1,25 @@
 ~/dev/py/merkletree/TODO
 
+2015-04-30
+    * delta indent is currently '  ' (two spaces)
+        - make this a symbolic constant INDENT                          * DONE
+        - consider changing it to a single space ' '
+    * FIX: in its current form, software just blows up if an expected
+        character is found in a file name
+        - in general, need to handle any reasonable unicode name
+        - should display error message rather than just panicking
+
+2015-04-30  (was 2012-04-23)
+    * get rid of the ABCMetadata package
+
 2015-03-18
     * all references to SHA3 should be refs to SHA256                   * DONE
     * all references to Doc3 should similarly be refs to Doc2           * DONE
 
 2015-02-12
-    * sdShare broke when file with bad name ':1:1' got into sharedev
-        subdirectory, because the colons were not permitted in the
-        .merkle line
+    * sdShare broke when file with bad name ':1:1' got into sharedev    * FIXED
+        subdirectory, because the colons were not permitted in the      * FIXED
+        .merkle line                                                    * FIXED
 2014-12-15
     * tests that write files should verify that file doesn't exist
         before trying to create
@@ -61,9 +73,6 @@
 2013-06-05
     * dat.xlattice.org should either be dropped or should be added      * DONE
         to the github repository                                        * DONE
-
-2012-04-23
-    * get rid of the ABCMetadata package
 
 2012-01-28 
     * -M option must be able to write .merkle files into a shadow

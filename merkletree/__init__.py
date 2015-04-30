@@ -5,14 +5,15 @@ import binascii, hashlib, os, re, sys
 from stat import *
 
 __all__ = [ '__version__',      '__version_date__', 
-            'SHA1_NONE',        'SHA2_NONE', 
+            'INDENT',   'SHA1_NONE',        'SHA2_NONE', 
             # classes
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '3.1.1'
-__version_date__ = '2015-04-18'
+__version__      = '3.1.2'
+__version_date__ = '2015-04-30'
 
+INDENT    = '  '
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
 SHA2_NONE = '0000000000000000000000000000000000000000000000000000000000000000'
@@ -59,9 +60,9 @@ class MerkleDoc():
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     # THIS PATTERN WON"T CATCH SOME ERRORS; eg it permits '///' in paths
-    FIRST_LINE_RE_1 = re.compile(r'^([0-9a-f]{40}) ([a-z0-9_\-\./!]+/)$',
+    FIRST_LINE_RE_1 = re.compile(r'^([0-9a-f]{40}) ([a-z0-9_\-\./!:]+/)$',
                                 re.IGNORECASE)
-    FIRST_LINE_RE_2 = re.compile(r'^([0-9a-f]{64}) ([a-z0-9_\-\./!]+/)$',
+    FIRST_LINE_RE_2 = re.compile(r'^([0-9a-f]{64}) ([a-z0-9_\-\./!:]+/)$',
                                 re.IGNORECASE)
 
     # XXX MUST ADD matchRE and exRE and test on their values at this level
@@ -777,7 +778,7 @@ class MerkleTree(MerkleNode):
         else:
             top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)
         s.append(top)
-        indent = indent + '  '              # <--- LEVEL 2+ NODE
+        indent = indent + INDENT              # <--- LEVEL 2+ NODE
         for node in self.nodes:
             if isinstance(node, MerkleLeaf):
                 s.append( node.toString(indent) )
@@ -802,7 +803,7 @@ class MerkleTree(MerkleNode):
         else:
             top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)    
         s.append(top)                       # <--- LEVEL 0 NODE
-        myIndent = indent + '  '            # <--- LEVEL 1 NODE
+        myIndent = indent + INDENT          # <--- LEVEL 1 NODE
         for node in self.nodes:
             if isinstance (node, MerkleLeaf):
                 s.append(node.toString(myIndent))
