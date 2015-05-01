@@ -1,5 +1,11 @@
 ~/dev/py/merkletree/CHANGES
 
+3.2.0
+    2015-05-01
+        * corrected conversion to Python 3                          SLOC 1545
+        * fixed handling of -x option                               SLOC 1547
+        * replaced getopt with ArgumentParser
+        * add -I/--deltaIndent option                               SLOC 1500
 3.1.2
     2015-04-30
         * permit ':' in file names

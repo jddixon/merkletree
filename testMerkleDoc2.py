@@ -169,7 +169,7 @@ class TestMerkleDoc (unittest.TestCase):
         for name in names:
             m = matchRE.search(name)
             if m:
-                print("WE HAVE A MATCH ON '%s'" % name)
+                print(("WE HAVE A MATCH ON '%s'" % name))
             # self.assertEqual( None, where )
 
     def testMakeExRE(self):

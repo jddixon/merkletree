@@ -221,15 +221,15 @@ class TestMerkleTree (unittest.TestCase):
         s = s[:-1]
         self.assertEqual(4, len(s))
 
-        tree2 = MerkleTree.createFromStringArray(s)
+        tree2 = MerkleTree.createFromStringArray(s, '  ')
 
-        ser2  = tree2.toString('')
+        ser2  = tree2.toString('', '  ')
         self.assertEqual(serialization, ser2)
 
         # create from serialization ---------------------------------
-        tree1 = MerkleTree.createFromSerialization(serialization)
+        tree1 = MerkleTree.createFromSerialization(serialization, '  ')
 
-        ser1  = tree1.toString('')
+        ser1  = tree1.toString('', '  ')
         self.assertEqual(serialization, ser1)
 
         self.assertTrue(tree1.equals(tree2))
@@ -252,7 +252,7 @@ class TestMerkleTree (unittest.TestCase):
             serialization = str(f.read(), 'utf-8')
 
         # create from serialization ---------------------------------
-        tree1 = MerkleTree.createFromSerialization(serialization)
+        tree1 = MerkleTree.createFromSerialization(serialization, '  ')
 
 #       # DEBUG
 #       print "tree1 has %d nodes" % len(tree1.nodes)
@@ -260,7 +260,7 @@ class TestMerkleTree (unittest.TestCase):
 #           t.write( tree1.toString('') )
 #       # END
 
-        ser1  = tree1.toString('')
+        ser1  = tree1.toString('', '  ')
         self.assertEqual(serialization, ser1)
 
         # create from string array ----------------------------------
@@ -268,9 +268,9 @@ class TestMerkleTree (unittest.TestCase):
         s = s[:-1]
         self.assertEqual(2511, len(s))
 
-        tree2 = MerkleTree.createFromStringArray(s)
+        tree2 = MerkleTree.createFromStringArray(s, '  ')
 
-        ser2  = tree2.toString('')
+        ser2  = tree2.toString('', '  ')
         self.assertEqual(serialization, ser2)
 
         self.assertTrue(tree1.equals(tree2))
@@ -368,9 +368,9 @@ class TestMerkleTree (unittest.TestCase):
     def testGrayBoxesBug3(self):
         serialization = \
         '088d0e391e1a4872329e0f7ac5d45b2025363e26c199a74ea39901d109afd6ba grayboxes.com/\r\n' + \
-        '  24652ddc14687866e6b1251589aee7e1e3079a87f80cd7775214f6d837612a90 images/\r\n' + \
-        '    1eb774eef9be1e696f69a2f95711be37915aac283bb4b34dcbaf7d032233e090 grayboxes.gif\r\n' + \
-        '  6eacebda9fd55b59c0d2e48e2ed59ce9fd683379592f8e662b1de88e041f53c9 index.html\r\n'
+        ' 24652ddc14687866e6b1251589aee7e1e3079a87f80cd7775214f6d837612a90 images/\r\n' + \
+        '  1eb774eef9be1e696f69a2f95711be37915aac283bb4b34dcbaf7d032233e090 grayboxes.gif\r\n' + \
+        ' 6eacebda9fd55b59c0d2e48e2ed59ce9fd683379592f8e662b1de88e041f53c9 index.html\r\n'
 
         # create from string array ----------------------------------
         s = serialization.split('\r\n')
@@ -408,7 +408,7 @@ class TestMerkleTree (unittest.TestCase):
             serialization = str(f.read(), 'utf-8')
 
         # create from serialization ---------------------------------
-        tree1 = MerkleTree.createFromSerialization(serialization)
+        tree1 = MerkleTree.createFromSerialization(serialization, '  ')
 
 #       # DEBUG
 #       print "tree1 has %d nodes" % len(tree1.nodes)
@@ -416,7 +416,7 @@ class TestMerkleTree (unittest.TestCase):
 #           t.write( tree1.toString('') )
 #       # END
 
-        ser1  = tree1.toString('')
+        ser1  = tree1.toString('', '  ')
         self.assertEqual(serialization, ser1)
 
         # create from string array ----------------------------------
@@ -424,9 +424,9 @@ class TestMerkleTree (unittest.TestCase):
         s = s[:-1]
         self.assertEqual(2511, len(s))
 
-        tree2 = MerkleTree.createFromStringArray(s)
+        tree2 = MerkleTree.createFromStringArray(s, '  ')
 
-        ser2  = tree2.toString('')
+        ser2  = tree2.toString('', '  ')
         self.assertEqual(serialization, ser2)
 
         self.assertTrue(tree1.equals(tree2))
