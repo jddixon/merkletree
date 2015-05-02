@@ -21,42 +21,14 @@
 2015-04-30 (wqs 2013-06-07)
     * switch to argparse for parsing the command line                   * DONE
 
-2015-04-30  (was 2012-04-23)
-    * get rid of the ABCMetadata package
-
-2015-03-18
-    * all references to SHA3 should be refs to SHA256                   * DONE
-    * all references to Doc3 should similarly be refs to Doc2           * DONE
-
-2015-02-12
-    * sdShare broke when file with bad name ':1:1' got into sharedev    * FIXED
-        subdirectory, because the colons were not permitted in the      * FIXED
-        .merkle line                                                    * FIXED
 2014-12-15
     * tests that write files should verify that file doesn't exist
         before trying to create
     * need to update github; have fixed several typos
     * bring documentation up to vmmgr/__init__.py level
 
-2014-09-16
-    * regex should accept ! in file names                               * DONE
-
-2014-06-26
-    * FIX: firstLineRE_{1,3}() should be MerkleTree function, not       * DONE
-        MerkleDoc                                                       * DONE
-    * FIX: MerkleTree.parseFirstLine is invoking the compiled regex     * DONE
-        as a pattern (around line 523)                                  * DONE
-
-2014-06-25
-    * make FIRST_LINE_RE_1 and _3 public                                * DONE
-    * these should be properties and so not assignable                  * DONE
-
 2014-06-24
-    * BUG in MerkleTree.createFromFile, line 675, use of                * FIXED
-        self._usingSHA1                                                 * FIXED
-
     * NEED TO REVIEW: any use of self. in a static method is an error
-    * another BUG in merkleTree.createFromFile, line 683                * FIXED
     * add tests of createFromFile() to testMerkleTree.py                
 
 2014-06-21
@@ -76,21 +48,9 @@
         has a trailing slash ('/'), it returns a runtime error.  
         Remember that the directory name may be just '/'.
 
-2013-10-09
-    * URGENT: usingSHA1 flag collected in merkleize, but then ignored   * FIXED
-
-2013-06-05
-    * dat.xlattice.org should either be dropped or should be added      * DONE
-        to the github repository                                        * DONE
-
 2012-01-28 
     * -M option must be able to write .merkle files into a shadow
         directory structure (see 2011-07-26)
-
-2011-10-27 
-    * FIX: merklelib is producing tree files whose first line is        * FIXED
-        indented by two spaces, which MerkleTree.createFromStringArray()* FIXED 
-        cannot handle                                                   * FIXED
 
 2011-08-08 
     * merkleize needs to be able to return doc (not just MerkleTree)

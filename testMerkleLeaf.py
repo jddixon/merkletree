@@ -29,8 +29,8 @@ class TestMerkleLeaf (unittest.TestCase):
         leaf1 = MerkleLeaf(fileName2, usingSHA1)
         self.assertEqual( fileName2, leaf1.name )
 
-        self.assertTrue  ( leaf0.equals(leaf0) )
-        self.assertFalse ( leaf0.equals(leaf1) )
+        self.assertTrue  ( leaf0.equal(leaf0) )
+        self.assertFalse ( leaf0.equal(leaf1) )
 
     def testSimplestConstructor(self):
         self.doTestSimpleConstructor(True)          # using SHA1

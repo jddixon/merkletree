@@ -109,13 +109,13 @@ class TestMerkleDoc (unittest.TestCase):
         self.assertEqual(FOUR, len(nodes2))
         self.verifyTreeSHA256(tree2, dirPath2)
 
-        self.assertTrue  ( tree1.equals(tree1) )
-        self.assertFalse ( tree1.equals(tree2) )
-        self.assertFalse ( tree1.equals(None)  )
+        self.assertTrue  ( tree1.equal(tree1) )
+        self.assertFalse ( tree1.equal(tree2) )
+        self.assertFalse ( tree1.equal(None)  )
 
         doc1Str     = doc1.toString()
         doc1Rebuilt = MerkleDoc.createFromSerialization(doc1Str)
-        self.assertTrue( doc1.equals(doc1Rebuilt) )       #  MANGO
+        self.assertTrue( doc1.equal(doc1Rebuilt) )       #  MANGO
 
     def testBoundNeedleDirs(self):
         """test directories four deep with one data file at the lowest level"""
@@ -141,8 +141,8 @@ class TestMerkleDoc (unittest.TestCase):
         self.assertEqual(ONE, len(nodes2))
         self.verifyTreeSHA256(tree2, dirPath2)
 
-        self.assertTrue  ( doc1.equals(doc1) )
-        self.assertFalse ( doc1.equals(doc2) )
+        self.assertTrue  ( doc1.equal(doc1) )
+        self.assertFalse ( doc1.equal(doc2) )
 
         doc1Str     = doc1.toString()
         doc1Rebuilt = MerkleDoc.createFromSerialization(doc1Str)
@@ -150,7 +150,7 @@ class TestMerkleDoc (unittest.TestCase):
 #       print "needle doc:\n" + doc1Str
 #       print "rebuilt needle doc:\n" + doc1Rebuilt.toString()
 #       # END
-        self.assertTrue( doc1.equals(doc1Rebuilt) )       # FOO
+        self.assertTrue( doc1.equal(doc1Rebuilt) )       # FOO
 
     def doTestForExpectedExclusions(self, exRE):
         # should always match

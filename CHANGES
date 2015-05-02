@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
+4.0.0
+    2015-05-02
+        * dropped ABCMetadata                                       SLOC 1500
+        * renamed equals() equal()
 3.2.0
     2015-05-01
         * corrected conversion to Python 3                          SLOC 1545

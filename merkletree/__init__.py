@@ -1,6 +1,5 @@
 # merkletree/__init__.py
 
-from abc import ABCMeta, abstractmethod, abstractproperty
 import binascii, hashlib, os, re, sys
 from stat import *
 
@@ -10,47 +9,59 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
           ]
 
-__version__      = '3.2.0'
-__version_date__ = '2015-05-01'
+__version__      = '4.0.0'
+__version_date__ = '2015-05-02'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
 SHA2_NONE = '0000000000000000000000000000000000000000000000000000000000000000'
 
 # -------------------------------------------------------------------
-class MerkleNode(metaclass=ABCMeta):
-    @abstractproperty
-    def __str__(self):          pass
+class MerkleNode(object):
+   
+    #__slots__ = [ A PERFORMANCE ENHANCER ]
 
-#   @abstractmethod
+    def __init__(self, name):
+        if name == None:
+            raise RunTimeError("MerkleNode: null MerkleNode name")
+        self._name = name.strip()
+        if len(self._name) == 0:
+            raise RuntimeError("MerkleNode: null or empty name")
+        self._name = name
+
+    def asciiHash(self):        
+        raise RuntimeError('not implemented')
+
 #   def bind(self):             pass
 
-#   @abstractproperty
-#   def bound(self):            pass
+    def binHash(self):          
+        raise RuntimeError('not implemented')
 
-    @abstractmethod
-    def equals(self, other):    pass
+#   def bound(self):            
+#       raise RuntimeError('not implemented')
 
-    @abstractproperty
-    def asciiHash(self):        pass
+    # COMMENTED OUT FOR DEBUGGING
+#    def equal(self, other):    
+#        raise RuntimeError('not implemented')
 
-    @abstractproperty
-    def binHash(self):          pass
+    def isLeaf(self):           
+        raise RuntimeError('not implemented')
 
-    @abstractproperty
-    def isLeaf(self):           pass
+    @property
+    def name(self):             
+        return self._name
 
-    @abstractproperty
-    def name(self):             pass
+#   def path(self):             
+#       raise RuntimeError('not implemented')
 
-#   @abstractproperty
-#   def path(self):             pass
+    def __str__(self):
+        raise RuntimeError('not implemented')
 
-    @abstractproperty
-    def usingSHA1(self):        pass
+    def usingSHA1(self):        
+        raise RuntimeError('not implemented')
 
 # -------------------------------------------------------------------
-class MerkleDoc():
+class MerkleDoc(MerkleNode):
     """
     The path to a tree, and the SHA hash of the path and the treehash.
     """
@@ -107,12 +118,12 @@ class MerkleDoc():
                 self._bound = True
                 pass
 
-    def equals(self, other):
+    def equal(self, other):
         """ignore boundedness"""
         if isinstance(other, MerkleDoc)         and \
                 self._path   == other._path     and \
                 self._hash   == other._hash     and \
-                self._tree.equals(other._tree)  :
+                self._tree.equal(other._tree)  :
             return True
         else:
             return False
@@ -312,17 +323,6 @@ class MerkleLeaf(MerkleNode):
             self.binHash = None
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
-    def __str__(self):
-        return self.toString('')        # that is, no indent
-
-    def equals(self, other):
-        if isinstance(other, MerkleLeaf)            and \
-                self._name    == other._name        and \
-                self.binHash  == other.binHash:
-            return True
-        else:
-            return False
-
     @property
     def asciiHash(self):         
         if self._hash == None:
@@ -347,11 +347,22 @@ class MerkleLeaf(MerkleNode):
     def binHash(self, value):
         self._hash = value
 
+    def equal(self, other):
+        if isinstance(other, MerkleLeaf)            and \
+                self._name    == other._name        and \
+                self.binHash  == other.binHash:
+            return True
+        else:
+            return False
+
     @property
     def isLeaf(self):       return True
 
     @property
     def name(self):         return self._name
+
+    def __str__(self):
+        return self.toString('')        # that is, no indent
 
     @property
     def usingSHA1(self):    return self._usingSHA1
@@ -431,50 +442,15 @@ class MerkleTree(MerkleNode):
             exRE    = None,     # exclusions Regular Expression
             matchRE = None):    # matches Regular Expression
 
-        if name == None:
-            raise RunTimeError("MerkleTree: null MerkleTree name")
-        self._name = name.strip()
-        if len(self._name) == 0:
-            raise RuntimeError("MerkleTree: null or empty name")
+        super().__init__(name)
 
-        self._usingSHA1 = usingSHA1
         self._exRE      = exRE
         self._hash      = None
         self._matchRE   = matchRE
         self._nodes     = []
+        self._usingSHA1 = usingSHA1
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
-    @property
-    def __str__(self):
-        return self.toString('')
-
-    def equals(self, other):
-        """
-        This is quite wasteful.  Given the nature of the merkletree, 
-        it should only be necessary to compare top-level hashes.
-        """
-        if other == None:
-            return False
-        if self == other:
-            return True
-
-        if (not isinstance(other, MerkleTree)) or \
-           (self._name != other._name ):
-            return False
-        # old note: "tests at the binary level sometimes fail"
-        if (self.asciiHash != other.asciiHash):
-            return False
-        myNodes    = self.nodes
-        otherNodes = other.nodes
-        if len(myNodes) != len(otherNodes):
-            return False
-        for i in range(len(myNodes)):
-            myNode    = myNodes[i]
-            otherNode = otherNodes[i]
-            if not myNode.equals(otherNode):    # RECURSES
-                return False
-        return True
-
     @property
     def asciiHash(self):
         if self._hash == None:
@@ -499,11 +475,41 @@ class MerkleTree(MerkleNode):
             raise RuntimeError('attempt to set non-null hash')
         self._hash = value
 
+    def equal(self, other):
+        """
+        This is quite wasteful.  Given the nature of the merkletree, 
+        it should only be necessary to compare top-level hashes.
+        """
+        if other == None:
+            return False
+        if self == other:
+            return True
+
+        if (not isinstance(other, MerkleTree)) or \
+           (self._name != other._name ):
+            return False
+        # old note: "tests at the binary level sometimes fail"
+        if (self.asciiHash != other.asciiHash):
+            return False
+        myNodes    = self.nodes
+        otherNodes = other.nodes
+        if len(myNodes) != len(otherNodes):
+            return False
+        for i in range(len(myNodes)):
+            myNode    = myNodes[i]
+            otherNode = otherNodes[i]
+            if not myNode.equal(otherNode):    # RECURSES
+                return False
+        return True
+
     @property
     def isLeaf(self):       return False
 
     @property
     def name(self):         return self._name
+
+    def __str__(self):
+        return self.toString('')
 
     @property
     def usingSHA1(self):    return self._usingSHA1
