@@ -6,11 +6,11 @@ from stat import *
 __all__ = [ '__version__',      '__version_date__', 
             'SHA1_NONE',        'SHA2_NONE', 
             # classes
-            'MerkleDoc', 'MerkleLeaf', 'MerkleNode',  'MerkleTree',
+            'MerkleDoc', 'MerkleLeaf', 'MerkleTree',
           ]
 
-__version__      = '4.0.0'
-__version_date__ = '2015-05-02'
+__version__      = '4.0.1'
+__version_date__ = '2015-05-03'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
@@ -21,44 +21,70 @@ class MerkleNode(object):
    
     #__slots__ = [ A PERFORMANCE ENHANCER ]
 
-    def __init__(self, name):
+    def __init__(self, name, isLeaf=False, usingSHA1=False):
+        self._hash = None
         if name == None:
-            raise RunTimeError("MerkleNode: null MerkleNode name")
+            raise RuntimeError("MerkleNode: null MerkleNode name")
         self._name = name.strip()
         if len(self._name) == 0:
             raise RuntimeError("MerkleNode: null or empty name")
         self._name = name
 
-    def asciiHash(self):        
-        raise RuntimeError('not implemented')
+        self._isLeaf = isLeaf
+        self._usingSHA1 = usingSHA1
+
+    @property
+    def asciiHash(self):
+        if self._hash == None:
+            if self._usingSHA1:
+                return SHA1_NONE;
+            else:
+                return SHA2_NONE;
+        else:
+            return str(binascii.b2a_hex(self._hash), 'ascii');
+    @asciiHash.setter
+    def asciiHash(self, value):
+        if self._hash:
+            raise RuntimeError('attempt to set non-null hash')
+        self._hash = binascii.a2b_hex(value)
+        # DEBUG
+        #print("asciiHash setting %s\n" % value)
+        # END
 
 #   def bind(self):             pass
 
-    def binHash(self):          
-        raise RuntimeError('not implemented')
+    @property
+    def binHash(self):
+        return self._hash
+    @binHash.setter
+    def binHash(self, value):
+        if self._hash:
+            raise RuntimeError('attempt to set non-null hash')
+        self._hash = value
+        # DEBUG
+        #print("binHash setting %s\n" % self.asciiHash)
+        # END
+
 
 #   def bound(self):            
 #       raise RuntimeError('not implemented')
 
-    # COMMENTED OUT FOR DEBUGGING
-#    def equal(self, other):    
-#        raise RuntimeError('not implemented')
-
-    def isLeaf(self):           
-        raise RuntimeError('not implemented')
+    def equal(self, other):    
+        raise RuntimeError('subclass must implement')
 
     @property
-    def name(self):             
-        return self._name
+    def isLeaf(self):           return self._isLeaf
+
+    @property
+    def name(self):             return self._name
 
 #   def path(self):             
 #       raise RuntimeError('not implemented')
 
     def __str__(self):
-        raise RuntimeError('not implemented')
+        raise RuntimeError('subclass must implement')
 
-    def usingSHA1(self):        
-        raise RuntimeError('not implemented')
+    def usingSHA1(self):        return self._usingSHA1
 
 # -------------------------------------------------------------------
 class MerkleDoc(MerkleNode):
@@ -80,19 +106,30 @@ class MerkleDoc(MerkleNode):
                         tree = None,
             exRE    = None,    # exclusions, which are Regular Expressions
             matchRE = None):   # matches, also Regular Expressions
+
         if path == None:
             raise RunTimeError("null MerkleDoc path")
+        if tree:
+            if not isinstance(tree, MerkleTree):
+                raise RuntimeError('tree is not a MerkleTree')
+            self._name = name = tree.name
+        elif not binding:
+            raise RuntimeError('null MerkleTree and not binding')
+        else:
+            raise RuntimeError("MerkleDoc binding not yet implemented")
+        super().__init__(name, isLeaf=False, usingSHA1=usingSHA1)
+
         path = path.strip()
         if len(path) == 0:
             raise RuntimeError("empty path")
         if not path.endswith('/'):
             path += '/'
         self._path      = path
-        self._usingSHA1 = usingSHA1
         self._tree      = tree
         if tree:
-            if not isinstance(tree, MerkleTree):
-                raise RuntimeError('tree is not a MerkleTree')
+            # DEBUG
+            #print("MerkleDoc.__init__: usingSHA1 = %s" % str(usingSHA1))
+            # END
             if usingSHA1:
                 sha1 = hashlib.sha1()
                 sha1.update(tree.binHash)
@@ -103,8 +140,6 @@ class MerkleDoc(MerkleNode):
                 sha256.update(tree.binHash)
                 sha256.update(path.encode('utf-8'))
                 self.binHash = sha256.digest()    # that binary value
-        elif not binding:
-            raise RuntimeError('null MerkleTree and not binding')
 
         self._exRE    = exRE
         self._matchRE = matchRE
@@ -116,7 +151,6 @@ class MerkleDoc(MerkleNode):
             else:
                 # XXX STUB: BIND THE TREE
                 self._bound = True
-                pass
 
     def equal(self, other):
         """ignore boundedness"""
@@ -127,24 +161,6 @@ class MerkleDoc(MerkleNode):
             return True
         else:
             return False
-
-    @property
-    def asciiHash(self):
-        if self._hash == None:
-            if self._usingSHA1:
-                return SHA1_NONE;
-            else:
-                return SHA2_NONE;
-        else:
-            ser = str(binascii.b2a_hex(self._hash), 'ascii')
-            return ser
-    
-    @property 
-    def binHash(self):
-        return self._hash
-    @binHash.setter
-    def binHash(self, value):
-        self._hash = value
 
     @property
     def path(self):
@@ -224,15 +240,21 @@ class MerkleDoc(MerkleNode):
 
         (docHash, docPath) = \
                             MerkleDoc.parseFirstLine(s[0].rstrip())
-        usingSHA1 = (40 == len(docHash))
+        usingSHA1 = (20 == len(docHash))        # 20 because it's binary
+
+        # DEBUG
+        #print("MerkleDoc.createFromStringArray:")
+        #print("    docHash = %s" % str(binascii.b2a_hex(docHash),'ascii'))
+        #print("    docPath = %s" % docPath)
+        #print("    usingSHA1=%s" % str(usingSHA1))
+        # END
 
         tree = MerkleTree.createFromStringArray( s[1:] , deltaIndent)
 
         #def __init__ (self, path, binding = False, tree = None,
         #    exRE    = None,    # exclusions, which are Regular Expressions
         #    matchRE = None):   # matches, also Regular Expressions
-        doc = MerkleDoc( docPath, usingSHA1, False, tree )
-        doc.binHash = docHash
+        doc = MerkleDoc( docPath, usingSHA1=usingSHA1, tree=tree )
         return doc
 
     # CLASS METHODS #################################################
@@ -309,12 +331,15 @@ class MerkleLeaf(MerkleNode):
     __slots__ = ['_name', '_hash', '_usingSHA1', ]
 
     def __init__ (self, name, usingSHA1 = False, hash = None):
+        super().__init__(name, isLeaf=True, usingSHA1=usingSHA1)
+
+        # JUNK
         if name == None:
-            raise RunTimeError("MerkleLeaf: null MerkleLeaf name")
+            raise RuntimeError("MerkleLeaf: null MerkleLeaf name")
         self._name = name.strip()
         if len(self._name) == 0:
             raise RuntimeError("MerkleLeaf: null or empty name")
-        self._usingSHA1 = usingSHA1
+        # END JUNK
 
         # XXX VERIFY HASH IS WELL-FORMED
         if hash:
@@ -323,29 +348,6 @@ class MerkleLeaf(MerkleNode):
             self.binHash = None
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
-    @property
-    def asciiHash(self):         
-        if self._hash == None:
-            if self._usingSHA1:
-                return SHA1_NONE;
-            else:
-                return SHA2_NONE;
-        else:
-            s = str(binascii.b2a_hex(self._hash),'ascii')
-            return s
-    @asciiHash.setter 
-    def asciiHash(self, value):
-        if self._hash != None:
-            raise RuntimeError('attempt to change MerkleLeaf hash')
-        # XXX SHOULD CHECK whether well-formed
-        self._hash = binascii.a2b_hex(value)
-
-    @property 
-    def binHash(self):
-        return self._hash
-    @binHash.setter
-    def binHash(self, value):
-        self._hash = value
 
     def equal(self, other):
         if isinstance(other, MerkleLeaf)            and \
@@ -355,17 +357,8 @@ class MerkleLeaf(MerkleNode):
         else:
             return False
 
-    @property
-    def isLeaf(self):       return True
-
-    @property
-    def name(self):         return self._name
-
     def __str__(self):
         return self.toString('')        # that is, no indent
-
-    @property
-    def usingSHA1(self):    return self._usingSHA1
 
     # OTHER METHODS AND PROPERTIES ##################################
     @staticmethod
@@ -442,38 +435,13 @@ class MerkleTree(MerkleNode):
             exRE    = None,     # exclusions Regular Expression
             matchRE = None):    # matches Regular Expression
 
-        super().__init__(name)
+        super().__init__(name, isLeaf=False, usingSHA1=usingSHA1)
 
         self._exRE      = exRE
-        self._hash      = None
         self._matchRE   = matchRE
         self._nodes     = []
-        self._usingSHA1 = usingSHA1
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
-    @property
-    def asciiHash(self):
-        if self._hash == None:
-            if self._usingSHA1:
-                return SHA1_NONE;
-            else:
-                return SHA2_NONE;
-        else:
-            return str(binascii.b2a_hex(self._hash), 'ascii');
-    @asciiHash.setter
-    def asciiHash(self, value):
-        if self._hash:
-            raise RuntimeError('attempt to set non-null hash')
-        self._hash = binascii.a2b_hex(value)
-
-    @property
-    def binHash(self):
-        return self._hash
-    @binHash.setter
-    def binHash(self, value):
-        if self._hash:
-            raise RuntimeError('attempt to set non-null hash')
-        self._hash = value
 
     def equal(self, other):
         """
@@ -501,12 +469,6 @@ class MerkleTree(MerkleNode):
             if not myNode.equal(otherNode):    # RECURSES
                 return False
         return True
-
-    @property
-    def isLeaf(self):       return False
-
-    @property
-    def name(self):         return self._name
 
     def __str__(self):
         return self.toString('')

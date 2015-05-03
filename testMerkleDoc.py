@@ -115,10 +115,10 @@ class TestMerkleDoc (unittest.TestCase):
 
         doc1Str     = doc1.toString()
         doc1Rebuilt = MerkleDoc.createFromSerialization(doc1Str)
-#       # DEBUG
-#       print "flat doc:\n" + doc1Str
-#       print "rebuilt flat doc:\n" + doc1Rebuilt.toString()
-#       # END
+        # DEBUG
+        #print("flat doc:\n" + doc1Str)
+        #print("rebuilt flat doc:\n" + doc1Rebuilt.toString())
+        # END
         self.assertTrue( doc1.equal(doc1Rebuilt) )       #  MANGO
 
     def testBoundNeedleDirs(self):

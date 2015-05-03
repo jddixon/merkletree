@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
+4.0.1
+    2015-05-03
+        * asciiHash, binHash, isLeaf, name, usingSHA1 properties
+            moved to parent class (MerkleNode)                      SLOC 1450
 4.0.0
     2015-05-02
         * dropped ABCMetadata                                       SLOC 1500
