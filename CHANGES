@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+4.0.2
+    2015-05-05
+        * exclusions and matches collected as lists                 SLOC 1449
 4.0.1
     2015-05-03
         * asciiHash, binHash, isLeaf, name, usingSHA1 properties

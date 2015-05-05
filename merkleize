@@ -50,15 +50,6 @@ def merkleizeDirectory(args):
         dirName = inDir
 
     if verbose:
-        if exclusions and len(exclusions) > 0:
-            print("exclusions:")
-            for exclusion in exclusions:
-                print("    %s" % exclusion)
-        if matches and len(matches) > 0:
-            print("matches:")
-            for match in matches:
-                print("    %s" % match)
-
         print("dirName:         %s" % dirName)
         print("path:            %s" % path)
         
@@ -94,8 +85,6 @@ def main():
 
     timestamp   = "%04d%02d%02d-%02d%02d%02d" % time.gmtime()[:6]
     
-    exclusions   = []   # ever used?
-
     # parse the command line ----------------------------------------
 
     DESC = 'generate the merkletree corresponding to a directory'
@@ -115,7 +104,7 @@ def main():
         help='output the merkletree hash+filename lines')
     parser.add_argument('-o', '--outFile', default=timestamp,
         help = 'write output to this file (default = timestamp)')
-    parser.add_argument('-P', '--matchPat',
+    parser.add_argument('-P', '--matchPat', action='append',
         help = 'include only files with matching names')
     parser.add_argument('-t', '--showTimestamp', action='store_true',
         help='output UTC time')
@@ -125,7 +114,7 @@ def main():
         help='output the version number of this program')
     parser.add_argument('-x', '--hashOutput', action='store_true',
         help='output the top level hash')
-    parser.add_argument('-X', '--exclude',
+    parser.add_argument('-X', '--exclude', action='append',
         help='ignore files matching this pattern')
 
     args = parser.parse_args()
@@ -175,6 +164,16 @@ def main():
         print('timestamp        = ' + str(args.timestamp))
         print('usingSHA1        = ' + str(args.usingSHA1))
         print('verbose          = ' + str(args.verbose))
+        
+        if args.exclude and len(args.exclude) > 0:
+            print("exclude:")
+            for exclusion in args.exclude:
+                print("    %s" % exclusion)
+        if args.matchPat and len(args.matchPat) > 0:
+            print("match:")
+            for match in args.matchPat:
+                print("    %s" % match)
+
 
     if args.justShow:
         sys.exit(0)

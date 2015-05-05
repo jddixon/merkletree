@@ -9,8 +9,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree',
           ]
 
-__version__      = '4.0.1'
-__version_date__ = '2015-05-03'
+__version__      = '4.0.2'
+__version_date__ = '2015-05-05'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'

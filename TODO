@@ -1,9 +1,14 @@
 ~/dev/py/merkletree/TODO
 
+2015-05-05
+    * merkleize needs exclusions and matchList as lists; modify         * DONE
+        merkleize accordingly (-X and -P add to lists)                  * DONE
+    * need tests to verify that these work as expected
+
 2015-05-02
-    * restructure code as necessary to correct inheritance (that is,
-        make MerkleNode an abstract class and have Merkle{Doc,Tree,Leaf}
-        subclass it)
+    * restructure code as necessary to correct inheritance (that is,    * DONE
+        make MerkleNode an abstract class and have Merkle{Doc,Tree,Leaf}* DONE
+        subclass it)                                                    * DONE
     * in the process, reorder the code to make structure more obvious
     * XXX MerkleDoc.__init__(): binding not handled
     * very delicate: MerkleDoc.createFromStringArray() tests on hash
@@ -15,7 +20,7 @@
 
 2015-04-30
     * delta indent is currently '  ' (two spaces)                       * FIXED
-        - make this a symbolic constant INDENT                          * DONEa
+        - make this a symbolic constant INDENT                          * DONE
         - consider changing it to a single space ' '                    * DONE
     * add option -I to set indent                                       * DONE
 
