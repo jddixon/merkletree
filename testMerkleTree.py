@@ -157,7 +157,7 @@ class TestMerkleTree (unittest.TestCase):
         """test directory is single level, with four data files"""
         (dirName1, dirPath1, dirName2, dirPath2) = \
                                     self.makeTwoTestDirectories(ONE, FOUR)
-        tree1 = MerkleTree.createFromFileSystem(dirPath1, True) # usingSHA1
+        tree1 = MerkleTree.createFromFileSystem(dirPath1, usingSHA1=True)
         self.assertEqual( dirName1, tree1.name, True )
         nodes1 = tree1.nodes
         self.assertTrue (nodes1 is not None)

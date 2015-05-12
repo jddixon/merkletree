@@ -6,17 +6,20 @@ from stat import *
 __all__ = [ '__version__',      '__version_date__', 
             'SHA1_NONE',        'SHA2_NONE', 
             # classes
-            'MerkleDoc', 'MerkleLeaf', 'MerkleTree',
+            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '4.0.2'
-__version_date__ = '2015-05-05'
+__version__      = '4.0.3'
+__version_date__ = '2015-05-12'
 
 #            ....x....1....x....2....x....3....x....4....x....5....x....6....
 SHA1_NONE = '0000000000000000000000000000000000000000'
 SHA2_NONE = '0000000000000000000000000000000000000000000000000000000000000000'
 
 # -------------------------------------------------------------------
+class MerkleParseError(RuntimeError):
+    pass
+
 class MerkleNode(object):
    
     #__slots__ = [ A PERFORMANCE ENHANCER ]
@@ -230,7 +233,7 @@ class MerkleDoc(MerkleNode):
         """
         The string array is expected to follow conventional indentation
         rules, with zero indentation on the first line and some multiple
-        of two spaces on all successive lines.
+        of deltaIndent spaces on all successive lines.
         """
         if s == None:
             raise RuntimeError('null argument')
@@ -240,7 +243,13 @@ class MerkleDoc(MerkleNode):
 
         (docHash, docPath) = \
                             MerkleDoc.parseFirstLine(s[0].rstrip())
-        usingSHA1 = (20 == len(docHash))        # 20 because it's binary
+        lenHash   = len(docHash)
+        if lenHash == 20:           # 20 because it's binary, not ascii
+            usingSHA1   = True
+        elif lenHash == 32:
+            usingSHA1 = False
+        else:
+            raise MerkleParseError('impossible hash length %d' % lenHash)
 
         # DEBUG
         #print("MerkleDoc.createFromStringArray:")
@@ -280,6 +289,7 @@ class MerkleDoc(MerkleNode):
 
     @staticmethod
     def parseFirstLine(line):
+        """ returns binary docHash and string docPath"""
         line = line.rstrip()
         m = MerkleDoc.FIRST_LINE_RE_1.match(line)
         if m == None:
@@ -456,9 +466,11 @@ class MerkleTree(MerkleNode):
         if (not isinstance(other, MerkleTree)) or \
            (self._name != other._name ):
             return False
-        # old note: "tests at the binary level sometimes fail"
-        if (self.asciiHash != other.asciiHash):
+        if self.asciiHash != other.asciiHash:
             return False
+        if self.usingSHA1 != other.usingSHA1:
+            return False
+
         myNodes    = self.nodes
         otherNodes = other.nodes
         if len(myNodes) != len(otherNodes):
@@ -481,6 +493,7 @@ class MerkleTree(MerkleNode):
     #################################################################
     @staticmethod
     def parseFirstLine(line):
+        """ returns indent, binary treeHash, and str dirName """
         line = line.rstrip()
         m = MerkleTree.FIRST_LINE_RE_1.match(line)
         if m == None:
@@ -488,7 +501,7 @@ class MerkleTree(MerkleNode):
         if m == None:
             raise RuntimeError(
                     "MerkleTree first line \"%s\" does not match expected pattern" %  line)
-        indent    = len(m.group(1))/2
+        indent    = len(m.group(1))         # count of leading spaces
         treeHash  = binascii.a2b_hex(m.group(2))
         dirName   = m.group(3)          # includes terminating slash
         dirName   = dirName[0:len(dirName) - 1]
@@ -528,7 +541,14 @@ class MerkleTree(MerkleNode):
             raise RuntimeError("empty string array")
         (indent, treeHash, dirName) = \
                             MerkleTree.parseFirstLine(s[0].rstrip())
-        usingSHA1   = (40 == len(treeHash))
+        lenHash = len(treeHash)
+        if lenHash == 20:           # that many bytes
+            usingSHA1 = True
+        elif lenHash == 32:
+            usingSHA1 = False
+        else:
+            raise MerkleParseError("impossible hash length %d" % lenHash)
+
         rootTree    = MerkleTree(dirName, usingSHA1)    # an empty tree
         rootTree.binHash = treeHash
 

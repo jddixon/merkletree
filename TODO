@@ -1,9 +1,16 @@
 ~/dev/py/merkletree/TODO
 
+2015-05-12
+    * MerkelTree.parseFirstLine (about line 484) calculates indent      * FIXED
+        incorrectly                                                     * FIXED
+    * MerkleTree.createFromStringArray() about line 533 calculated      * FIXED
+        usingSHA1 incorrectly (tested on length of hash being 40)       * FIXED
+
 2015-05-05
     * merkleize needs exclusions and matchList as lists; modify         * DONE
         merkleize accordingly (-X and -P add to lists)                  * DONE
     * need tests to verify that these work as expected
+    * merkeltree listings should include empty files with null hash
 
 2015-05-02
     * restructure code as necessary to correct inheritance (that is,    * DONE
