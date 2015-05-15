@@ -1,20 +1,16 @@
 # merkletree/__init__.py
 
 import binascii, hashlib, os, re, sys
+from xlattice import SHA1_HEX_NONE, SHA2_HEX_NONE
 from stat import *
 
 __all__ = [ '__version__',      '__version_date__', 
-            'SHA1_NONE',        'SHA2_NONE', 
             # classes
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '4.0.3'
-__version_date__ = '2015-05-12'
-
-#            ....x....1....x....2....x....3....x....4....x....5....x....6....
-SHA1_NONE = '0000000000000000000000000000000000000000'
-SHA2_NONE = '0000000000000000000000000000000000000000000000000000000000000000'
+__version__      = '4.0.4'
+__version_date__ = '2015-05-15'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
@@ -40,9 +36,9 @@ class MerkleNode(object):
     def asciiHash(self):
         if self._hash == None:
             if self._usingSHA1:
-                return SHA1_NONE;
+                return SHA1_HEX_NONE;
             else:
-                return SHA2_NONE;
+                return SHA2_HEX_NONE;
         else:
             return str(binascii.b2a_hex(self._hash), 'ascii');
     @asciiHash.setter
@@ -415,8 +411,8 @@ class MerkleLeaf(MerkleNode):
 
     def toString(self, indent='', deltaIndent=' '):
         if self._hash == None:
-            if self._usingSHA1:     h = SHA1_NONE
-            else:                   h = SHA2_NONE
+            if self._usingSHA1:     h = SHA1_HEX_NONE
+            else:                   h = SHA2_HEX_NONE
         else:
             h = self.asciiHash
         s = "%s%s %s\r\n" % (indent, h, self.name)
@@ -760,9 +756,9 @@ class MerkleTree(MerkleNode):
         s      = []                             # a list of strings
         if self._hash == None:
             if self._usingSHA1:
-                top = "%s%s %s/\r\n" % (indent, SHA1_NONE, self.name)
+                top = "%s%s %s/\r\n" % (indent, SHA1_HEX_NONE, self.name)
             else:
-                top = "%s%s %s/\r\n" % (indent, SHA2_NONE, self.name)
+                top = "%s%s %s/\r\n" % (indent, SHA2_HEX_NONE, self.name)
         else:
             top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)
         s.append(top)
@@ -786,9 +782,9 @@ class MerkleTree(MerkleNode):
         s      = []                             # a list of strings
         if self._hash == None:
             if self._usingSHA1:
-                top = "%s%s %s/\r\n" % (indent, SHA1_NONE, self.name)
+                top = "%s%s %s/\r\n" % (indent, SHA1_HEX_NONE, self.name)
             else:
-                top = "%s%s %s/\r\n" % (indent, SHA2_NONE, self.name)
+                top = "%s%s %s/\r\n" % (indent, SHA2_HEX_NONE, self.name)
         else:
             top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)    
         s.append(top)                       # <--- LEVEL 0 NODE

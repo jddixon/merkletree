@@ -4,6 +4,7 @@
 import hashlib, os, re, shutil, sys, time, unittest
 
 from rnglib         import SimpleRNG
+from xlattice       import SHA1_HEX_NONE, SHA2_HEX_NONE
 from merkletree     import *
 
 ONE          = 1
@@ -127,7 +128,7 @@ class TestMerkleTree (unittest.TestCase):
 
         tree1 = MerkleTree(dirName1, True)
         self.assertEqual( dirName1, tree1.name )
-        self.assertEqual(SHA1_NONE, tree1.asciiHash)
+        self.assertEqual(SHA1_HEX_NONE, tree1.asciiHash)
 
         tree2 = MerkleTree(dirName2, True)
         self.assertEqual( dirName2, tree2.name )
@@ -284,7 +285,7 @@ class TestMerkleTree (unittest.TestCase):
 
         tree1 = MerkleTree(dirName1)
         self.assertEqual( dirName1, tree1.name )
-        self.assertEqual(SHA2_NONE, tree1.asciiHash)
+        self.assertEqual(SHA2_HEX_NONE, tree1.asciiHash)
 
         tree2 = MerkleTree(dirName2)
         self.assertEqual( dirName2, tree2.name )

@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+4.0.4
+    2015-05-15
+        * switched to using standard values for SHA1_*_LEN, etc     SLOC 1466
 4.0.3
     2015-05-12
         * added tests for usingSHA1 equality to equal()
