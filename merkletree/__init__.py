@@ -1,7 +1,7 @@
 # merkletree/__init__.py
 
 import binascii, hashlib, os, re, sys
-from xlattice import SHA1_HEX_NONE, SHA2_HEX_NONE
+from xlattice import SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_HEX_NONE, SHA2_HEX_NONE
 from stat import *
 
 __all__ = [ '__version__',      '__version_date__', 
@@ -9,8 +9,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '4.0.4'
-__version_date__ = '2015-05-15'
+__version__      = '4.0.5'
+__version_date__ = '2015-05-16'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
@@ -240,9 +240,9 @@ class MerkleDoc(MerkleNode):
         (docHash, docPath) = \
                             MerkleDoc.parseFirstLine(s[0].rstrip())
         lenHash   = len(docHash)
-        if lenHash == 20:           # 20 because it's binary, not ascii
+        if lenHash == SHA1_BIN_LEN: 
             usingSHA1   = True
-        elif lenHash == 32:
+        elif lenHash == SHA2_BIN_LEN:
             usingSHA1 = False
         else:
             raise MerkleParseError('impossible hash length %d' % lenHash)
@@ -538,9 +538,9 @@ class MerkleTree(MerkleNode):
         (indent, treeHash, dirName) = \
                             MerkleTree.parseFirstLine(s[0].rstrip())
         lenHash = len(treeHash)
-        if lenHash == 20:           # that many bytes
+        if lenHash == SHA1_BIN_LEN:           # that many bytes
             usingSHA1 = True
-        elif lenHash == 32:
+        elif lenHash == SHA2_BIN_LEN:
             usingSHA1 = False
         else:
             raise MerkleParseError("impossible hash length %d" % lenHash)

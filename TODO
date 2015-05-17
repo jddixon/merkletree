@@ -1,9 +1,11 @@
 ~/dev/py/merkletree/TODO
 
+2015-05-16
+    * 20,32 replaced with SHA{1,2}_BIN_LEN, respectively                * DONE
 2015-05-13
-    * consider modigying relevant code so that hash for empty files
-        is SHA1_NONE or SHA2_NONE as appropriate
-        - will introduce a conflict with sha1sum
+    * consider modigying relevant code so that hash for empty files     * DONE
+        is SHA1_NONE or SHA2_NONE as appropriate                        * DONE
+        - will introduce a conflict with sha1sum                        * FALSE
 2015-05-12
     * MerkelTree.parseFirstLine (about line 484) calculates indent      * FIXED
         incorrectly                                                     * FIXED
@@ -14,7 +16,7 @@
     * merkleize needs exclusions and matchList as lists; modify         * DONE
         merkleize accordingly (-X and -P add to lists)                  * DONE
     * need tests to verify that these work as expected
-    * merkeltree listings should include empty files with null hash
+    * merkeltree listings should include empty files with null hash     * DONE
 
 2015-05-02
     * restructure code as necessary to correct inheritance (that is,    * DONE
@@ -30,11 +32,6 @@
         as methods of MerkleNode class
 
 2015-04-30
-    * delta indent is currently '  ' (two spaces)                       * FIXED
-        - make this a symbolic constant INDENT                          * DONE
-        - consider changing it to a single space ' '                    * DONE
-    * add option -I to set indent                                       * DONE
-
     * testMerkleTree needs to be modified to test different values of 
         deltaIndent
     * add option -b to display hashes base64
@@ -43,19 +40,11 @@
         unexpected character is found in a file name
         - in general, need to handle any reasonable unicode name
         - should display error message rather than just panicking
-    * URGENT: adding -x option yielded an "AttributeError:              * FIXED
-        'Merkletree' object has no attribute 'hash'", line 81 in        * FIXED
-        merkleize                                                       * FIXED
-
-2015-04-30 (wqs 2013-06-07)
-    * switch to argparse for parsing the command line                   * DONE
-
 2014-12-15
     * tests that write files should verify that file doesn't exist
         before trying to create
     * need to update github; have fixed several typos
     * bring documentation up to vmmgr/__init__.py level
-
 2014-06-24
     * NEED TO REVIEW: any use of self. in a static method is an error
     * add tests of createFromFile() to testMerkleTree.py                

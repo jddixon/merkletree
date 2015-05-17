@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
+4.0.5
+    2015-05-16
+        * 20,32 replaced with SHA{1,2}_BIN_LEN, respectively        SLOC 1466
+
 4.0.4
     2015-05-15
         * switched to using standard values for SHA1_*_LEN, etc     SLOC 1466
