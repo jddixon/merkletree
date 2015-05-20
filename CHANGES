@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+4.0.6
+    2015-05-20
+        * correct recursion loop (__eq__ defined in terms of equal) SLOC 1502
 4.0.5
     2015-05-16
         * 20,32 replaced with SHA{1,2}_BIN_LEN, respectively        SLOC 1466
