@@ -2,6 +2,7 @@
 
 import binascii, hashlib, os, re, sys
 from xlattice import SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_HEX_NONE, SHA2_HEX_NONE
+from xlattice.u import fileSHA1Bin, fileSHA2Bin
 from stat import *
 
 __all__ = [ '__version__',      '__version_date__',
@@ -9,8 +10,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '4.0.6'
-__version_date__ = '2015-05-20'
+__version__      = '4.1.0'
+__version_date__ = '2015-05-21'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
@@ -33,7 +34,7 @@ class MerkleNode(object):
         self._usingSHA1 = usingSHA1
 
     @property
-    def asciiHash(self):
+    def hexHash(self):
         if self._hash == None:
             if self._usingSHA1:
                 return SHA1_HEX_NONE;
@@ -41,14 +42,21 @@ class MerkleNode(object):
                 return SHA2_HEX_NONE;
         else:
             return str(binascii.b2a_hex(self._hash), 'ascii');
-    @asciiHash.setter
-    def asciiHash(self, value):
+    @hexHash.setter
+    def hexHash(self, value):
         if self._hash:
             raise RuntimeError('attempt to set non-null hash')
         self._hash = binascii.a2b_hex(value)
         # DEBUG
-        #print("asciiHash setting %s\n" % value)
+        #print("hexHash setting %s\n" % value)
         # END
+  
+    # XXX DEPRECATED ================================================
+    @property
+    def asciiHash(self):        return self.hexHash
+    @asciiHash.setter
+    def asciiHash(self, val):   return self.hexHash(val)
+    # END DEPRECATED ================================================
 
 #   def bind(self):             pass
 
@@ -61,7 +69,7 @@ class MerkleNode(object):
             raise RuntimeError('attempt to set non-null hash')
         self._hash = value
         # DEBUG
-        #print("binHash setting %s\n" % self.asciiHash)
+        #print("binHash setting %s\n" % self.hexHash)
         # END
 
 
@@ -333,7 +341,7 @@ class MerkleDoc(MerkleNode):
 
     def toString(self, indent='', deltaIndent=' '):
         return ''.join([
-            "%s %s\r\n" % ( self.asciiHash, self.path),
+            "%s %s\r\n" % ( self.hexHash, self.path),
             self._tree.toString('')
             ])
 
@@ -376,6 +384,8 @@ class MerkleLeaf(MerkleNode):
         return self.toString('')        # that is, no indent
 
     # OTHER METHODS AND PROPERTIES ##################################
+
+    # XXX DEPRECATED 
     @staticmethod
     def sha1File(pathToFile):
         """XXX no checks on file existence, etc"""
@@ -390,6 +400,7 @@ class MerkleLeaf(MerkleNode):
         d    = sha1.digest()        # a binary number
         return d
 
+    # XXX DEPRECATED 
     @staticmethod
     def sha256File(pathToFile):
         """XXX no checks on file existence, etc"""
@@ -414,9 +425,9 @@ class MerkleLeaf(MerkleNode):
             print(("INTERNAL ERROR: file does not exist: " + pathToFile))
         # XXX we convert from binary to hex and then right back to binary !!
         if usingSHA1:
-            hash = MerkleLeaf.sha1File(pathToFile)
+            hash = fileSHA1Bin(pathToFile)
         else:
-            hash = MerkleLeaf.sha256File(pathToFile)
+            hash = fileSHA2Bin(pathToFile)
         return MerkleLeaf(name, usingSHA1, hash)
 
     def toString(self, indent='', deltaIndent=' '):
@@ -424,7 +435,7 @@ class MerkleLeaf(MerkleNode):
             if self._usingSHA1:     h = SHA1_HEX_NONE
             else:                   h = SHA2_HEX_NONE
         else:
-            h = self.asciiHash
+            h = self.hexHash
         s = "%s%s %s\r\n" % (indent, h, self.name)
         return s
 
@@ -496,7 +507,7 @@ class MerkleTree(MerkleNode):
         if (not isinstance(other, MerkleTree)) or \
            (self._name != other._name ):
             return False
-        if self.asciiHash != other.asciiHash:
+        if self.hexHash != other.hexHash:
             return False
         if self.usingSHA1 != other.usingSHA1:
             return False
@@ -797,7 +808,7 @@ class MerkleTree(MerkleNode):
             else:
                 top = "%s%s %s/\r\n" % (indent, SHA2_HEX_NONE, self.name)
         else:
-            top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)
+            top = "%s%s %s/\r\n" % (indent, self.hexHash, self.name)
         s.append(top)
         indent = indent + deltaIndent              # <--- LEVEL 2+ NODE
         for node in self.nodes:
@@ -823,7 +834,7 @@ class MerkleTree(MerkleNode):
             else:
                 top = "%s%s %s/\r\n" % (indent, SHA2_HEX_NONE, self.name)
         else:
-            top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)
+            top = "%s%s %s/\r\n" % (indent, self.hexHash, self.name)
         s.append(top)                       # <--- LEVEL 0 NODE
         myIndent = indent + deltaIndent     # <--- LEVEL 1 NODE
         for node in self.nodes:

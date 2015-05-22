@@ -1,5 +1,10 @@
 ~/dev/py/merkletree/CHANGES
 
+4.1.0
+    2015-05-21
+        * corrected testMerkleLeaf.py                               SLOC 1504
+        * renamed asciiHash to hexHaxh, deprecating the former
+        * dropped local sha1/2File, replacing by xlattice.u funca   SLOC 1509
 4.0.6
     2015-05-20
         * correct recursion loop (__eq__ defined in terms of equal) SLOC 1502

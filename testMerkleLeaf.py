@@ -18,13 +18,15 @@ class TestMerkleLeaf (unittest.TestCase):
     
     # actual unit tests #############################################
     def doTestSimpleConstructor(self, usingSHA1):
-        sha1 = hashlib.sha1()
+        if usingSHA1:
+            sha = hashlib.sha1()
+        else:
+            sha = hashlib.sha256()
 
         fileName = self.rng.nextFileName(8)
         n    = self.rng.someBytes(8)
-        self.rng.nextBytes(n)
-        sha1.update(n)
-        hash0 = sha1.digest()
+        sha.update(n)
+        hash0 = sha.digest()
 
         leaf0 = MerkleLeaf(fileName, usingSHA1, hash0)
         self.assertEqual( fileName, leaf0.name )
@@ -35,8 +37,8 @@ class TestMerkleLeaf (unittest.TestCase):
             fileName2 = self.rng.nextFileName(8)
         n    = self.rng.someBytes(8)
         self.rng.nextBytes(n)
-        sha1.update(n)
-        hash1 = sha1.digest()
+        sha.update(n)
+        hash1 = sha.digest()
         leaf1 = MerkleLeaf(fileName2, usingSHA1, hash1)
         self.assertEqual( fileName2, leaf1.name )
         self.assertEqual( hash1, leaf1.binHash)
