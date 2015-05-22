@@ -2,22 +2,23 @@
 
 import binascii, hashlib, os, re, sys
 from xlattice import SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_HEX_NONE, SHA2_HEX_NONE
+from xlattice.u import fileSHA1Bin, fileSHA2Bin
 from stat import *
 
-__all__ = [ '__version__',      '__version_date__', 
+__all__ = [ '__version__',      '__version_date__',
             # classes
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '4.0.5'
-__version_date__ = '2015-05-16'
+__version__      = '4.1.0'
+__version_date__ = '2015-05-21'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
     pass
 
 class MerkleNode(object):
-   
+
     #__slots__ = [ A PERFORMANCE ENHANCER ]
 
     def __init__(self, name, isLeaf=False, usingSHA1=False):
@@ -33,7 +34,7 @@ class MerkleNode(object):
         self._usingSHA1 = usingSHA1
 
     @property
-    def asciiHash(self):
+    def hexHash(self):
         if self._hash == None:
             if self._usingSHA1:
                 return SHA1_HEX_NONE;
@@ -41,14 +42,21 @@ class MerkleNode(object):
                 return SHA2_HEX_NONE;
         else:
             return str(binascii.b2a_hex(self._hash), 'ascii');
-    @asciiHash.setter
-    def asciiHash(self, value):
+    @hexHash.setter
+    def hexHash(self, value):
         if self._hash:
             raise RuntimeError('attempt to set non-null hash')
         self._hash = binascii.a2b_hex(value)
         # DEBUG
-        #print("asciiHash setting %s\n" % value)
+        #print("hexHash setting %s\n" % value)
         # END
+  
+    # XXX DEPRECATED ================================================
+    @property
+    def asciiHash(self):        return self.hexHash
+    @asciiHash.setter
+    def asciiHash(self, val):   return self.hexHash(val)
+    # END DEPRECATED ================================================
 
 #   def bind(self):             pass
 
@@ -61,15 +69,18 @@ class MerkleNode(object):
             raise RuntimeError('attempt to set non-null hash')
         self._hash = value
         # DEBUG
-        #print("binHash setting %s\n" % self.asciiHash)
+        #print("binHash setting %s\n" % self.hexHash)
         # END
 
 
-#   def bound(self):            
+#   def bound(self):
 #       raise RuntimeError('not implemented')
 
-    def equal(self, other):    
+    def equal(self, other):
         raise RuntimeError('subclass must implement')
+
+    def __eq__(self, other):
+        return equal(self,other)
 
     @property
     def isLeaf(self):           return self._isLeaf
@@ -77,7 +88,7 @@ class MerkleNode(object):
     @property
     def name(self):             return self._name
 
-#   def path(self):             
+#   def path(self):
 #       raise RuntimeError('not implemented')
 
     def __str__(self):
@@ -101,7 +112,7 @@ class MerkleDoc(MerkleNode):
                                 re.IGNORECASE)
 
     # XXX MUST ADD matchRE and exRE and test on their values at this level
-    def __init__ (self, path, usingSHA1 = False, binding = False, 
+    def __init__ (self, path, usingSHA1 = False, binding = False,
                         tree = None,
             exRE    = None,    # exclusions, which are Regular Expressions
             matchRE = None):   # matches, also Regular Expressions
@@ -151,7 +162,7 @@ class MerkleDoc(MerkleNode):
                 # XXX STUB: BIND THE TREE
                 self._bound = True
 
-    def equal(self, other):
+    def __eq__(self, other):
         """ignore boundedness"""
         if isinstance(other, MerkleDoc)         and \
                 self._path   == other._path     and \
@@ -160,6 +171,9 @@ class MerkleDoc(MerkleNode):
             return True
         else:
             return False
+
+    def equal(self, other):
+        return self.__eq__(other)
 
     @property
     def path(self):
@@ -213,7 +227,7 @@ class MerkleDoc(MerkleNode):
         tree = MerkleTree.createFromFileSystem(pathToDir, usingSHA1,
                                     deltaIndent, exRE, matchRE)
         # creates the hash
-        doc  = MerkleDoc(path, usingSHA1, False, tree, exRE, matchRE)  
+        doc  = MerkleDoc(path, usingSHA1, False, tree, exRE, matchRE)
         doc._bound = True
         return doc
 
@@ -240,7 +254,7 @@ class MerkleDoc(MerkleNode):
         (docHash, docPath) = \
                             MerkleDoc.parseFirstLine(s[0].rstrip())
         lenHash   = len(docHash)
-        if lenHash == SHA1_BIN_LEN: 
+        if lenHash == SHA1_BIN_LEN:
             usingSHA1   = True
         elif lenHash == SHA2_BIN_LEN:
             usingSHA1 = False
@@ -265,7 +279,7 @@ class MerkleDoc(MerkleNode):
     # CLASS METHODS #################################################
     @classmethod
     def firstLineRE_1(cls):
-        """ 
+        """
         Returns a reference to the regexp for SHA1 first lines.  A
         match finds (indent, treeHash, dirName), where indent is an
         integer, the treeHash is a hex string, and dirName may have a
@@ -275,7 +289,7 @@ class MerkleDoc(MerkleNode):
 
     @classmethod
     def firstLineRE_2(cls):
-        """ 
+        """
         Returns a reference to the regexp for SHA256 first lines.  A
         match finds (indent, treeHash, dirName), where indent is an
         integer, the treeHash is a hex string, and dirName may have a
@@ -327,7 +341,7 @@ class MerkleDoc(MerkleNode):
 
     def toString(self, indent='', deltaIndent=' '):
         return ''.join([
-            "%s %s\r\n" % ( self.asciiHash, self.path),
+            "%s %s\r\n" % ( self.hexHash, self.path),
             self._tree.toString('')
             ])
 
@@ -355,7 +369,7 @@ class MerkleLeaf(MerkleNode):
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
 
-    def equal(self, other):
+    def __eq__(self, other):
         if isinstance(other, MerkleLeaf)            and \
                 self._name    == other._name        and \
                 self.binHash  == other.binHash:
@@ -363,14 +377,20 @@ class MerkleLeaf(MerkleNode):
         else:
             return False
 
+    def equal(self, other):
+        return self.__eq__(other)
+
     def __str__(self):
         return self.toString('')        # that is, no indent
 
     # OTHER METHODS AND PROPERTIES ##################################
+
+    # XXX DEPRECATED 
     @staticmethod
     def sha1File(pathToFile):
         """XXX no checks on file existence, etc"""
         with open(pathToFile, "rb") as f:
+
             # XXX should use buffer
             data = f.read()
         if data == None:
@@ -380,6 +400,7 @@ class MerkleLeaf(MerkleNode):
         d    = sha1.digest()        # a binary number
         return d
 
+    # XXX DEPRECATED 
     @staticmethod
     def sha256File(pathToFile):
         """XXX no checks on file existence, etc"""
@@ -394,7 +415,7 @@ class MerkleLeaf(MerkleNode):
         return sha256.digest()            # a binary number
 
     @staticmethod
-    def createFromFileSystem(pathToFile, name, 
+    def createFromFileSystem(pathToFile, name,
                         usingSHA1 = False, deltaIndent=' '):
         """
         Returns a MerkleLeaf.  The name is part of pathToFile, but is
@@ -404,9 +425,9 @@ class MerkleLeaf(MerkleNode):
             print(("INTERNAL ERROR: file does not exist: " + pathToFile))
         # XXX we convert from binary to hex and then right back to binary !!
         if usingSHA1:
-            hash = MerkleLeaf.sha1File(pathToFile)
+            hash = fileSHA1Bin(pathToFile)
         else:
-            hash = MerkleLeaf.sha256File(pathToFile)
+            hash = fileSHA2Bin(pathToFile)
         return MerkleLeaf(name, usingSHA1, hash)
 
     def toString(self, indent='', deltaIndent=' '):
@@ -414,9 +435,35 @@ class MerkleLeaf(MerkleNode):
             if self._usingSHA1:     h = SHA1_HEX_NONE
             else:                   h = SHA2_HEX_NONE
         else:
-            h = self.asciiHash
+            h = self.hexHash
         s = "%s%s %s\r\n" % (indent, h, self.name)
         return s
+
+    # THIS GETS REPLACED BY NLHTree XXX
+
+    # PAIRLIST FUNCTIONS ############################################
+    # def toPair(leaf):
+    #     """
+    #     Given a MerkleLeaf, return its name and binary hash as a pair
+    #     """
+    #     # DEBUG
+    #     print("MerkleLeaf.toPair: %s %s" % (leaf.name, leaf.binHash))
+    #     # END
+    #     return (leaf.name, leaf.binHash)
+
+    # @staticmethod
+    # def createFromPair(p):
+    #     """
+    #     Given p, a name/hash pair, return a MerkleLeaf.
+    #     """
+    #     name = p[0];    hash = p[1]
+    #     if len(hash) == SHA1_BIN_LEN:
+    #         usingSHA1 = True
+    #     elif len(hash) == SHA2_BIN_LEN:
+    #         usingSHA1 = False
+    #     else:
+    #         raise RuntimeError('invalid SHA hash len')
+    #     return MerkleLeaf(name, hash, usingSHA1)
 
 # -------------------------------------------------------------------
 class MerkleTree(MerkleNode):
@@ -432,7 +479,7 @@ class MerkleTree(MerkleNode):
                                 re.IGNORECASE)
     OTHER_LINE_RE_2 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\._]+/?)$',
                                 re.IGNORECASE)
-    
+
 
     #################################################################
     # exRE and matchRE must have been validated by the calling code
@@ -449,20 +496,18 @@ class MerkleTree(MerkleNode):
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
 
-    def equal(self, other):
+    def __eq__(self, other):
         """
-        This is quite wasteful.  Given the nature of the merkletree, 
+        This is quite wasteful.  Given the nature of the merkletree,
         it should only be necessary to compare top-level hashes.
         """
         if other == None:
             return False
-        if self == other:
-            return True
 
         if (not isinstance(other, MerkleTree)) or \
            (self._name != other._name ):
             return False
-        if self.asciiHash != other.asciiHash:
+        if self.hexHash != other.hexHash:
             return False
         if self.usingSHA1 != other.usingSHA1:
             return False
@@ -477,6 +522,9 @@ class MerkleTree(MerkleNode):
             if not myNode.equal(otherNode):    # RECURSES
                 return False
         return True
+
+    def equal(self, other):
+        return self.__eq__(other)
 
     def __str__(self):
         return self.toString('')
@@ -593,7 +641,7 @@ class MerkleTree(MerkleNode):
 
     @staticmethod
     def createFromSerialization(s, deltaIndent=' '):
-        """ 
+        """
         """
         if s == None:
             raise RuntimeError ("MerkleTree.createFromSerialization: no input")
@@ -634,7 +682,7 @@ class MerkleTree(MerkleNode):
                     m = re.match(MerkleTree.OTHER_LINE_RE_1, line)
                 else:
                     m = re.match(MerkleTree.OTHER_LINE_RE_2, line)
-                    
+
                 if m == None:
                     raise RuntimeError(
                             "line '%s' does not match expected pattern" %  line)
@@ -717,7 +765,7 @@ class MerkleTree(MerkleNode):
     # OTHER METHODS AND PROPERTIES ##################################
     @classmethod
     def firstLineRE_1(cls):
-        """ 
+        """
         Returns a reference to the regexp for SHA1 first lines.  A
         match finds (indent, treeHash, dirName), where indent is an
         integer, the treeHash is a hex string, and dirName may have a
@@ -727,7 +775,7 @@ class MerkleTree(MerkleNode):
 
     @classmethod
     def firstLineRE_2(cls):
-        """ 
+        """
         Returns a reference to the regexp for SHA3 first lines.  A
         match finds (indent, treeHash, dirName), where indent is an
         integer, the treeHash is a hex string, and dirName may have a
@@ -737,7 +785,7 @@ class MerkleTree(MerkleNode):
 
     @property
     def nodes(self):
-        """ 
+        """
         DANGEROUS: returns a reference to the MerkleTree's node list.
         """
         return self._nodes
@@ -760,7 +808,7 @@ class MerkleTree(MerkleNode):
             else:
                 top = "%s%s %s/\r\n" % (indent, SHA2_HEX_NONE, self.name)
         else:
-            top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)
+            top = "%s%s %s/\r\n" % (indent, self.hexHash, self.name)
         s.append(top)
         indent = indent + deltaIndent              # <--- LEVEL 2+ NODE
         for node in self.nodes:
@@ -786,7 +834,7 @@ class MerkleTree(MerkleNode):
             else:
                 top = "%s%s %s/\r\n" % (indent, SHA2_HEX_NONE, self.name)
         else:
-            top = "%s%s %s/\r\n" % (indent, self.asciiHash, self.name)    
+            top = "%s%s %s/\r\n" % (indent, self.hexHash, self.name)
         s.append(top)                       # <--- LEVEL 0 NODE
         myIndent = indent + deltaIndent     # <--- LEVEL 1 NODE
         for node in self.nodes:

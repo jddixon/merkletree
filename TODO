@@ -1,5 +1,18 @@
 ~/dev/py/merkletree/TODO
 
+2015-05-21
+    * DRY: replace fileSHA1/256 with functions in xlattice.uu
+
+2015-05-20
+    * not urgent: rename asciiHash hexHash; asciiHash should be 
+        deprecated but kept available for a couple of revisions
+    * FIX: testMerkleLeaf doesn't actually test both sha1 and sha256!   * DONE
+    * URGENT: def of equal and __eq__ causes recursion loop             * FIXED
+
+2015-05-19
+    * urgently need constructor from nested lists 
+        and tests
+    * XXX TestMerkleLeaf XXX FAILS
 2015-05-16
     * 20,32 replaced with SHA{1,2}_BIN_LEN, respectively                * DONE
 2015-05-13
