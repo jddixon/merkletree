@@ -1,7 +1,9 @@
 # see http://docs.python.org/distutils/sourcedist.html
 
 include netDistrib.conf
+include .gitignore countem installit test.all
 include CHANGES README.md TODO
+include merkleize
 recursive-include ghpDoc *
 recursive-include merkletree *.py
 recursive-include testData *
