@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/TODO
 
+2015-05-22
+    * investigate why {FIRST,OTHER}_LINE_RE2 containt XYZ at 
+        beginning of pattern
+
 2015-05-21
     * DRY: replace fileSHA1/256 with functions in xlattice.uu
 
@@ -16,7 +20,7 @@
 2015-05-16
     * 20,32 replaced with SHA{1,2}_BIN_LEN, respectively                * DONE
 2015-05-13
-    * consider modigying relevant code so that hash for empty files     * DONE
+    * consider modifying relevant code so that hash for empty files     * DONE
         is SHA1_NONE or SHA2_NONE as appropriate                        * DONE
         - will introduce a conflict with sha1sum                        * FALSE
 2015-05-12
