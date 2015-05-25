@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
+4.1.2
+    2015-05-25
+        * remove redundant and dead codd                            SLOC 1438
+        * asciiHash is now hexHash                                  SLOC 1439
 4.1.1
     2015-05-24
         * add installit, correct countem, tarball                   SLOC 1511
