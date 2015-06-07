@@ -11,7 +11,7 @@ __all__ = [ '__version__',      '__version_date__',
           ]
 
 __version__      = '4.1.3'
-__version_date__ = '2015-05-26'
+__version_date__ = '2015-06-07'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
