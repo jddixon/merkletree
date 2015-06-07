@@ -16,29 +16,12 @@
 2015-05-19
     * urgently need constructor from nested lists 
         and tests
-    * XXX TestMerkleLeaf XXX FAILS
-2015-05-16
-    * 20,32 replaced with SHA{1,2}_BIN_LEN, respectively                * DONE
-2015-05-13
-    * consider modifying relevant code so that hash for empty files     * DONE
-        is SHA1_NONE or SHA2_NONE as appropriate                        * DONE
-        - will introduce a conflict with sha1sum                        * FALSE
-2015-05-12
-    * MerkelTree.parseFirstLine (about line 484) calculates indent      * FIXED
-        incorrectly                                                     * FIXED
-    * MerkleTree.createFromStringArray() about line 533 calculated      * FIXED
-        usingSHA1 incorrectly (tested on length of hash being 40)       * FIXED
-
+    * XXX TestMerkleLeaf XXX FAILS                                      * FALSE
 2015-05-05
     * merkleize needs exclusions and matchList as lists; modify         * DONE
         merkleize accordingly (-X and -P add to lists)                  * DONE
     * need tests to verify that these work as expected
-    * merkeltree listings should include empty files with null hash     * DONE
-
 2015-05-02
-    * restructure code as necessary to correct inheritance (that is,    * DONE
-        make MerkleNode an abstract class and have Merkle{Doc,Tree,Leaf}* DONE
-        subclass it)                                                    * DONE
     * in the process, reorder the code to make structure more obvious
     * XXX MerkleDoc.__init__(): binding not handled
     * very delicate: MerkleDoc.createFromStringArray() tests on hash
@@ -47,7 +30,6 @@
         - should raise exception if neither 20 nor 32
     * needs clarification: original code has bind(), bound(), path()
         as methods of MerkleNode class
-
 2015-04-30
     * testMerkleTree needs to be modified to test different values of 
         deltaIndent
