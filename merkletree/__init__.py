@@ -10,8 +10,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '4.1.3'
-__version_date__ = '2015-06-07'
+__version__      = '4.1.4'
+__version_date__ = '2015-07-13'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
@@ -22,31 +22,30 @@ class MerkleNode(object):
     #__slots__ = [ A PERFORMANCE ENHANCER ]
 
     def __init__(self, name, isLeaf=False, usingSHA1=False):
-        self._hash = None
+        self._binHash = None
         if name == None:
             raise RuntimeError("MerkleNode: null MerkleNode name")
         self._name = name.strip()
         if len(self._name) == 0:
             raise RuntimeError("MerkleNode: null or empty name")
-        self._name = name
 
         self._isLeaf = isLeaf
         self._usingSHA1 = usingSHA1
 
     @property
     def hexHash(self):
-        if self._hash == None:
+        if self._binHash == None:
             if self._usingSHA1:
                 return SHA1_HEX_NONE;
             else:
                 return SHA2_HEX_NONE;
         else:
-            return str(binascii.b2a_hex(self._hash), 'ascii');
+            return str(binascii.b2a_hex(self._binHash), 'ascii');
     @hexHash.setter
     def hexHash(self, value):
-        if self._hash:
+        if self._binHash:
             raise RuntimeError('attempt to set non-null hash')
-        self._hash = binascii.a2b_hex(value)
+        self._binHash = bytes(binascii.a2b_hex(value))
         # DEBUG
         #print("hexHash setting %s\n" % value)
         # END
@@ -62,12 +61,12 @@ class MerkleNode(object):
 
     @property
     def binHash(self):
-        return self._hash
+        return self._binHash
     @binHash.setter
     def binHash(self, value):
-        if self._hash:
+        if self._binHash:
             raise RuntimeError('attempt to set non-null hash')
-        self._hash = value
+        self._binHash = value
         # DEBUG
         #print("binHash setting %s\n" % self.hexHash)
         # END
@@ -76,11 +75,12 @@ class MerkleNode(object):
 #   def bound(self):
 #       raise RuntimeError('not implemented')
 
-    def equal(self, other):
+    def __eq__(self, other):
         raise RuntimeError('subclass must implement')
 
-    def __eq__(self, other):
-        return equal(self,other)
+    # XXX CONSIDER THIS DEPRECATED
+    def equal(self, other):
+        return __eq__(self,other)
 
     @property
     def isLeaf(self):           return self._isLeaf
@@ -102,7 +102,8 @@ class MerkleDoc(MerkleNode):
     The path to a tree, and the SHA hash of the path and the treehash.
     """
 
-    __slots__ = ['_bound', '_exRE', '_hash', '_matchRE', '_path', '_tree', '_usingSHA1', ]
+    __slots__ = ['_bound', '_exRE', '_matchRE', '_path', 
+                 '_tree', '_usingSHA1', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     # THIS PATTERN WON"T CATCH SOME ERRORS; eg it permits '///' in paths
@@ -142,14 +143,14 @@ class MerkleDoc(MerkleNode):
             # END
             if usingSHA1:
                 sha1 = hashlib.sha1()
-                sha1.update(tree.binHash)
+                sha1.update(bytes(tree.binHash))
                 sha1.update(path.encode('utf-8'))
-                self.binHash = sha1.digest()      # a binary value
+                self._binHash = bytes(sha1.digest())      # a binary value
             else:
                 sha256 = hashlib.sha256()
-                sha256.update(tree.binHash)
+                sha256.update(bytes(tree.binHash))
                 sha256.update(path.encode('utf-8'))
-                self.binHash = sha256.digest()    # that binary value
+                self._binHash = bytes(sha256.digest())    # that binary value
 
         self._exRE    = exRE
         self._matchRE = matchRE
@@ -164,14 +165,15 @@ class MerkleDoc(MerkleNode):
 
     def __eq__(self, other):
         """ignore boundedness"""
-        if isinstance(other, MerkleDoc)         and \
-                self._path   == other._path     and \
-                self._hash   == other._hash     and \
+        if isinstance(other, MerkleDoc)             and \
+                self._path      == other._path      and \
+                self._binHash   == other._binHash   and \
                 self._tree.equal(other._tree)  :
             return True
         else:
             return False
 
+    # XXX DEPRECATED
     def equal(self, other):
         return self.__eq__(other)
 
@@ -307,7 +309,7 @@ class MerkleDoc(MerkleNode):
         if m == None:
             raise RuntimeError(
                     "MerkleDoc first line <%s> does not match expected pattern" %  line)
-        docHash  = binascii.a2b_hex(m.group(1))
+        docHash  = bytes(binascii.a2b_hex(m.group(1)))
         docPath  = m.group(2)          # includes terminating slash
         return (docHash, docPath)
 
@@ -348,7 +350,7 @@ class MerkleDoc(MerkleNode):
 # -------------------------------------------------------------------
 class MerkleLeaf(MerkleNode):
 
-    __slots__ = ['_name', '_hash', '_usingSHA1', ]
+    __slots__ = ['_name', '_usingSHA1', ]
 
     def __init__ (self, name, usingSHA1 = False, hash = None):
         super().__init__(name, isLeaf=True, usingSHA1=usingSHA1)
@@ -363,20 +365,21 @@ class MerkleLeaf(MerkleNode):
 
         # XXX VERIFY HASH IS WELL-FORMED
         if hash:
-            self.binHash = hash
+            self._binHash = hash
         else:
-            self.binHash = None
+            self._binHash = None
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
 
     def __eq__(self, other):
         if isinstance(other, MerkleLeaf)            and \
                 self._name    == other._name        and \
-                self.binHash  == other.binHash:
+                self._binHash == other.binHash:
             return True
         else:
             return False
 
+    # XXX DEPRECATED 
     def equal(self, other):
         return self.__eq__(other)
 
@@ -384,35 +387,6 @@ class MerkleLeaf(MerkleNode):
         return self.toString('')        # that is, no indent
 
     # OTHER METHODS AND PROPERTIES ##################################
-
-    # XXX DEPRECATED 
-    @staticmethod
-    def sha1File(pathToFile):
-        """XXX no checks on file existence, etc"""
-        with open(pathToFile, "rb") as f:
-
-            # XXX should use buffer
-            data = f.read()
-        if data == None:
-            return None
-        sha1 = hashlib.sha1()
-        sha1.update(data)
-        d    = sha1.digest()        # a binary number
-        return d
-
-    # XXX DEPRECATED 
-    @staticmethod
-    def sha256File(pathToFile):
-        """XXX no checks on file existence, etc"""
-        with open(pathToFile, "rb") as f:
-            # XXX should use buffer
-            data = f.read()
-        if data == None:
-            return None
-        # sha256 = sha256.SHA3256()
-        sha256 = hashlib.sha256()
-        sha256.update(data)
-        return sha256.digest()            # a binary number
 
     @staticmethod
     def createFromFileSystem(pathToFile, name,
@@ -431,7 +405,7 @@ class MerkleLeaf(MerkleNode):
         return MerkleLeaf(name, usingSHA1, hash)
 
     def toString(self, indent='', deltaIndent=' '):
-        if self._hash == None:
+        if self._binHash == None:
             if self._usingSHA1:     h = SHA1_HEX_NONE
             else:                   h = SHA2_HEX_NONE
         else:
@@ -468,7 +442,8 @@ class MerkleLeaf(MerkleNode):
 # -------------------------------------------------------------------
 class MerkleTree(MerkleNode):
 
-    __slots__ = ['_bound', '_name', '_exRE', '_hash', '_matchRE', '_nodes', '_usingSHA1', ]
+    __slots__ = ['_bound', '_name', '_exRE', '_binHash', '_matchRE', 
+                 '_nodes', '_usingSHA1', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     FIRST_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.:]+/)$',
@@ -546,7 +521,7 @@ class MerkleTree(MerkleNode):
             raise RuntimeError(
                     "MerkleTree first line \"%s\" does not match expected pattern" %  line)
         indent    = len(m.group(1))         # count of leading spaces
-        treeHash  = binascii.a2b_hex(m.group(2))
+        treeHash  = bytes(binascii.a2b_hex(m.group(2)))
         dirName   = m.group(3)          # includes terminating slash
         dirName   = dirName[0:len(dirName) - 1]
         return (indent, treeHash, dirName)
@@ -560,7 +535,7 @@ class MerkleTree(MerkleNode):
             raise RuntimeError(
                     "MerkleTree other line <%s> does not match expected pattern" %  line)
         nodeDepth = len(m.group(1))/len(deltaIndent)    # XXX
-        nodeHash  = binascii.a2b_hex(m.group(2))
+        nodeHash  = bytes(binascii.a2b_hex(m.group(2)))
         nodeName  = m.group(3)
         if nodeName.endswith('/'):
             nodeName = nodeName[0:len(nodeName) - 1]
@@ -715,7 +690,7 @@ class MerkleTree(MerkleNode):
         # These are sorted by the bare name
         files = os.listdir(pathToDir)  # empty if you just append .sort()
         files.sort()                    # sorts in place
-        tree._hash = None
+        tree._binHash = None
         if usingSHA1:
             shaX = hashlib.sha1()
         else:
@@ -746,7 +721,7 @@ class MerkleTree(MerkleNode):
                 if node:
                     # update tree-level hash
                     if node.binHash is not None:
-                        # note empty file has null hash
+                        # note empty file has null hash  XXX NOT TRUE
                         shaXCount += 1
                         shaX.update(node.binHash)
                     # SKIP NEXT TO EASE GARBAGE COLLECTION ??? XXX
@@ -754,7 +729,7 @@ class MerkleTree(MerkleNode):
                     # invoking toString()
                     tree._nodes.append(node)
             if shaXCount:
-                tree._hash = shaX.digest()
+                tree._binHash = bytes(shaX.digest())
 #       else:           # WE SEE THIS ERROR
 #           # this must be an error; . and .. are always present
 #           msg = "directory '%s' contains no files" % pathToDir
@@ -802,7 +777,7 @@ class MerkleTree(MerkleNode):
     def toStringNotTop(self, indent='', deltaIndent=' '):
         """ indent is the indentation to be used for the top node"""
         s      = []                             # a list of strings
-        if self._hash == None:
+        if self._binHash == None:
             if self._usingSHA1:
                 top = "%s%s %s/\r\n" % (indent, SHA1_HEX_NONE, self.name)
             else:
@@ -828,7 +803,7 @@ class MerkleTree(MerkleNode):
         terminated, and so a split on CRLF will generate an extra blank line
         """
         s      = []                             # a list of strings
-        if self._hash == None:
+        if self._binHash == None:
             if self._usingSHA1:
                 top = "%s%s %s/\r\n" % (indent, SHA1_HEX_NONE, self.name)
             else:

@@ -1,5 +1,14 @@
 ~/dev/py/merkletree/TODO
 
+2015-07-09
+    * major change: rework to use NLHTree
+    * correct errors in current build                                   * DONE:1
+        - then bump to 5.0.0
+    * actually drop sha1File and sha256File, which are deprecated       * DONE
+
+2015-06-15
+    * change indent multiples of a single space
+
 2015-05-22
     * investigate why {FIRST,OTHER}_LINE_RE2 containt XYZ at 
         beginning of pattern
