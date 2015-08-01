@@ -59,14 +59,10 @@ def merkleizeDirectory(args):
     tree = doc.tree
 
     s = []
-    if showTree:         #        ##        ###        ####
-        deltaIndent = [ ' ',     '  ',     '   ',     '    ', 
-                         #####    ######    #######    ########
-                        '     ', '      ', '       ', '        '][indent-1]
-
-        s.append(tree.toString('', deltaIndent))    # no top-level indent
+    if showTree:
+        s.append(tree.toString(0)       # no top-level indent
     if hashOutput:
-        s.append("%s\r\n" % tree.asciiHash)                      # ditto
+        s.append("%s\n" % tree.asciiHash)                      # ditto
 
     output = ''.join(s)
     if outPath:

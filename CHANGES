@@ -1,5 +1,11 @@
 ~/dev/py/merkletree/CHANGES
 
+5.0.0
+    2015-08-01
+        * indent string replaced with int count of spaces
+        * drop deltaIndent
+        * cache space strings
+        * replace CRLF with LF                                      SLOC 1415
 4.1.4
     2015-07-13
         * equal now synonym for equal, which is deprecated
