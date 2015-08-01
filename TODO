@@ -1,5 +1,22 @@
 ~/dev/py/merkletree/TODO
 
+2105-07-13 (edited from -07-09)
+    IN PROGRESS: v5.0.0 
+    * major change: replace CRLF with LF                                * DONE
+    * major change:                                                     * DONE
+        - indent variable should be number of spaces                    * DONE
+        - use xlattice.crypto SP as space cache, as in NLHTree          * DONE
+        - drop deltaIndent (or rather make it a single space)           * DONE
+    * major change: rework to use NLHTree                               * SKIP
+        - This doesn't quite make sense.  The merkletree adds a         * SKIP
+            directory level hash; there is no provision in an NLHTree   * SKIP
+            for such a hash.                                            * SKIP
+
+2015-07-09
+    * correct errors in current build                                   * DONE
+        - then bump to 5.0.0                                            * DONE
+    * actually drop sha1File and sha256File, which are deprecated       * DONE
+
 2015-05-22
     * investigate why {FIRST,OTHER}_LINE_RE2 containt XYZ at 
         beginning of pattern

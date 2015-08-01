@@ -114,13 +114,13 @@ class TestMerkleTree (unittest.TestCase):
         self.assertFalse ( tree1.equal(tree2) )
         self.assertFalse ( tree1.equal(None)  )
 
-        tree1Str     = tree1.toString('')
+        tree1Str     = tree1.toString(0)
 
         # there should be no indent on the first line
         self.assertFalse( ' ' == tree1Str[0] )
 
         # no extra lines should be added
-        lines = tree1Str.split('\r\n')
+        lines = tree1Str.split('\n')
         # this split generates an extra blank line, because the serialization
         # ends with CR-LF
         if lines[-1] == '':
@@ -157,7 +157,7 @@ class TestMerkleTree (unittest.TestCase):
         self.assertFalse ( tree1.equal(tree2) )
         self.assertFalse ( tree1.equal(None)  )
 
-        tree1Str     = tree1.toString('')
+        tree1Str     = tree1.toString(0)
         tree1Rebuilt = MerkleTree.createFromSerialization(tree1Str)
         self.assertTrue( tree1.equal(tree1Rebuilt) )
 
@@ -187,7 +187,7 @@ class TestMerkleTree (unittest.TestCase):
         self.assertTrue  ( tree1.equal(tree1) )
         self.assertFalse ( tree1.equal(tree2) )
 
-        tree1Str     = tree1.toString('')
+        tree1Str     = tree1.toString(0)
         tree1Rebuilt = MerkleTree.createFromSerialization(tree1Str)
 #       # DEBUG
 #       print "NEEDLEDIR TREE1:\n" + tree1Str
@@ -199,25 +199,25 @@ class TestMerkleTree (unittest.TestCase):
 
     def testGrayBoxesBug1(self):
         serialization = \
-        '721a08022dd26e7be98b723f26131786fd2c0dc3 grayboxes.com/\r\n'       + \
-        '  fcd3973c66230b9078a86a5642b4c359fe72d7da images/\r\n'            + \
-        '    15e47f4eb55197e1bfffae897e9d5ce4cba49623 grayboxes.gif\r\n'    + \
-        '  2477b9ea649f3f30c6ed0aebacfa32cb8250f3df index.html\r\n'
+        '721a08022dd26e7be98b723f26131786fd2c0dc3 grayboxes.com/\n'       + \
+        ' fcd3973c66230b9078a86a5642b4c359fe72d7da images/\n'            + \
+        '  15e47f4eb55197e1bfffae897e9d5ce4cba49623 grayboxes.gif\n'    + \
+        ' 2477b9ea649f3f30c6ed0aebacfa32cb8250f3df index.html\n'
 
         # create from string array ----------------------------------
-        s = serialization.split('\r\n')
+        s = serialization.split('\n')
         s = s[:-1]
         self.assertEqual(4, len(s))
 
-        tree2 = MerkleTree.createFromStringArray(s, '  ')
+        tree2 = MerkleTree.createFromStringArray(s)
 
-        ser2  = tree2.toString('', '  ')
+        ser2  = tree2.toString(0)
         self.assertEqual(serialization, ser2)
 
         # create from serialization ---------------------------------
-        tree1 = MerkleTree.createFromSerialization(serialization, '  ')
+        tree1 = MerkleTree.createFromSerialization(serialization)
 
-        ser1  = tree1.toString('', '  ')
+        ser1  = tree1.toString(0)
         self.assertEqual(serialization, ser1)
 
         self.assertTrue(tree1.equal(tree2))
@@ -240,25 +240,25 @@ class TestMerkleTree (unittest.TestCase):
             serialization = str(f.read(), 'utf-8')
 
         # create from serialization ---------------------------------
-        tree1 = MerkleTree.createFromSerialization(serialization, '  ')
+        tree1 = MerkleTree.createFromSerialization(serialization)
 
 #       # DEBUG
 #       print "tree1 has %d nodes" % len(tree1.nodes)
 #       with open('junk.tree1', 'w') as t:
-#           t.write( tree1.toString('') )
+#           t.write( tree1.toString(0) )
 #       # END
 
-        ser1  = tree1.toString('', '  ')
+        ser1  = tree1.toString(0)
         self.assertEqual(serialization, ser1)
 
         # create from string array ----------------------------------
-        s = serialization.split('\r\n')
+        s = serialization.split('\n')
         s = s[:-1]
         self.assertEqual(2511, len(s))
 
-        tree2 = MerkleTree.createFromStringArray(s, '  ')
+        tree2 = MerkleTree.createFromStringArray(s)
 
-        ser2  = tree2.toString('', '  ')
+        ser2  = tree2.toString(0)
         self.assertEqual(serialization, ser2)
 
         self.assertTrue(tree1.equal(tree2))
@@ -266,25 +266,25 @@ class TestMerkleTree (unittest.TestCase):
 
     def testGrayBoxesBug3(self):
         serialization = \
-        '088d0e391e1a4872329e0f7ac5d45b2025363e26c199a74ea39901d109afd6ba grayboxes.com/\r\n' + \
-        ' 24652ddc14687866e6b1251589aee7e1e3079a87f80cd7775214f6d837612a90 images/\r\n' + \
-        '  1eb774eef9be1e696f69a2f95711be37915aac283bb4b34dcbaf7d032233e090 grayboxes.gif\r\n' + \
-        ' 6eacebda9fd55b59c0d2e48e2ed59ce9fd683379592f8e662b1de88e041f53c9 index.html\r\n'
+        '088d0e391e1a4872329e0f7ac5d45b2025363e26c199a74ea39901d109afd6ba grayboxes.com/\n' + \
+        ' 24652ddc14687866e6b1251589aee7e1e3079a87f80cd7775214f6d837612a90 images/\n' + \
+        '  1eb774eef9be1e696f69a2f95711be37915aac283bb4b34dcbaf7d032233e090 grayboxes.gif\n' + \
+        ' 6eacebda9fd55b59c0d2e48e2ed59ce9fd683379592f8e662b1de88e041f53c9 index.html\n'
 
         # create from string array ----------------------------------
-        s = serialization.split('\r\n')
+        s = serialization.split('\n')
         s = s[:-1]
         self.assertEqual(4, len(s))
 
         tree2 = MerkleTree.createFromStringArray(s)
 
-        ser2  = tree2.toString('')
+        ser2  = tree2.toString(0)
         self.assertEqual(serialization, ser2)
 
         # create from serialization ---------------------------------
         tree1 = MerkleTree.createFromSerialization(serialization)
 
-        ser1  = tree1.toString('')
+        ser1  = tree1.toString(0)
         self.assertEqual(serialization, ser1)
 
         self.assertTrue(tree1.equal(tree2))            # GEEP
@@ -307,19 +307,19 @@ class TestMerkleTree (unittest.TestCase):
             serialization = str(f.read(), 'utf-8')
 
         # create from serialization ---------------------------------
-        tree1 = MerkleTree.createFromSerialization(serialization, '  ')
+        tree1 = MerkleTree.createFromSerialization(serialization)
 
-        ser1  = tree1.toString('', '  ')
+        ser1  = tree1.toString(0)
         self.assertEqual(serialization, ser1)
 
         # create from string array ----------------------------------
-        s = serialization.split('\r\n')
+        s = serialization.split('\n')
         s = s[:-1]
         self.assertEqual(2511, len(s))
 
-        tree2 = MerkleTree.createFromStringArray(s, '  ')
+        tree2 = MerkleTree.createFromStringArray(s)
 
-        ser2  = tree2.toString('', '  ')
+        ser2  = tree2.toString(0)
         self.assertEqual(serialization, ser2)
 
         self.assertTrue(tree1.equal(tree2))
