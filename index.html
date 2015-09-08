@@ -24,14 +24,14 @@ contents.  A directory is represented by the hash of the hashes
 of its members, sorted.  This makes it very easy to verify the
 contents of a directory:</p>
 
-<pre><code>merkleize -i -x  .
+<pre><code>merkleize -x -i  .
 </code></pre>
 
 <p>outputs a single hash, a hexadecimal number.  If any file in the
 directory structure has been changed, the output from the above
 command will also change.</p>
 
-<h1>SHA, the Secure Hash Algorithm</h1>
+<h2>SHA, the Secure Hash Algorithm</h2>
 
 <p>This package uses hash algorithms specified in the
 <a href="http://nvfpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">Secure Hash Standard</a>
@@ -43,7 +43,7 @@ practical purposes it is impossible to find two documents with the same hash.
 In other words, the SHA hashes are meant to be <strong>one-way</strong>: given a document,
 it is very easy to determine its SHA hash, but given such a hash the only
 practical way to find out what document it corresponds to is to hash all
-candidate matches and copare the resultant hash with the one you are searching
+candidate matches and compare the resultant hash with the one you are searching
 for.</p>
 
 <p><strong>merkletree</strong> currently uses either the older 160 bit/20 byte <strong>SHA-1</strong>
@@ -75,7 +75,7 @@ where the options are
 
 <p>The default output file name is the UTC timestamp.</p>
 
-<p><strong>NOTE that SHA-3 (Keccak) support has been withdrawn until it is supported by Python 3.</strong></p>
+<p><em>NOTE that <strong>SHA-3</strong> (Keccak) support has been withdrawn until it is supported by Python 3.</em></p>
 
 <h2>Relationships</h2>
 
