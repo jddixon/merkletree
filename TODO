@@ -1,7 +1,19 @@
 ~/dev/py/merkletree/TODO
 
+2015-09-08
+    * URGENT: tests should cover the executable, merkleize
+    * document the package API as well as the command line
+    * docs should include example of 
+
+2015-08-01
+    * flip hash and filename to match NLHTree, stepping to v6.0.0
+    * should be able to read v5.0.0 files (hash first) but write 
+        v6.0.0 files (filename first)
+2015-08-01 (edited from -05-05)
+    * need tests to verify that exclusions and matchList work as 
+        expected
+
 2105-07-13 (edited from -07-09)
-    IN PROGRESS: v5.0.0 
     * major change: replace CRLF with LF                                * DONE
     * major change:                                                     * DONE
         - indent variable should be number of spaces                    * DONE
@@ -21,23 +33,9 @@
     * investigate why {FIRST,OTHER}_LINE_RE2 containt XYZ at 
         beginning of pattern
 
-2015-05-21
-    * DRY: replace fileSHA1/256 with functions in xlattice.uu           * DONE
-
-2015-05-20
-    * not urgent: rename asciiHash hexHash; asciiHash should be         * DONE
-        deprecated but kept available for a couple of revisions         * DONE
-    * FIX: testMerkleLeaf doesn't actually test both sha1 and sha256!   * DONE
-    * URGENT: def of equal and __eq__ causes recursion loop             * FIXED
-
 2015-05-19
     * urgently need constructor from nested lists 
         and tests
-    * XXX TestMerkleLeaf XXX FAILS                                      * FALSE
-2015-05-05
-    * merkleize needs exclusions and matchList as lists; modify         * DONE
-        merkleize accordingly (-X and -P add to lists)                  * DONE
-    * need tests to verify that these work as expected
 2015-05-02
     * in the process, reorder the code to make structure more obvious
     * XXX MerkleDoc.__init__(): binding not handled

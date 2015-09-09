@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
+5.0.1
+    2015-09-09
+        * correct a typo in merkleize
+        * elaborate {README,index}.md                               SLOC 1415
 5.0.0
     2015-08-01
         * indent string replaced with int count of spaces
