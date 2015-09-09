@@ -60,7 +60,7 @@ def merkleizeDirectory(args):
 
     s = []
     if showTree:
-        s.append(tree.toString(0)       # no top-level indent
+        s.append(tree.toString(0))       # no top-level indent
     if hashOutput:
         s.append("%s\n" % tree.asciiHash)                      # ditto
 

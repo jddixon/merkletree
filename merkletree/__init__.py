@@ -11,8 +11,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '5.0.0'
-__version_date__ = '2015-08-01'
+__version__      = '5.0.1'
+__version_date__ = '2015-09-09'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
