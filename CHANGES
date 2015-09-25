@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+5.0.2
+    2015-09-25
+        * fixed bug: -V/--showVersion has no effect                 SLOC 1415
 5.0.1
     2015-09-09
         * correct a typo in merkleize

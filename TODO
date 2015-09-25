@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/TODO
 
+2015-09-25
+    * -V doesn't display anything
+
 2015-09-08
     * URGENT: tests should cover the executable, merkleize
     * document the package API as well as the command line

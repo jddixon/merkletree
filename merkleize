@@ -62,7 +62,7 @@ def merkleizeDirectory(args):
     if showTree:
         s.append(tree.toString(0))       # no top-level indent
     if hashOutput:
-        s.append("%s\n" % tree.asciiHash)                      # ditto
+        s.append("%s\n" % tree.hexHash)                      # ditto
 
     output = ''.join(s)
     if outPath:
@@ -141,7 +141,7 @@ def main():
     appName = 'merkleize %s' % __version__
 
     # maybe show options and such -----------------------------------
-    if args.verbose or args.justShow:
+    if args.verbose or args.justShow or args.showVersion:
         print("%s %s" % (appName, __version_date__))
 
     if args.verbose or args.justShow:
