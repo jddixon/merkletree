@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.0.3
+    2015-11-28
+        * minor edits to *.md                                       SLOC 1415
 5.0.2
     2015-09-25
         * fixed bug: -V/--showVersion has no effect                 SLOC 1415
@@ -184,3 +187,4 @@
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+

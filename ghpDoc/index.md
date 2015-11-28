@@ -1,14 +1,15 @@
 <h1 class="libTop">merkletree</h1>
 
+
 ## What It Does
 
-**merkletree** is a Python package for creating a 
+**merkletree** is a Python package for creating a
 [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree)
-for a 
-directory structure.  A **Merkle tree** is a representation of the contents 
-of the directory and its subdirectories in terms of hashes.  
+for a
+directory structure.  A **Merkle tree** is a representation of the contents
+of the directory and its subdirectories in terms of hashes.
 
-A file is represented by the hash of its 
+A file is represented by the hash of its
 contents.  A directory is represented by the hash of the hashes
 of its members, sorted.  This makes it very easy to verify the
 contents of a directory:
@@ -16,15 +17,15 @@ contents of a directory:
 	merkleize -x -i  .
 
 outputs a single hash, a hexadecimal number.  If any file in the
-directory structure has been changed, the output from the above 
+directory structure has been changed, the output from the above
 command will also change.
 
 ## SHA, the Secure Hash Algorithm
 
-This package uses hash algorithms specified in the 
+This package uses hash algorithms specified in the
 [Secure Hash Standard](http://nvfpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
-for hashing.  This is a standard published by the US National Institute of 
-Standards and Techology (**NIST**).  
+for hashing.  This is a standard published by the US National Institute of
+Standards and Techology (**NIST**).
 
 SHA is a cryptographically secure hash, meaning that for all
 practical purposes it is impossible to find two documents with the same hash.
@@ -34,7 +35,7 @@ practical way to find out what document it corresponds to is to hash all
 candidate matches and compare the resultant hash with the one you are searching
 for.
 
-**merkletree** currently uses either the older 160 bit/20 byte **SHA-1** 
+**merkletree** currently uses either the older 160 bit/20 byte **SHA-1**
 or the more recent and supposedly more secure **SHA-256**, a 256 bit/32 byte
 hash.
 
@@ -66,8 +67,8 @@ The default output file name is the UTC timestamp.
 
 ## Relationships
 
-Merkletree was implemented as part of the [XLattice](http://www.xlattice.org) 
-project.  A Go language implementation forms part of 
+Merkletree was implemented as part of the [XLattice](http://www.xlattice.org)
+project.  A Go language implementation forms part of
 [xlattice_go](https://gibhub.com/jddixon/xlattice_go).
 
 ## Project Status
