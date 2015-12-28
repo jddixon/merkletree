@@ -1,5 +1,10 @@
 ~/dev/py/merkletree/TODO
 
+2015-12-19
+    * url for SHA standard was wrong, edited in README.md but not in
+        index.md; link to xlattice_go was also wrong; and a link to
+        'gibhub'
+
 2015-09-25
     * -V doesn't display anything                                       * FIXED
     * explanation of -i/--inDir is incorrect

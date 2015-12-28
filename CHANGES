@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.0.4
+    2015-12-28
+        * minor edits to web site
 v5.0.3
     2015-11-28
         * minor edits to *.md                                       SLOC 1415
@@ -187,4 +190,5 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
