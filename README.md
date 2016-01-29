@@ -78,4 +78,4 @@ Merkletree has been in use for several years.  There are no known bugs.
 ## On-line Documentation
 
 More information on the **merkletree** project can be found
-[here](https://jddixon.github.io/merkletree).
+[here](https://jddixon.github.io/merkletree)

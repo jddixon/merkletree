@@ -11,8 +11,8 @@ __all__ = [ '__version__',      '__version_date__',
             'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
           ]
 
-__version__      = '5.0.4'
-__version_date__ = '2015-12-28'
+__version__      = '5.0.5'
+__version_date__ = '2016-01-29'
 
 # -------------------------------------------------------------------
 class MerkleParseError(RuntimeError):
@@ -809,5 +809,6 @@ class MerkleTree(MerkleNode):
                 s.append( node.toStringNotTop(myIndent) )
 
         return ''.join(s)
+
 
 
