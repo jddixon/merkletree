@@ -1,8 +1,11 @@
 cd /home/jdd/dev/py/merkletree
-rm -rf build
-pySloc -v \
+
+rm -rf build/* tmp/*
+
+pySloc -v  $@ \
     txt:.gitignore              \
     bash:countem bash:test.all  \
     txt:MANIFEST.in             \
     py:merkleize                \
-    $@
+
+
