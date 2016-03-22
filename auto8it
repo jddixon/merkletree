@@ -1,0 +1,3 @@
+cd /home/jdd/dev/py/merkletree
+
+autopep8 -air merkletree setup.py test*.py merkleize

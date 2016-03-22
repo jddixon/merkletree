@@ -4,7 +4,7 @@ rm -rf build/* tmp/*
 
 pySloc -v  $@ \
     txt:.gitignore              \
-    bash:countem bash:test.all  \
+    bash:auto8it bash:countem bash:test.all  \
     txt:MANIFEST.in             \
     py:merkleize                \
 
