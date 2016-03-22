@@ -1,22 +1,29 @@
 # merkletree/__init__.py
 
-import binascii, hashlib, os, re, sys
+import binascii
+import hashlib
+import os
+import re
+import sys
 from xlattice import SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_HEX_NONE, SHA2_HEX_NONE
-from xlattice.crypto    import SP   # for getSpaces()
-from xlattice.u         import fileSHA1Bin, fileSHA2Bin
+from xlattice.crypto import SP   # for getSpaces()
+from xlattice.u import fileSHA1Bin, fileSHA2Bin
 from stat import *
 
-__all__ = [ '__version__',      '__version_date__',
-            # classes
-            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
-          ]
+__all__ = ['__version__', '__version_date__',
+           # classes
+           'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
+           ]
 
-__version__      = '5.0.6'
-__version_date__ = '2016-02-25'
+__version__      = '5.0.7'
+__version_date__ = '2016-03-22'
 
 # -------------------------------------------------------------------
+
+
 class MerkleParseError(RuntimeError):
     pass
+
 
 class MerkleNode(object):
 
@@ -24,7 +31,7 @@ class MerkleNode(object):
 
     def __init__(self, name, isLeaf=False, usingSHA1=False):
         self._binHash = None
-        if name == None:
+        if name is None:
             raise RuntimeError("MerkleNode: null MerkleNode name")
         self._name = name.strip()
         if len(self._name) == 0:
@@ -35,24 +42,26 @@ class MerkleNode(object):
 
     @property
     def hexHash(self):
-        if self._binHash == None:
+        if self._binHash is None:
             if self._usingSHA1:
-                return SHA1_HEX_NONE;
+                return SHA1_HEX_NONE
             else:
-                return SHA2_HEX_NONE;
+                return SHA2_HEX_NONE
         else:
-            return str(binascii.b2a_hex(self._binHash), 'ascii');
+            return str(binascii.b2a_hex(self._binHash), 'ascii')
+
     @hexHash.setter
     def hexHash(self, value):
         if self._binHash:
             raise RuntimeError('attempt to set non-null hash')
         self._binHash = bytes(binascii.a2b_hex(value))
-  
+
 #   def bind(self):             pass
 
     @property
     def binHash(self):
         return self._binHash
+
     @binHash.setter
     def binHash(self, value):
         if self._binHash:
@@ -67,13 +76,13 @@ class MerkleNode(object):
 
     # XXX CONSIDER THIS DEPRECATED
     def equal(self, other):
-        return __eq__(self,other)
+        return __eq__(self, other)
 
     @property
-    def isLeaf(self):           return self._isLeaf
+    def isLeaf(self): return self._isLeaf
 
     @property
-    def name(self):             return self._name
+    def name(self): return self._name
 
 #   def path(self):
 #       raise RuntimeError('not implemented')
@@ -81,31 +90,33 @@ class MerkleNode(object):
     def __str__(self):
         raise RuntimeError('subclass must implement')
 
-    def usingSHA1(self):        return self._usingSHA1
+    def usingSHA1(self): return self._usingSHA1
 
 # -------------------------------------------------------------------
+
+
 class MerkleDoc(MerkleNode):
     """
     The path to a tree, and the SHA hash of the path and the treehash.
     """
 
-    __slots__ = ['_bound', '_exRE', '_matchRE', '_path', 
+    __slots__ = ['_bound', '_exRE', '_matchRE', '_path',
                  '_tree', '_usingSHA1', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     # THIS PATTERN WON"T CATCH SOME ERRORS; eg it permits '///' in paths
     FIRST_LINE_RE_1 = re.compile(r'^([0-9a-f]{40}) ([a-z0-9_\-\./!:]+/)$',
-                                re.IGNORECASE)
+                                 re.IGNORECASE)
     FIRST_LINE_RE_2 = re.compile(r'^([0-9a-f]{64}) ([a-z0-9_\-\./!:]+/)$',
-                                re.IGNORECASE)
+                                 re.IGNORECASE)
 
     # XXX MUST ADD matchRE and exRE and test on their values at this level
-    def __init__ (self, path, usingSHA1 = False, binding = False,
-                        tree = None,
-            exRE    = None,    # exclusions, which are Regular Expressions
-            matchRE = None):   # matches, also Regular Expressions
+    def __init__(self, path, usingSHA1=False, binding=False,
+                 tree=None,
+                 exRE=None,    # exclusions, which are Regular Expressions
+                 matchRE=None):   # matches, also Regular Expressions
 
-        if path == None:
+        if path is None:
             raise RunTimeError("null MerkleDoc path")
         if tree:
             if not isinstance(tree, MerkleTree):
@@ -122,8 +133,8 @@ class MerkleDoc(MerkleNode):
             raise RuntimeError("empty path")
         if not path.endswith('/'):
             path += '/'
-        self._path      = path
-        self._tree      = tree
+        self._path = path
+        self._tree = tree
         if tree:
             # DEBUG
             #print("MerkleDoc.__init__: usingSHA1 = %s" % str(usingSHA1))
@@ -139,7 +150,7 @@ class MerkleDoc(MerkleNode):
                 sha256.update(path.encode('utf-8'))
                 self._binHash = bytes(sha256.digest())    # that binary value
 
-        self._exRE    = exRE
+        self._exRE = exRE
         self._matchRE = matchRE
 
         if (binding):
@@ -155,7 +166,7 @@ class MerkleDoc(MerkleNode):
         if isinstance(other, MerkleDoc)             and \
                 self._path      == other._path      and \
                 self._binHash   == other._binHash   and \
-                self._tree.equal(other._tree)  :
+                self._tree.equal(other._tree):
             return True
         else:
             return False
@@ -168,6 +179,7 @@ class MerkleDoc(MerkleNode):
     def path(self):
         """should return doc's path"""
         return self._path
+
     @path.setter
     def path(self, value):
         # XXX CHECK value
@@ -176,6 +188,7 @@ class MerkleDoc(MerkleNode):
     @property
     def tree(self):
         return self._tree
+
     @tree.setter
     def tree(self, value):
         # XXX CHECKS
@@ -191,8 +204,8 @@ class MerkleDoc(MerkleNode):
 
     # QUASI-CONSTRUCTORS ############################################
     @staticmethod
-    def createFromFileSystem(pathToDir, usingSHA1 = False, 
-                             exclusions = None, matches = None):
+    def createFromFileSystem(pathToDir, usingSHA1=False,
+                             exclusions=None, matches=None):
         """
         Create a MerkleDoc based on the information in the directory
         at pathToDir.  The name of the directory will be the last component
@@ -209,21 +222,21 @@ class MerkleDoc(MerkleNode):
         path += '/'
         exRE = None
         if exclusions:
-            exRE    = MerkleDoc.makeExRE(exclusions)
+            exRE = MerkleDoc.makeExRE(exclusions)
         matchRE = None
         if matches:
             matchRE = MerkleDoc.makeMatchRE(matches)
         tree = MerkleTree.createFromFileSystem(pathToDir, usingSHA1,
-                                    exRE, matchRE)
+                                               exRE, matchRE)
         # creates the hash
-        doc  = MerkleDoc(path, usingSHA1, False, tree, exRE, matchRE)
+        doc = MerkleDoc(path, usingSHA1, False, tree, exRE, matchRE)
         doc._bound = True
         return doc
 
     @staticmethod
     def createFromSerialization(s):
-        if s == None:
-            raise RuntimeError ("MerkleDoc.createFromSerialization: no input")
+        if s is None:
+            raise RuntimeError("MerkleDoc.createFromSerialization: no input")
         sArray = s.split('\n')                # note CR-LF
         return MerkleDoc.createFromStringArray(sArray)
 
@@ -234,35 +247,35 @@ class MerkleDoc(MerkleNode):
         rules, with zero indentation on the first line and some number
         of leading spaces on all successive lines.
         """
-        if s == None:
+        if s is None:
             raise RuntimeError('null argument')
         # XXX check TYPE - must be array of strings
         if len(s) == 0:
             raise RuntimeError("empty string array")
 
         (docHash, docPath) = \
-                            MerkleDoc.parseFirstLine(s[0].rstrip())
-        lenHash   = len(docHash)
+            MerkleDoc.parseFirstLine(s[0].rstrip())
+        lenHash = len(docHash)
         if lenHash == SHA1_BIN_LEN:
-            usingSHA1   = True
+            usingSHA1 = True
         elif lenHash == SHA2_BIN_LEN:
             usingSHA1 = False
         else:
             raise MerkleParseError('impossible hash length %d' % lenHash)
 
         # DEBUG
-        #print("MerkleDoc.createFromStringArray:")
+        # print("MerkleDoc.createFromStringArray:")
         #print("    docHash = %s" % str(binascii.b2a_hex(docHash),'ascii'))
         #print("    docPath = %s" % docPath)
         #print("    usingSHA1=%s" % str(usingSHA1))
         # END
 
-        tree = MerkleTree.createFromStringArray( s[1:])
+        tree = MerkleTree.createFromStringArray(s[1:])
 
-        #def __init__ (self, path, binding = False, tree = None,
+        # def __init__ (self, path, binding = False, tree = None,
         #    exRE    = None,    # exclusions, which are Regular Expressions
         #    matchRE = None):   # matches, also Regular Expressions
-        doc = MerkleDoc( docPath, usingSHA1=usingSHA1, tree=tree )
+        doc = MerkleDoc(docPath, usingSHA1=usingSHA1, tree=tree)
         return doc
 
     # CLASS METHODS #################################################
@@ -291,19 +304,19 @@ class MerkleDoc(MerkleNode):
         """ returns binary docHash and string docPath"""
         line = line.rstrip()
         m = MerkleDoc.FIRST_LINE_RE_1.match(line)
-        if m == None:
+        if m is None:
             m = MerkleDoc.FIRST_LINE_RE_2.match(line)
-        if m == None:
+        if m is None:
             raise RuntimeError(
-                    "MerkleDoc first line <%s> does not match expected pattern" %  line)
-        docHash  = bytes(binascii.a2b_hex(m.group(1)))
-        docPath  = m.group(2)          # includes terminating slash
+                "MerkleDoc first line <%s> does not match expected pattern" % line)
+        docHash = bytes(binascii.a2b_hex(m.group(1)))
+        docPath = m.group(2)          # includes terminating slash
         return (docHash, docPath)
 
     @staticmethod
     def makeExRE(exclusions):
         """compile a regular expression which ORs exclusion patterns"""
-        if exclusions == None:
+        if exclusions is None:
             exclusions = []
         exclusions.append('^\.$')
         exclusions.append('^\.\.$')
@@ -331,20 +344,22 @@ class MerkleDoc(MerkleNode):
     # XXX indent is not used
     def toString(self, indent=0):
         return ''.join([
-            "%s %s\n" % ( self.hexHash, self.path),
+            "%s %s\n" % (self.hexHash, self.path),
             self._tree.toString(indent)
-            ])
+        ])
 
 # -------------------------------------------------------------------
+
+
 class MerkleLeaf(MerkleNode):
 
     __slots__ = ['_name', '_usingSHA1', ]
 
-    def __init__ (self, name, usingSHA1 = False, hash = None):
+    def __init__(self, name, usingSHA1=False, hash=None):
         super().__init__(name, isLeaf=True, usingSHA1=usingSHA1)
 
         # JUNK
-        if name == None:
+        if name is None:
             raise RuntimeError("MerkleLeaf: null MerkleLeaf name")
         self._name = name.strip()
         if len(self._name) == 0:
@@ -367,7 +382,7 @@ class MerkleLeaf(MerkleNode):
         else:
             return False
 
-    # XXX DEPRECATED 
+    # XXX DEPRECATED
     def equal(self, other):
         return self.__eq__(other)
 
@@ -377,7 +392,7 @@ class MerkleLeaf(MerkleNode):
     # OTHER METHODS AND PROPERTIES ##################################
 
     @staticmethod
-    def createFromFileSystem(pathToFile, name, usingSHA1 = False):
+    def createFromFileSystem(pathToFile, name, usingSHA1=False):
         """
         Returns a MerkleLeaf.  The name is part of pathToFile, but is
         passed to simplify the code.
@@ -392,9 +407,11 @@ class MerkleLeaf(MerkleNode):
         return MerkleLeaf(name, usingSHA1, hash)
 
     def toString(self, indent=0):
-        if self._binHash == None:
-            if self._usingSHA1:     h = SHA1_HEX_NONE
-            else:                   h = SHA2_HEX_NONE
+        if self._binHash is None:
+            if self._usingSHA1:
+                h = SHA1_HEX_NONE
+            else:
+                h = SHA2_HEX_NONE
         else:
             h = self.hexHash
         s = "%s%s %s\n" % (SP.getSpaces(indent), h, self.name)
@@ -427,34 +444,35 @@ class MerkleLeaf(MerkleNode):
     #     return MerkleLeaf(name, hash, usingSHA1)
 
 # -------------------------------------------------------------------
+
+
 class MerkleTree(MerkleNode):
 
-    __slots__ = ['_bound', '_name', '_exRE', '_binHash', '_matchRE', 
+    __slots__ = ['_bound', '_name', '_exRE', '_binHash', '_matchRE',
                  '_nodes', '_usingSHA1', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     FIRST_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.:]+/)$',
-                                re.IGNORECASE)
+                                 re.IGNORECASE)
     OTHER_LINE_RE_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.:~]+/?)$',
-                                re.IGNORECASE)
+                                 re.IGNORECASE)
     FIRST_LINE_RE_2 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\-\.:]+/)$',
-                                re.IGNORECASE)
+                                 re.IGNORECASE)
     OTHER_LINE_RE_2 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\.:_]+/?)$',
-                                re.IGNORECASE)
-
+                                 re.IGNORECASE)
 
     #################################################################
     # exRE and matchRE must have been validated by the calling code
     #################################################################
-    def __init__ (self, name, usingSHA1 = False,
-            exRE    = None,     # exclusions Regular Expression
-            matchRE = None):    # matches Regular Expression
+    def __init__(self, name, usingSHA1=False,
+                 exRE=None,     # exclusions Regular Expression
+                 matchRE=None):    # matches Regular Expression
 
         super().__init__(name, isLeaf=False, usingSHA1=usingSHA1)
 
-        self._exRE      = exRE
-        self._matchRE   = matchRE
-        self._nodes     = []
+        self._exRE = exRE
+        self._matchRE = matchRE
+        self._nodes = []
 
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
 
@@ -463,23 +481,23 @@ class MerkleTree(MerkleNode):
         This is quite wasteful.  Given the nature of the merkletree,
         it should only be necessary to compare top-level hashes.
         """
-        if other == None:
+        if other is None:
             return False
 
         if (not isinstance(other, MerkleTree)) or \
-           (self._name != other._name ):
+           (self._name != other._name):
             return False
         if self.hexHash != other.hexHash:
             return False
         if self.usingSHA1 != other.usingSHA1:
             return False
 
-        myNodes    = self.nodes
+        myNodes = self.nodes
         otherNodes = other.nodes
         if len(myNodes) != len(otherNodes):
             return False
         for i in range(len(myNodes)):
-            myNode    = myNodes[i]
+            myNode = myNodes[i]
             otherNode = otherNodes[i]
             if not myNode.equal(otherNode):    # RECURSES
                 return False
@@ -492,7 +510,7 @@ class MerkleTree(MerkleNode):
         return self.toString('')
 
     @property
-    def usingSHA1(self):    return self._usingSHA1
+    def usingSHA1(self): return self._usingSHA1
 
     #################################################################
     # METHODS LIFTED FROM bindmgr/bindlib/MerkleTree.py
@@ -502,28 +520,28 @@ class MerkleTree(MerkleNode):
         """ returns indent, binary treeHash, and str dirName """
         line = line.rstrip()
         m = MerkleTree.FIRST_LINE_RE_1.match(line)
-        if m == None:
+        if m is None:
             m = MerkleTree.FIRST_LINE_RE_2.match(line)
-        if m == None:
+        if m is None:
             raise RuntimeError(
-                    "MerkleTree first line \"%s\" does not match expected pattern" %  line)
-        indent    = len(m.group(1))         # count of leading spaces
-        treeHash  = bytes(binascii.a2b_hex(m.group(2)))
-        dirName   = m.group(3)          # includes terminating slash
-        dirName   = dirName[0:len(dirName) - 1]
+                "MerkleTree first line \"%s\" does not match expected pattern" % line)
+        indent = len(m.group(1))         # count of leading spaces
+        treeHash = bytes(binascii.a2b_hex(m.group(2)))
+        dirName = m.group(3)          # includes terminating slash
+        dirName = dirName[0:len(dirName) - 1]
         return (indent, treeHash, dirName)
 
     @staticmethod
     def parseOtherLine(line):
         m = re.match(MerkleTree.OTHER_LINE_RE_1, line)
-        if m == None:
+        if m is None:
             m = re.match(MerkleTree.OTHER_LINE_RE_2, line)
-        if m == None:
+        if m is None:
             raise RuntimeError(
-                    "MerkleTree other line <%s> does not match expected pattern" %  line)
+                "MerkleTree other line <%s> does not match expected pattern" % line)
         nodeDepth = len(m.group(1))
-        nodeHash  = bytes(binascii.a2b_hex(m.group(2)))
-        nodeName  = m.group(3)
+        nodeHash = bytes(binascii.a2b_hex(m.group(2)))
+        nodeName = m.group(3)
         if nodeName.endswith('/'):
             nodeName = nodeName[0:len(nodeName) - 1]
             isDir = True
@@ -538,7 +556,7 @@ class MerkleTree(MerkleNode):
         rules, with zero indentation on the first line and some number
         of leading spaces on all successive lines.
         """
-        if s == None:
+        if s is None:
             raise RuntimeError('null argument')
 
         # XXX should check TYPE - must be array of strings
@@ -546,7 +564,7 @@ class MerkleTree(MerkleNode):
         if len(s) == 0:
             raise RuntimeError("empty string array")
         (indent, treeHash, dirName) = \
-                            MerkleTree.parseFirstLine(s[0].rstrip())
+            MerkleTree.parseFirstLine(s[0].rstrip())
         lenHash = len(treeHash)
         if lenHash == SHA1_BIN_LEN:           # that many bytes
             usingSHA1 = True
@@ -555,17 +573,17 @@ class MerkleTree(MerkleNode):
         else:
             raise MerkleParseError("impossible hash length %d" % lenHash)
 
-        rootTree    = MerkleTree(dirName, usingSHA1)    # an empty tree
+        rootTree = MerkleTree(dirName, usingSHA1)    # an empty tree
         rootTree.binHash = treeHash
 
         if indent != 0:
             print(("INTERNAL ERROR: initial line indent %d" % indent))
 
-        stack      = []
-        stkDepth   = 0
-        curTree    = rootTree
+        stack = []
+        stkDepth = 0
+        curTree = rootTree
         stack.append(curTree)           # rootTree
-        stkDepth  += 1                  # always step after pushing tree
+        stkDepth += 1                  # always step after pushing tree
         lastWasDir = False
 
         # REMEMBER THAT PYTHON HANDLES LARGE RANGES BADLY
@@ -592,7 +610,7 @@ class MerkleTree(MerkleNode):
                 curTree.addNode(newTree)
                 stack.append(newTree)
                 stkDepth += 1
-                curTree   = newTree
+                curTree = newTree
             else:
                 # create and set attributes of new node
                 newNode = MerkleLeaf(name, usingSHA1, hash)
@@ -605,9 +623,9 @@ class MerkleTree(MerkleNode):
     def createFromSerialization(s):
         """
         """
-        if s == None:
-            raise RuntimeError ("MerkleTree.createFromSerialization: no input")
-        if type(s) is not str:
+        if s is None:
+            raise RuntimeError("MerkleTree.createFromSerialization: no input")
+        if not isinstance(s, str):
             s = str(s, 'utf-8')
         sArray = s.split('\n')                # note CR-LF
         return MerkleTree.createFromStringArray(sArray)
@@ -621,14 +639,14 @@ class MerkleTree(MerkleNode):
             line = f.readline()     # , 'utf-8')
             line = line.rstrip()
             m = MerkleTree.FIRST_LINE_RE_1.match(line)
-            if m == None:
+            if m is None:
                 m = MerkleTree.FIRST_LINE_RE_2.match(line)
                 usingSHA1 = False
             else:
                 usingSHA1 = True
-            if m == None:
+            if m is None:
                 raise RuntimeError(
-                        "line '%s' does not match expected pattern" %  line)
+                    "line '%s' does not match expected pattern" % line)
             dirName = m.group(3)
             tree = MerkleTree(dirName, usingSHA1)
 #           if m.group(3) != 'bind':
@@ -645,9 +663,9 @@ class MerkleTree(MerkleNode):
                 else:
                     m = re.match(MerkleTree.OTHER_LINE_RE_2, line)
 
-                if m == None:
+                if m is None:
                     raise RuntimeError(
-                            "line '%s' does not match expected pattern" %  line)
+                        "line '%s' does not match expected pattern" % line)
                 # 2014-06-24 next line as found:
                 tree._add(m.group(3), m.group(2))
                 line = f.readline()     # , 'utf-8')
@@ -655,8 +673,8 @@ class MerkleTree(MerkleNode):
         return tree
 
     @staticmethod
-    def createFromFileSystem(pathToDir, usingSHA1 = False, 
-                                        exRE = None, matchRE = None):
+    def createFromFileSystem(pathToDir, usingSHA1=False,
+                             exRE=None, matchRE=None):
         """
         Create a MerkleTree based on the information in the directory
         at pathToDir.  The name of the directory will be the last component
@@ -675,8 +693,8 @@ class MerkleTree(MerkleNode):
 
         # Create data structures for constituent files and subdirectories
         # These are sorted by the bare name
-        files = os.listdir(pathToDir)  # empty if you just append .sort()
-        files.sort()                    # sorts in place
+        # empty if you just append .sort()
+        files = sorted(os.listdir(pathToDir))
         tree._binHash = None
         if usingSHA1:
             shaX = hashlib.sha1()
@@ -697,12 +715,12 @@ class MerkleTree(MerkleNode):
                 # os.path.isdir(path) follows symbolic links
                 if S_ISDIR(mode):
                     node = MerkleTree.createFromFileSystem(
-                            pathToFile, usingSHA1, exRE, matchRE)
+                        pathToFile, usingSHA1, exRE, matchRE)
                 # S_ISLNK(mode) is true if symbolic link
                 # isfile(path) follows symbolic links
                 elif os.path.isfile(pathToFile):        # S_ISREG(mode):
                     node = MerkleLeaf.createFromFileSystem(
-                                pathToFile, file, usingSHA1)
+                        pathToFile, file, usingSHA1)
                 # otherwise, just ignore it ;-)
 
                 if node:
@@ -753,7 +771,7 @@ class MerkleTree(MerkleNode):
         return self._nodes
 
     def addNode(self, node):
-        if node == None:
+        if node is None:
             raise RuntimeError("attempt to add null node")
         if not isinstance(node, MerkleTree) \
                 and not isinstance(node, MerkleLeaf):
@@ -763,9 +781,9 @@ class MerkleTree(MerkleNode):
     # SERIALIZATION #################################################
     def toStringNotTop(self, indent=0):
         """ indent is the indentation to be used for the top node"""
-        s      = []                             # a list of strings
+        s = []                             # a list of strings
         spaces = SP.getSpaces(indent)
-        if self._binHash == None:
+        if self._binHash is None:
             if self._usingSHA1:
                 top = "%s%s %s/\n" % (spaces, SHA1_HEX_NONE, self.name)
             else:
@@ -776,10 +794,10 @@ class MerkleTree(MerkleNode):
         indent += 1              # <--- LEVEL 2+ NODE
         for node in self.nodes:
             if isinstance(node, MerkleLeaf):
-                s.append( node.toString(indent) )
+                s.append(node.toString(indent))
             else:
                 # recurse
-                s.append( node.toStringNotTop(indent) )
+                s.append(node.toStringNotTop(indent))
 
         return ''.join(s)
 
@@ -790,9 +808,9 @@ class MerkleTree(MerkleNode):
         Using code should take into account that the last line is CR-LF
         terminated, and so a split on CRLF will generate an extra blank line
         """
-        s      = []                             # a list of strings
+        s = []                             # a list of strings
         spaces = SP.getSpaces(indent)
-        if self._binHash == None:
+        if self._binHash is None:
             if self._usingSHA1:
                 top = "%s%s %s/\n" % (spaces, SHA1_HEX_NONE, self.name)
             else:
@@ -802,14 +820,11 @@ class MerkleTree(MerkleNode):
         s.append(top)                       # <--- LEVEL 0 NODE
         myIndent = indent + 1               # <--- LEVEL 1 NODE
         for node in self.nodes:
-            if isinstance (node, MerkleLeaf):
+            if isinstance(node, MerkleLeaf):
                 s.append(node.toString(myIndent))
             else:
                 # recurse
-                s.append( node.toStringNotTop(myIndent) )
+                s.append(node.toStringNotTop(myIndent))
 
         return ''.join(s)
-
-
-
 

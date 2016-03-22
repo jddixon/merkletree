@@ -1,11 +1,16 @@
 #!/usr/bin/python3
 
-# merkleize, part of merkletree 
+# merkleize, part of merkletree
 
-import base64, binascii, hashlib, os, sys, time
+import base64
+import binascii
+import hashlib
+import os
+import sys
+import time
 from argparse import ArgumentParser
 
-from merkletree     import *
+from merkletree import *
 
 # In this preliminary version of the code we walk through a directory
 # in canonical order (ASCII collating sequence) building an SHA1 hash
@@ -14,30 +19,31 @@ from merkletree     import *
 # and add that to the hash we are building (we might want to also add
 # a line to .merkle containing the content hash and the file name).
 # If the file is a subdirectory we recurse to get its hash (and might
-# add a name+hash line to .merkle for that as well).  When there are 
-# no more files we will write the hash of hashes for files in the 
+# add a name+hash line to .merkle for that as well).  When there are
+# no more files we will write the hash of hashes for files in the
 # directory followed by a single dot, representing the file name.
+
 
 def merkleizeDirectory(args):
 
-    # get and check args; XXX should throw exceptions if problems 
+    # get and check args; XXX should throw exceptions if problems
     # are encountered
-   
-    exclusions      = args.exclude
-    exRE            = MerkleDoc.makeExRE(exclusions)
-    hashOutput      = args.hashOutput
-    indent          = args.indent
-    inDir           = args.inDir
-    justShow        = args.justShow
-    matches         = args.matchPat
-    matchRE         = MerkleDoc.makeMatchRE(matches)
-    outPath         = args.outPath
-    showTimestamp   = args.showTimestamp
-    showTree        = args.showTree
-    showVersion     = args.showVersion
-    timestamp       = args.timestamp
-    usingSHA1       = args.usingSHA1
-    verbose         = args.verbose
+
+    exclusions = args.exclude
+    exRE = MerkleDoc.makeExRE(exclusions)
+    hashOutput = args.hashOutput
+    indent = args.indent
+    inDir = args.inDir
+    justShow = args.justShow
+    matches = args.matchPat
+    matchRE = MerkleDoc.makeMatchRE(matches)
+    outPath = args.outPath
+    showTimestamp = args.showTimestamp
+    showTree = args.showTree
+    showVersion = args.showVersion
+    timestamp = args.timestamp
+    usingSHA1 = args.usingSHA1
+    verbose = args.verbose
 
     (dirName, path) = (None, None)
 
@@ -46,16 +52,16 @@ def merkleizeDirectory(args):
     elif inDir and inDir.find('/') != -1:
         (path, foo, dirName) = inDir.rpartition('/')
     else:
-        path    = '.'
+        path = '.'
         dirName = inDir
 
     if verbose:
         print("dirName:         %s" % dirName)
         print("path:            %s" % path)
-        
+
     pathToDir = os.path.join(path, dirName)
-    doc  = MerkleDoc.createFromFileSystem(
-                pathToDir, usingSHA1,exclusions, matches)
+    doc = MerkleDoc.createFromFileSystem(
+        pathToDir, usingSHA1, exclusions, matches)
     tree = doc.tree
 
     s = []
@@ -75,43 +81,44 @@ def merkleizeDirectory(args):
     else:
         sys.stdout.write(output)
 
+
 def main():
 
     # program defaults ----------------------------------------------
 
-    timestamp   = "%04d%02d%02d-%02d%02d%02d" % time.gmtime()[:6]
-    
+    timestamp = "%04d%02d%02d-%02d%02d%02d" % time.gmtime()[:6]
+
     # parse the command line ----------------------------------------
 
     DESC = 'generate the merkletree corresponding to a directory'
     parser = ArgumentParser(description=DESC)
 
     parser.add_argument('-1', '--usingSHA1', action='store_true',
-        help = 'use SHA1 hash instead of default SHA256')
-    parser.add_argument('-d', '--outDir', 
-        help = 'write serialized merkletree here')
-    parser.add_argument('-I', '--indent',   default=1,  type=int,
-        help = 'number of spaces to indent list (default=1)')
-    parser.add_argument('-i', '--inDir', 
-        help = 'write serialized merkletree here')
+                        help='use SHA1 hash instead of default SHA256')
+    parser.add_argument('-d', '--outDir',
+                        help='write serialized merkletree here')
+    parser.add_argument('-I', '--indent', default=1, type=int,
+                        help='number of spaces to indent list (default=1)')
+    parser.add_argument('-i', '--inDir',
+                        help='write serialized merkletree here')
     parser.add_argument('-j', '--justShow', action='store_true',
-        help='show options and exit')
+                        help='show options and exit')
     parser.add_argument('-m', '--showTree', action='store_true',
-        help='output the merkletree hash+filename lines')
+                        help='output the merkletree hash+filename lines')
     parser.add_argument('-o', '--outFile', default=timestamp,
-        help = 'write output to this file (default = timestamp)')
+                        help='write output to this file (default = timestamp)')
     parser.add_argument('-P', '--matchPat', action='append',
-        help = 'include only files with matching names')
+                        help='include only files with matching names')
     parser.add_argument('-t', '--showTimestamp', action='store_true',
-        help='output UTC time')
+                        help='output UTC time')
     parser.add_argument('-v', '--verbose', action='store_true',
-        help='be chatty')
+                        help='be chatty')
     parser.add_argument('-V', '--showVersion', action='store_true',
-        help='output the version number of this program')
+                        help='output the version number of this program')
     parser.add_argument('-x', '--hashOutput', action='store_true',
-        help='output the top level hash')
+                        help='output the top level hash')
     parser.add_argument('-X', '--exclude', action='append',
-        help='ignore files matching this pattern')
+                        help='ignore files matching this pattern')
 
     args = parser.parse_args()
 
@@ -120,7 +127,7 @@ def main():
         args.indent = 1
     elif args.indent > 8:
         args.indent = 8
-    args.timestamp   = timestamp
+    args.timestamp = timestamp
     if args.outDir:
         args.outPath = os.path.join(args.outDir, args.outFile)
     else:
@@ -128,7 +135,7 @@ def main():
 
     # sanity checks -------------------------------------------------
     if not args.justShow:
-        if args.inDir == None or len(args.inDir) == 0:
+        if args.inDir is None or len(args.inDir) == 0:
             print("null or empty input directory name")
             parser.print_usage()
             sys.exit(1)
@@ -160,7 +167,7 @@ def main():
         print('timestamp        = ' + str(args.timestamp))
         print('usingSHA1        = ' + str(args.usingSHA1))
         print('verbose          = ' + str(args.verbose))
-        
+
         if args.exclude and len(args.exclude) > 0:
             print("exclude:")
             for exclusion in args.exclude:
@@ -169,7 +176,6 @@ def main():
             print("match:")
             for match in args.matchPat:
                 print("    %s" % match)
-
 
     if args.justShow:
         sys.exit(0)
