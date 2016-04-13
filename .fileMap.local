@@ -1,0 +1,4 @@
+dir:pkg:merkletree
+dir:tmp:tmp
+dir:local:testData
+py:global:merkleize
