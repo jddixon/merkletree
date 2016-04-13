@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.0.8
+    2016-04-12
+        * fix countem, add .fileMap{,local}                         SLOC 1464
 v5.0.7
     2016-03-22
         * add auto8it and execute                                   SLOC 1444
@@ -199,6 +202,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 
