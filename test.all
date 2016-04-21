@@ -1,3 +1,5 @@
+./testOldMakeExRE.py
+./testNewMakeExRE.py
 ./testMerkleDoc2.py
 ./testMerkleDoc.py
 ./testMerkleLeaf.py
