@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/TODO
 
+2016-04-18
+    * MAJOR CHANGE: replace exRE with uses regular expressions 
+        with something using wildcards
+
 2015-12-19
     * url for SHA standard was wrong, edited in README.md but not in
         index.md; link to xlattice_go was also wrong; and a link to

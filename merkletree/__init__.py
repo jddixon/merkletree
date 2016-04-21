@@ -5,7 +5,8 @@ import hashlib
 import os
 import re
 import sys
-from xlattice import SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_HEX_NONE, SHA2_HEX_NONE
+from xlattice import (SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_HEX_NONE, SHA2_HEX_NONE,
+                      util)
 from xlattice.crypto import SP   # for getSpaces()
 from xlattice.u import fileSHA1Bin, fileSHA2Bin
 from stat import *
@@ -15,8 +16,8 @@ __all__ = ['__version__', '__version_date__',
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
            ]
 
-__version__      = '5.0.8'
-__version_date__ = '2016-04-12'
+__version__      = '5.0.9'
+__version_date__ = '2016-04-21'
 
 # -------------------------------------------------------------------
 
@@ -222,7 +223,7 @@ class MerkleDoc(MerkleNode):
         path += '/'
         exRE = None
         if exclusions:
-            exRE = MerkleDoc.makeExRE(exclusions)
+            exRE = util.makeExRE(exclusions)
         matchRE = None
         if matches:
             matchRE = MerkleDoc.makeMatchRE(matches)
@@ -315,7 +316,15 @@ class MerkleDoc(MerkleNode):
 
     @staticmethod
     def makeExRE(exclusions):
-        """compile a regular expression which ORs exclusion patterns"""
+        """
+        #############################################################
+        THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED WHEREVER USED
+        WITH xlattice.util::makeExRE(), WHICH USES GLOBS.  This
+        function uses regular expressions instead of globs.
+        #############################################################
+
+        Compile a regular expression which ORs exclusion patterns.
+        """
         if exclusions is None:
             exclusions = []
         exclusions.append('^\.$')

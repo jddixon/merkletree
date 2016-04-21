@@ -1,5 +1,5 @@
-code:std:.fileMap
-code:std:.fileMap.local
+code:std:.projCfg
+code:std:.projCfg.local
 code:std:.gitignore
 code:std:MANIFEST.in
 bash:std:auto8it

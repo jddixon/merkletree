@@ -4,5 +4,5 @@ cd ~/dev/py/merkletree
 
 rm -rf build/* tmp/*
 
-pySloc -X '^build$|^tmp$' -v $@
+pySloc -X 'build|tmp' -v $@
 
