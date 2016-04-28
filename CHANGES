@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.0.11
+    2016-04-28
+        * general cleanup                                           SLOC 1544
 v5.0.10
     2016-04-22
         * dropped tests of old makeExRE in testMerkleDoc2           SLOC 1535
@@ -210,6 +213,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 
