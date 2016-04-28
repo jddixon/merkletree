@@ -2,8 +2,8 @@
 project:merkletree
 package:merkletree
 mainlang:py
-version:5.0.9
-versionDate:2016-04-21
+version:5.0.10
+versionDate:2016-04-27
 :?dirs?:
 dir:std:.dvcz
 dir:std:dist
