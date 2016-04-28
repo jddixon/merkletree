@@ -1,0 +1,14 @@
+code:std:.dvcz/projCfg
+code:std:.dvcz/projCfg.local
+code:std:MANIFEST.in
+
+dir:pkg:merkletree
+dir:clr:tmp
+dir:local:testData
+
+bash:std:auto8it
+bash:std:countem
+bash:std:installit
+bash:std:test.all
+
+py:global:merkleize

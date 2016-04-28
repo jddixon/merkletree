@@ -16,8 +16,8 @@ __all__ = ['__version__', '__version_date__',
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
            ]
 
-__version__      = '5.0.9'
-__version_date__ = '2016-04-21'
+__version__      = '5.0.10'
+__version_date__ = '2016-04-27'
 
 # -------------------------------------------------------------------
 
@@ -595,7 +595,6 @@ class MerkleTree(MerkleNode):
         stkDepth += 1                  # always step after pushing tree
         lastWasDir = False
 
-        # REMEMBER THAT PYTHON HANDLES LARGE RANGES BADLY
         for n in range(1, len(s)):
             line = s[n].rstrip()
             if len(line) == 0:
