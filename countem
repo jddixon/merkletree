@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-cd ~/dev/py/merkletree
+cd $DEV_BASE/py/merkletree
 
-rm -rf build/* tmp/*
+rm -rf build/* tmp/* 
 
-pySloc -X 'build|tmp' -v $@
-
+pySloc  -X dist -v $@

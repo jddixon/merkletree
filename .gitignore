@@ -16,3 +16,4 @@ tmp
 __pycache__
 *.bak
 THIS.IS.A.GIT*
+.xlattice
