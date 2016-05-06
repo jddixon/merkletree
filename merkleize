@@ -8,7 +8,9 @@ import hashlib
 import os
 import sys
 import time
+
 from argparse import ArgumentParser
+from xlattice.util import makeExRE, makeMatchRE
 
 from merkletree import *
 
@@ -30,13 +32,13 @@ def merkleizeDirectory(args):
     # are encountered
 
     exclusions = args.exclude
-    exRE = MerkleDoc.makeExRE(exclusions)
+    exRE = makeExRE(exclusions)
     hashOutput = args.hashOutput
     indent = args.indent
     inDir = args.inDir
     justShow = args.justShow
     matches = args.matchPat
-    matchRE = MerkleDoc.makeMatchRE(matches)
+    matchRE = makeMatchRE(matches)
     outPath = args.outPath
     showTimestamp = args.showTimestamp
     showTree = args.showTree
