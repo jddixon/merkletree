@@ -16,8 +16,8 @@ __all__ = ['__version__', '__version_date__',
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
            ]
 
-__version__      = '5.0.11'
-__version_date__ = '2016-04-28'
+__version__      = '5.0.12'
+__version_date__ = '2016-05-06'
 
 # -------------------------------------------------------------------
 
@@ -226,7 +226,7 @@ class MerkleDoc(MerkleNode):
             exRE = util.makeExRE(exclusions)
         matchRE = None
         if matches:
-            matchRE = MerkleDoc.makeMatchRE(matches)
+            matchRE = util.makeMatchRE(matches)
         tree = MerkleTree.createFromFileSystem(pathToDir, usingSHA1,
                                                exRE, matchRE)
         # creates the hash
@@ -339,7 +339,15 @@ class MerkleDoc(MerkleNode):
 
     @staticmethod
     def makeMatchRE(matchList):
-        """compile a regular expression which ORs match patterns"""
+        """
+        #############################################################
+        THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED WHEREVER USED
+        WITH xlattice.util::makeMatchRE(), WHICH USES GLOBS.  This
+        function uses regular expressions instead of globs.
+        #############################################################
+
+        Compile a regular expression which ORs match patterns.
+        """
         if matchList and len(matchList) > 0:
             matchPat = '|'.join(matchList)
             return re.compile(matchPat)
