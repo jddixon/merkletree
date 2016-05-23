@@ -1,6 +1,17 @@
-./testOldMakeExRE.py
-./testNewMakeExRE.py
-./testMerkleDoc2.py
-./testMerkleDoc.py
-./testMerkleLeaf.py
-./testMerkleTree.py
+#!/usr/bin/env bash
+
+if [ ! -z "${DEV_BASE// }" ]
+then
+  cd $DEV_BASE/py/merkletree
+  
+  ./testMerkleDoc.py
+  ./testMerkleDoc2.py
+  ./testMerkleLeaf.py
+  ./testMerkleTree.py
+  ./testNewMakeExRE.py
+  ./testOldMakeExRE.py
+  echo "CONGRATULATIONS: YOU HAVE OVERWRITTEN test.all"
+  
+else
+  echo "DEV_BASE is not defined"
+fi

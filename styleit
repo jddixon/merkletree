@@ -4,9 +4,9 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/merkletree
   
-  rm -rf build/* tmp/* 
+  autopep8 -ai -r merkletree merkleize *.py
+  echo "not styling testData/ subdir"
   
-  pySloc -L py  -X dist -v $@
 else
   echo "DEV_BASE is not defined"
 fi
