@@ -10,7 +10,6 @@ then
   ./testMerkleTree.py
   ./testNewMakeExRE.py
   ./testOldMakeExRE.py
-  echo "CONGRATULATIONS: YOU HAVE OVERWRITTEN test.all"
   
 else
   echo "DEV_BASE is not defined"

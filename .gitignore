@@ -4,6 +4,7 @@
 *.swp
 *ZZZ
 .committed
+.dvczignore*
 .merkle
 .posted
 .sharedev
