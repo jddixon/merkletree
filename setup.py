@@ -17,5 +17,9 @@ setup(name='merkletree',
       packages=['merkletree'],
       # following could be in scripts/ subdir
       scripts=['merkleize', ],          # front end module(s)
-      # MISSING url
+      # MISSING description
+      classifiers=[
+          'License :: OSI Approved :: MIT License',
+          'Programming Language :: Python :: 3',
+      ],
       )
