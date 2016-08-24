@@ -7,27 +7,28 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-merkletree v5.0.14
-2016-06-24 16:40:03
-# START CONTENT #
+merkletree v5.0.15
+2016-08-24 20:27:54
+# BEGIN CONTENT #
 merkletree
- .copyright 341b426b5d23a84b929e0a59078c58bc76595a70
  .dvcz
-  builds 95e62b8d2f0fe6b730b0138aaf777b710d7492a4
+  builds 1abfed38c5ad737843547adeee6becbc19e67a8c
+  copyright 341b426b5d23a84b929e0a59078c58bc76595a70
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList 22e1142673e3f4fe91efb330bb7f582f41516639
-  projCfg 4a900d2d2eaf7e39b39e2cbd1b3c8fca8c32dc53
-  projCfg.local 6e3dbcec7ebc14d96fca626b260db9550b81ade5
-  version d555429ab3285c8d0f5a236fcdb244fe81629807
+  lastBuildList c3d860dee0f170071112abab32cc5be5700e3830
+  license 5977a55c75bb4612004451a56b0b4c22d9d3311d
+  projCfg 56185160f710513c6da115ef1e631d311e592e0a
+  projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
+  version 6b3d048e9d64c51e364e62ea292a3054107b0b08
  .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
- CHANGES 19f15bb9518614fc450cf786aaf815dc70de1fbb
- LICENSE.md 0d07d7f09fd91a4c193acd95e1a1afa0c8e4f286
+ CHANGES e72e27c68ae03ce123ed80a158977d4032e6468c
+ LICENSE-MIT.md 0d07d7f09fd91a4c193acd95e1a1afa0c8e4f286
  MANIFEST.in 2f437c4d5cb4af779fc66924182ca82b9abaace7
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
  README.md dd53cdab4bba00499e0ff512013c6a387eab9022
  TODO bf3b6a633b8be90b15eacb6ef7686e4b77a85f7e
  bkp2U 0c6f4fb8d957bba3dce4ca16ac1cc37eed386825
- countem b6d3d3b4170fd444e02fc02370989a24d12c6a61
+ countem cc33b1ac3bff65f8efbd4bc4bbbde2db4a61646d
  dist
   merkletree-1.1.1.tar.gz 2554aba52422222b12e8261c9d682000e41f5f74
   merkletree-2.0.0.tar.gz 6cc97227aa5c0355e36d38b80cc5226655b2902f
@@ -61,6 +62,7 @@ merkletree
   merkletree-5.0.12.tar.gz e4559454a8977aa300f80a0b0e0c13fdf8d6ae8b
   merkletree-5.0.13.tar.gz 0ad86bf9a19021e7aaf4732ace348baebb144cdb
   merkletree-5.0.14.tar.gz c345d81c832e2ce7e958ee971a722bebe6167e9f
+  merkletree-5.0.15.tar.gz fadcde4adaf193e35a690ba22e49081174c480c7
   merkletree-5.0.2.tar.gz 5d3a0de7488c3fd29507baf9572789269d5f4938
   merkletree-5.0.3.tar.gz d1b491a6fb020cc20e939490ecca49547f463d91
   merkletree-5.0.5.tar.gz d22f3e96419bae2018463cc68f147108934adfe9
@@ -88,7 +90,7 @@ merkletree
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
  merkleize 633254b84f54e6288beb4aa75f48bced8841bad6
  merkletree
-  __init__.py da8b404cc893406e133b37a788d40bdf4ce0c729
+  __init__.py 1a4184037c777ebcf9a96df21215bc986af59b2f
  setup.py 08fec15e45b60319a3a93c4aa497ebe880a40a29
  styleit d6c91aa1ff057277d090f083e85efc82d03aad68
  test.all 89a7b27ec1418f85bb5c884b1b6143c1c6dc6ae0
@@ -103,4 +105,4 @@ merkletree
  testOldMakeExRE.py a26eaaacc4133d66729e804bba3cfd3fdd546d74
 # END CONTENT #
 
-eddQ3Y1IDigW9rLwNQebq8AYGFYo81noFK/RBG02u4knQFxLAr9korDCOpLUrlnJCFHJ2UrKUt5Ed+nEg7WaSiWgbHtMD22NgEFTXVsZkffNWvVYRRNIm+77pV5iOHafUf8Em+zDfaZfhQf5cFvA2WEf2lhaY2llNBGibj7ee4D6Lg5YnXpsD9/vNjZ91Dhy7J+lsEmwycToPxMdD5bOzvKMTToG8bMXh6oD1Lc5fUd842fYfpJrtwd1f+S9eXc0lVZlh9g8+c9So4RrU36rXDkDXuv2FpR+8yWwOIeJdjH+R3tzcshnsk21VuDlKhgtV9UDGHzrGsXvcIFNHhu9aA==
+dyDp0Qj9AoOZNPLJop+YPb7J24p9vNaFxvOfgHYj+qrrERVkSBihP+368OgTKlK8M0A1RP1JzL1GcdY/TetqRQF5a2Hq26lbLwyIBpQn8ddDk250CeUexWGqRhq6W1prUTeQm5bRG0YukE2qeND0G6+1zo+xh8IKw09k2DKvzCPO7xlr1KNWDGu4B2qkAWEKHkxOw6NgjovpBIOeXIYblossoHdMDrgHPyv642Dj42n5oQHwTtbkJVZOEEPBTJeHj3g1y0htf9aRCV2TJIkjQHArp8yrvlmuEpPUMw/NKt0aQ975694zupb0+BKjZKmKyZKOqEY/l6oEJRM6L4yWYQ==
