@@ -1,5 +1,7 @@
 # py/merkletree/.dvcz/projCfg.local
 
+txt:std:LICENSE-MIT.md
+
 dir:pkg:merkletree
 dir:clr:tmp
 dir:local:testData
