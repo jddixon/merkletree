@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.1.0
+    2016-09-02
+        * usingSHA1 -> usingSHA : PARTIAL                           SLOC 2199
 v5.0.15
     2016-08-24
         * fix setup.py and license                                  SLOC 2188
@@ -225,6 +228,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 

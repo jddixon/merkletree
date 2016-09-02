@@ -7,21 +7,21 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-merkletree v5.0.15
-2016-08-24 20:27:54
+merkletree v5.1.0
+2016-09-02 22:24:00
 # BEGIN CONTENT #
 merkletree
  .dvcz
-  builds 1abfed38c5ad737843547adeee6becbc19e67a8c
+  builds 2a145364cedaa81fd6ca39b139ed2ed0c7df2878
   copyright 341b426b5d23a84b929e0a59078c58bc76595a70
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList c3d860dee0f170071112abab32cc5be5700e3830
+  lastBuildList e1d7aa383bf56a4aef59f8e99b452fae907f3f67
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg 56185160f710513c6da115ef1e631d311e592e0a
   projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
-  version 6b3d048e9d64c51e364e62ea292a3054107b0b08
- .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
- CHANGES e72e27c68ae03ce123ed80a158977d4032e6468c
+  version 853380cd25a774e771a3d5b97fa1312acbced915
+ .gitignore 2bc4bcb7826ea9b5fb999444fe18f6785df1de72
+ CHANGES 9450cb72dbd48a0c6632d7861cd90a61928774dd
  LICENSE-MIT.md 0d07d7f09fd91a4c193acd95e1a1afa0c8e4f286
  MANIFEST.in 2f437c4d5cb4af779fc66924182ca82b9abaace7
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
@@ -70,6 +70,7 @@ merkletree
   merkletree-5.0.7.tar.gz 1f7a39fb0b2e4308b6fee60afd8eaf42b0ab6187
   merkletree-5.0.8.tar.gz 2a3b6f1f0216c131f68d058bd5dea0ffc45193f8
   merkletree-5.0.9.tar.gz e6bc3759ca78b42a4e5af8b8cdb84c0dfa296ba8
+  merkletree-5.1.0.tar.gz 5c50f9ca274ba7f0a286fe71a8a51c267e1c2143
  ghpDoc
   TODO 6fa7b1dec0b84b2560077a8544e2283eddfb7a2f
   css
@@ -88,21 +89,21 @@ merkletree
    xlattice.batik.jpg debe9220564203118dc53df0f5a48d77669fe367
   index.md 92f40dfd804d04cc45e6435496edc5031c045931
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
- merkleize 633254b84f54e6288beb4aa75f48bced8841bad6
+ merkleize f708504b1f816924dbe1fe1dcecdccad7d2ab499
  merkletree
-  __init__.py 1a4184037c777ebcf9a96df21215bc986af59b2f
+  __init__.py 04c4983d5e94cd387a0c9aa8df981204b7a35674
  setup.py 08fec15e45b60319a3a93c4aa497ebe880a40a29
  styleit d6c91aa1ff057277d090f083e85efc82d03aad68
  test.all 89a7b27ec1418f85bb5c884b1b6143c1c6dc6ae0
  testData
   dat.xlattice.org 08ac8f60ea44856e34c565b4d459a2d0547e5db9
   dat2.xlattice.org c653333f4518980911dd1592cb8986073ca98930
- testMerkleDoc.py b086d9738e0ca7ba37582df54ad3753039bc7a54
+ testMerkleDoc.py b81260f729ddf43f69f425f36257c65409868a57
  testMerkleDoc2.py 7c45f10781c6508a9b8fdd282912dac30a0d2a19
- testMerkleLeaf.py e8af0d095547f6cdbce4849fb1e448fc540c83fc
- testMerkleTree.py 51a992963fd523678e1cf7c9694f1aff16f92baa
+ testMerkleLeaf.py eb0d805987321cc9340f012d3d47f87f4419c709
+ testMerkleTree.py efb20b815ba1aeaabae6a32bb2f5771024dd7731
  testNewMakeExRE.py 6197ec9d5143fe0b778278638040455702d8e0fb
  testOldMakeExRE.py a26eaaacc4133d66729e804bba3cfd3fdd546d74
 # END CONTENT #
 
-dyDp0Qj9AoOZNPLJop+YPb7J24p9vNaFxvOfgHYj+qrrERVkSBihP+368OgTKlK8M0A1RP1JzL1GcdY/TetqRQF5a2Hq26lbLwyIBpQn8ddDk250CeUexWGqRhq6W1prUTeQm5bRG0YukE2qeND0G6+1zo+xh8IKw09k2DKvzCPO7xlr1KNWDGu4B2qkAWEKHkxOw6NgjovpBIOeXIYblossoHdMDrgHPyv642Dj42n5oQHwTtbkJVZOEEPBTJeHj3g1y0htf9aRCV2TJIkjQHArp8yrvlmuEpPUMw/NKt0aQ975694zupb0+BKjZKmKyZKOqEY/l6oEJRM6L4yWYQ==
+JQJwfrrgtWc2C+bTJUOeUxQi4hjvy9NlkFhGkipPMZFr4J+lOHnClIbztLO85+cDfecuygx6l54EVU/AUPvbwE4/ZskU75klrpK2QKxDQzaqtJKklUpCwKimwsZFy9T+qVsHVM7D4ywgUZ63d56/zjE6JGEJyjAWm51vIDtl6ec5M02T6psbw/HuUdnK3KrGuKd87LuadTmszSsfeYSJYiArIyVjErZ41gbBNbyfzbBt+8hrk1YKz5a9etRbLSzQ/nkpxfdqNoQnTboVuewrrAWaz+axChiNsbaNYu4SuHZZta1RrAwKuNaVJl6Xk4SeEzpUygnnH74xJCSwbCQdSA==

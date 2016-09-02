@@ -11,7 +11,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from merkletree import *
-from xlattice import util
+from xlattice import Q, util
 
 ONE = 1
 FOUR = 4
@@ -98,7 +98,7 @@ class TestMerkleDoc (unittest.TestCase):
         (dirName1, dirPath1, dirName2, dirPath2) = \
             self.makeTwoTestDirectories(ONE, FOUR)
 
-        doc1 = MerkleDoc.createFromFileSystem(dirPath1, True)  # usingSHA1
+        doc1 = MerkleDoc.createFromFileSystem(dirPath1, True)  # usingSHA
         tree1 = doc1.tree
         self.assertEqual(dirName1, tree1.name)
         self.assertTrue(doc1.bound)

@@ -10,7 +10,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from xlattice import SHA1_HEX_NONE, SHA2_HEX_NONE
+from xlattice import Q, SHA1_HEX_NONE, SHA2_HEX_NONE
 from merkletree import *
 
 ONE = 1
@@ -56,35 +56,37 @@ class TestMerkleTree (unittest.TestCase):
 
         return (dirName1, dirPath1, dirName2, dirPath2)
 
-    def verifyLeafSHA(self, node, pathToFile, usingSHA1):
+    def verifyLeafSHA(self, node, pathToFile, usingSHA):
         self.assertTrue(os.path.exists(pathToFile))
         with open(pathToFile, "rb") as f:
             data = f.read()
         self.assertFalse(data is None)
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
         else:
+            # FIX ME FIX ME FIX ME
             sha = hashlib.sha256()
         sha.update(data)
         hash = sha.digest()
         self.assertEqual(hash, node.binHash)
 
-    def verifyTreeSHA(self, node, pathToNode, usingSHA1):
+    def verifyTreeSHA(self, node, pathToNode, usingSHA):
         # we assume that the node is a MerkleTree
         if node.nodes is None:
             self.assertEqual(None, node.binHash)
         else:
             hashCount = 0
-            if usingSHA1:
+            if usingSHA == Q.USING_SHA1:
                 sha = hashlib.sha1()
             else:
+                # FIX ME FIX ME FIX ME
                 sha = hashlib.sha256()
             for n in node.nodes:
                 pathToFile = os.path.join(pathToNode, n.name)
                 if isinstance(n, MerkleLeaf):
-                    self.verifyLeafSHA(n, pathToFile, usingSHA1)
+                    self.verifyLeafSHA(n, pathToFile, usingSHA)
                 elif isinstance(n, MerkleTree):
-                    self.verifyTreeSHA(n, pathToFile, usingSHA1)
+                    self.verifyTreeSHA(n, pathToFile, usingSHA)
                 else:
                     self.fail("unknown node type!")
                 if (n.binHash is not None):
@@ -101,20 +103,21 @@ class TestMerkleTree (unittest.TestCase):
     # unit tests ----------------------------------------------------
 
     def testPathlessUnboundConstructor(self):
-        self.doTestPathlessUnboundConstructor(usingSHA1=True)
-        self.doTestPathlessUnboundConstructor(usingSHA1=False)
+        self.doTestPathlessUnboundConstructor(usingSHA=True)
+        self.doTestPathlessUnboundConstructor(usingSHA=False)
 
-    def doTestPathlessUnboundConstructor(self, usingSHA1):
+    def doTestPathlessUnboundConstructor(self, usingSHA):
         (dirName1, dirName2) = self.getTwoUniqueDirectoryNames()
 
-        tree1 = MerkleTree(dirName1, usingSHA1)
+        tree1 = MerkleTree(dirName1, usingSHA)
         self.assertEqual(dirName1, tree1.name)
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             self.assertEqual(SHA1_HEX_NONE, tree1.hexHash)
         else:
+            # FIX ME FIX ME FIX ME
             self.assertEqual(SHA2_HEX_NONE, tree1.hexHash)
 
-        tree2 = MerkleTree(dirName2, usingSHA1)
+        tree2 = MerkleTree(dirName2, usingSHA)
         self.assertEqual(dirName2, tree2.name)
 
         # these tests remain skimpy
@@ -139,26 +142,26 @@ class TestMerkleTree (unittest.TestCase):
         self.assertTrue(tree1.equal(tree1Rebuilt))
 
     def testBoundFlatDirs(self):
-        self.doTestBoundFlatDirs(usingSHA1=True)
-        self.doTestBoundFlatDirs(usingSHA1=False)
+        self.doTestBoundFlatDirs(usingSHA=True)
+        self.doTestBoundFlatDirs(usingSHA=False)
 
-    def doTestBoundFlatDirs(self, usingSHA1):
+    def doTestBoundFlatDirs(self, usingSHA):
         """test directory is single level, with four data files"""
         (dirName1, dirPath1, dirName2, dirPath2) = \
             self.makeTwoTestDirectories(ONE, FOUR)
-        tree1 = MerkleTree.createFromFileSystem(dirPath1, usingSHA1)
+        tree1 = MerkleTree.createFromFileSystem(dirPath1, usingSHA)
         self.assertEqual(dirName1, tree1.name)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
-        self.verifyTreeSHA(tree1, dirPath1, usingSHA1)
+        self.verifyTreeSHA(tree1, dirPath1, usingSHA)
 
-        tree2 = MerkleTree.createFromFileSystem(dirPath2, usingSHA1)
+        tree2 = MerkleTree.createFromFileSystem(dirPath2, usingSHA)
         self.assertEqual(dirName2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(FOUR, len(nodes2))
-        self.verifyTreeSHA(tree2, dirPath2, usingSHA1)
+        self.verifyTreeSHA(tree2, dirPath2, usingSHA)
 
         # XXX COMMENTED OUT FOR DEBUGGING XXX
         #self.assertTrue  ( tree1.equal(tree1) )
@@ -170,27 +173,27 @@ class TestMerkleTree (unittest.TestCase):
         self.assertTrue(tree1.equal(tree1Rebuilt))
 
     def testBoundNeedleDirs(self):
-        self.doTestBoundNeedleDirs(usingSHA1=True)
-        self.doTestBoundNeedleDirs(usingSHA1=False)
+        self.doTestBoundNeedleDirs(usingSHA=True)
+        self.doTestBoundNeedleDirs(usingSHA=False)
 
-    def doTestBoundNeedleDirs(self, usingSHA1):
+    def doTestBoundNeedleDirs(self, usingSHA):
         """test directories four deep with one data file at the lowest level"""
         (dirName1, dirPath1, dirName2, dirPath2) = \
             self.makeTwoTestDirectories(FOUR, ONE)
-        tree1 = MerkleTree.createFromFileSystem(dirPath1, usingSHA1)
+        tree1 = MerkleTree.createFromFileSystem(dirPath1, usingSHA)
 
         self.assertEqual(dirName1, tree1.name)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
-        self.verifyTreeSHA(tree1, dirPath1, usingSHA1)
+        self.verifyTreeSHA(tree1, dirPath1, usingSHA)
 
-        tree2 = MerkleTree.createFromFileSystem(dirPath2, usingSHA1)
+        tree2 = MerkleTree.createFromFileSystem(dirPath2, usingSHA)
         self.assertEqual(dirName2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(ONE, len(nodes2))
-        self.verifyTreeSHA(tree2, dirPath2, usingSHA1)
+        self.verifyTreeSHA(tree2, dirPath2, usingSHA)
 
         self.assertTrue(tree1.equal(tree1))
         self.assertFalse(tree1.equal(tree2))
