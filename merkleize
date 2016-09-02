@@ -10,6 +10,7 @@ import sys
 import time
 
 from argparse import ArgumentParser
+from xlattice import Q
 from xlattice.util import makeExRE, makeMatchRE
 
 from merkletree import *
@@ -44,7 +45,7 @@ def merkleizeDirectory(args):
     showTree = args.showTree
     showVersion = args.showVersion
     timestamp = args.timestamp
-    usingSHA1 = args.usingSHA1
+    usingSHA = args.usingSHA
     verbose = args.verbose
 
     (dirName, path) = (None, None)
@@ -63,7 +64,7 @@ def merkleizeDirectory(args):
 
     pathToDir = os.path.join(path, dirName)
     doc = MerkleDoc.createFromFileSystem(
-        pathToDir, usingSHA1, exclusions, matches)
+        pathToDir, usingSHA, exclusions, matches)
     tree = doc.tree
 
     s = []
@@ -95,7 +96,7 @@ def main():
     DESC = 'generate the merkletree corresponding to a directory'
     parser = ArgumentParser(description=DESC)
 
-    parser.add_argument('-1', '--usingSHA1', action='store_true',
+    parser.add_argument('-1', '--usingSHA', action='store_true',
                         help='use SHA1 hash instead of default SHA256')
     parser.add_argument('-d', '--outDir',
                         help='write serialized merkletree here')
@@ -167,7 +168,7 @@ def main():
         print('showTree         = ' + str(args.showTree))
         print('showVersion      = ' + str(args.showVersion))
         print('timestamp        = ' + str(args.timestamp))
-        print('usingSHA1        = ' + str(args.usingSHA1))
+        print('usingSHA        = ' + str(args.usingSHA))
         print('verbose          = ' + str(args.verbose))
 
         if args.exclude and len(args.exclude) > 0:

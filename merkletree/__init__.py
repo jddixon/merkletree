@@ -6,7 +6,7 @@ import os
 import re
 import sys
 from xlattice import (SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_HEX_NONE, SHA2_HEX_NONE,
-                      util)
+                      Q, util)
 from xlattice.crypto import SP   # for getSpaces()
 from xlattice.u import fileSHA1Bin, fileSHA2Bin
 from stat import *
@@ -16,8 +16,8 @@ __all__ = ['__version__', '__version_date__',
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
            ]
 
-__version__ = '5.0.15'
-__version_date__ = '2016-08-24'
+__version__ = '5.1.0'
+__version_date__ = '2016-09-02'
 
 # -------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ class MerkleNode(object):
 
     #__slots__ = [ A PERFORMANCE ENHANCER ]
 
-    def __init__(self, name, isLeaf=False, usingSHA1=False):
+    def __init__(self, name, isLeaf=False, usingSHA=False):
         self._binHash = None
         if name is None:
             raise RuntimeError("MerkleNode: null MerkleNode name")
@@ -39,14 +39,15 @@ class MerkleNode(object):
             raise RuntimeError("MerkleNode: null or empty name")
 
         self._isLeaf = isLeaf
-        self._usingSHA1 = usingSHA1
+        self._usingSHA = usingSHA
 
     @property
     def hexHash(self):
         if self._binHash is None:
-            if self._usingSHA1:
+            if self._usingSHA == Q.USING_SHA1:
                 return SHA1_HEX_NONE
             else:
+                # FIX ME FIX ME FIX ME
                 return SHA2_HEX_NONE
         else:
             return str(binascii.b2a_hex(self._binHash), 'ascii')
@@ -91,7 +92,7 @@ class MerkleNode(object):
     def __str__(self):
         raise RuntimeError('subclass must implement')
 
-    def usingSHA1(self): return self._usingSHA1
+    def usingSHA(self): return self._usingSHA
 
 # -------------------------------------------------------------------
 
@@ -102,7 +103,7 @@ class MerkleDoc(MerkleNode):
     """
 
     __slots__ = ['_bound', '_exRE', '_matchRE', '_path',
-                 '_tree', '_usingSHA1', ]
+                 '_tree', '_usingSHA', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     # THIS PATTERN WON"T CATCH SOME ERRORS; eg it permits '///' in paths
@@ -112,7 +113,7 @@ class MerkleDoc(MerkleNode):
                                  re.IGNORECASE)
 
     # XXX MUST ADD matchRE and exRE and test on their values at this level
-    def __init__(self, path, usingSHA1=False, binding=False,
+    def __init__(self, path, usingSHA=False, binding=False,
                  tree=None,
                  exRE=None,    # exclusions, which are Regular Expressions
                  matchRE=None):   # matches, also Regular Expressions
@@ -127,7 +128,7 @@ class MerkleDoc(MerkleNode):
             raise RuntimeError('null MerkleTree and not binding')
         else:
             raise RuntimeError("MerkleDoc binding not yet implemented")
-        super().__init__(name, isLeaf=False, usingSHA1=usingSHA1)
+        super().__init__(name, isLeaf=False, usingSHA=usingSHA)
 
         path = path.strip()
         if len(path) == 0:
@@ -138,14 +139,15 @@ class MerkleDoc(MerkleNode):
         self._tree = tree
         if tree:
             # DEBUG
-            #print("MerkleDoc.__init__: usingSHA1 = %s" % str(usingSHA1))
+            #print("MerkleDoc.__init__: usingSHA = %s" % str(usingSHA))
             # END
-            if usingSHA1:
+            if usingSHA == Q.USING_SHA1:
                 sha1 = hashlib.sha1()
                 sha1.update(bytes(tree.binHash))
                 sha1.update(path.encode('utf-8'))
                 self._binHash = bytes(sha1.digest())      # a binary value
             else:
+                # FIX ME FIX ME FIX ME
                 sha256 = hashlib.sha256()
                 sha256.update(bytes(tree.binHash))
                 sha256.update(path.encode('utf-8'))
@@ -200,12 +202,12 @@ class MerkleDoc(MerkleNode):
         return self._bound
 
     @property
-    def usingSHA1(self):
-        return self._usingSHA1
+    def usingSHA(self):
+        return self._usingSHA
 
     # QUASI-CONSTRUCTORS ############################################
     @staticmethod
-    def createFromFileSystem(pathToDir, usingSHA1=False,
+    def createFromFileSystem(pathToDir, usingSHA=False,
                              exclusions=None, matches=None):
         """
         Create a MerkleDoc based on the information in the directory
@@ -227,10 +229,10 @@ class MerkleDoc(MerkleNode):
         matchRE = None
         if matches:
             matchRE = util.makeMatchRE(matches)
-        tree = MerkleTree.createFromFileSystem(pathToDir, usingSHA1,
+        tree = MerkleTree.createFromFileSystem(pathToDir, usingSHA,
                                                exRE, matchRE)
         # creates the hash
-        doc = MerkleDoc(path, usingSHA1, False, tree, exRE, matchRE)
+        doc = MerkleDoc(path, usingSHA, False, tree, exRE, matchRE)
         doc._bound = True
         return doc
 
@@ -258,9 +260,9 @@ class MerkleDoc(MerkleNode):
             MerkleDoc.parseFirstLine(s[0].rstrip())
         lenHash = len(docHash)
         if lenHash == SHA1_BIN_LEN:
-            usingSHA1 = True
+            usingSHA = True
         elif lenHash == SHA2_BIN_LEN:
-            usingSHA1 = False
+            usingSHA = False
         else:
             raise MerkleParseError('impossible hash length %d' % lenHash)
 
@@ -268,7 +270,7 @@ class MerkleDoc(MerkleNode):
         # print("MerkleDoc.createFromStringArray:")
         #print("    docHash = %s" % str(binascii.b2a_hex(docHash),'ascii'))
         #print("    docPath = %s" % docPath)
-        #print("    usingSHA1=%s" % str(usingSHA1))
+        #print("    usingSHA=%s" % str(usingSHA))
         # END
 
         tree = MerkleTree.createFromStringArray(s[1:])
@@ -276,7 +278,7 @@ class MerkleDoc(MerkleNode):
         # def __init__ (self, path, binding = False, tree = None,
         #    exRE    = None,    # exclusions, which are Regular Expressions
         #    matchRE = None):   # matches, also Regular Expressions
-        doc = MerkleDoc(docPath, usingSHA1=usingSHA1, tree=tree)
+        doc = MerkleDoc(docPath, usingSHA=usingSHA, tree=tree)
         return doc
 
     # CLASS METHODS #################################################
@@ -370,10 +372,10 @@ class MerkleDoc(MerkleNode):
 
 class MerkleLeaf(MerkleNode):
 
-    __slots__ = ['_name', '_usingSHA1', ]
+    __slots__ = ['_name', '_usingSHA', ]
 
-    def __init__(self, name, usingSHA1=False, hash=None):
-        super().__init__(name, isLeaf=True, usingSHA1=usingSHA1)
+    def __init__(self, name, usingSHA=False, hash=None):
+        super().__init__(name, isLeaf=True, usingSHA=usingSHA)
 
         # JUNK
         if name is None:
@@ -409,7 +411,7 @@ class MerkleLeaf(MerkleNode):
     # OTHER METHODS AND PROPERTIES ##################################
 
     @staticmethod
-    def createFromFileSystem(pathToFile, name, usingSHA1=False):
+    def createFromFileSystem(pathToFile, name, usingSHA=False):
         """
         Returns a MerkleLeaf.  The name is part of pathToFile, but is
         passed to simplify the code.
@@ -417,17 +419,19 @@ class MerkleLeaf(MerkleNode):
         if not os.path.exists(pathToFile):
             print(("INTERNAL ERROR: file does not exist: " + pathToFile))
         # XXX we convert from binary to hex and then right back to binary !!
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             hash = fileSHA1Bin(pathToFile)
         else:
+            # FIX ME FIX ME FIX ME
             hash = fileSHA2Bin(pathToFile)
-        return MerkleLeaf(name, usingSHA1, hash)
+        return MerkleLeaf(name, usingSHA, hash)
 
     def toString(self, indent=0):
         if self._binHash is None:
-            if self._usingSHA1:
+            if self._usingSHA == Q.USING_SHA1:
                 h = SHA1_HEX_NONE
             else:
+                # FIX ME FIX ME FIX ME
                 h = SHA2_HEX_NONE
         else:
             h = self.hexHash
@@ -453,12 +457,12 @@ class MerkleLeaf(MerkleNode):
     #     """
     #     name = p[0];    hash = p[1]
     #     if len(hash) == SHA1_BIN_LEN:
-    #         usingSHA1 = True
+    #         usingSHA = True
     #     elif len(hash) == SHA2_BIN_LEN:
-    #         usingSHA1 = False
+    #         usingSHA = False
     #     else:
     #         raise RuntimeError('invalid SHA hash len')
-    #     return MerkleLeaf(name, hash, usingSHA1)
+    #     return MerkleLeaf(name, hash, usingSHA)
 
 # -------------------------------------------------------------------
 
@@ -466,7 +470,7 @@ class MerkleLeaf(MerkleNode):
 class MerkleTree(MerkleNode):
 
     __slots__ = ['_bound', '_name', '_exRE', '_binHash', '_matchRE',
-                 '_nodes', '_usingSHA1', ]
+                 '_nodes', '_usingSHA', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     FIRST_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.:]+/)$',
@@ -481,11 +485,11 @@ class MerkleTree(MerkleNode):
     #################################################################
     # exRE and matchRE must have been validated by the calling code
     #################################################################
-    def __init__(self, name, usingSHA1=False,
+    def __init__(self, name, usingSHA=False,
                  exRE=None,     # exclusions Regular Expression
                  matchRE=None):    # matches Regular Expression
 
-        super().__init__(name, isLeaf=False, usingSHA1=usingSHA1)
+        super().__init__(name, isLeaf=False, usingSHA=usingSHA)
 
         self._exRE = exRE
         self._matchRE = matchRE
@@ -506,7 +510,7 @@ class MerkleTree(MerkleNode):
             return False
         if self.hexHash != other.hexHash:
             return False
-        if self.usingSHA1 != other.usingSHA1:
+        if self.usingSHA != other.usingSHA:
             return False
 
         myNodes = self.nodes
@@ -527,7 +531,7 @@ class MerkleTree(MerkleNode):
         return self.toString('')
 
     @property
-    def usingSHA1(self): return self._usingSHA1
+    def usingSHA(self): return self._usingSHA
 
     #################################################################
     # METHODS LIFTED FROM bindmgr/bindlib/MerkleTree.py
@@ -584,13 +588,13 @@ class MerkleTree(MerkleNode):
             MerkleTree.parseFirstLine(s[0].rstrip())
         lenHash = len(treeHash)
         if lenHash == SHA1_BIN_LEN:           # that many bytes
-            usingSHA1 = True
+            usingSHA = True
         elif lenHash == SHA2_BIN_LEN:
-            usingSHA1 = False
+            usingSHA = False
         else:
             raise MerkleParseError("impossible hash length %d" % lenHash)
 
-        rootTree = MerkleTree(dirName, usingSHA1)    # an empty tree
+        rootTree = MerkleTree(dirName, usingSHA)    # an empty tree
         rootTree.binHash = treeHash
 
         if indent != 0:
@@ -620,7 +624,7 @@ class MerkleTree(MerkleNode):
 
             if isDir:
                 # create and set attributes of new node
-                newTree = MerkleTree(name, usingSHA1)  # , curTree)
+                newTree = MerkleTree(name, usingSHA)  # , curTree)
                 newTree.binHash = hash
                 # add the new node into the existing tree
                 curTree.addNode(newTree)
@@ -629,7 +633,7 @@ class MerkleTree(MerkleNode):
                 curTree = newTree
             else:
                 # create and set attributes of new node
-                newNode = MerkleLeaf(name, usingSHA1, hash)
+                newNode = MerkleLeaf(name, usingSHA, hash)
                 # add the new node into the existing tree
                 curTree.addNode(newNode)
             n += 1
@@ -657,14 +661,14 @@ class MerkleTree(MerkleNode):
             m = MerkleTree.FIRST_LINE_RE_1.match(line)
             if m is None:
                 m = MerkleTree.FIRST_LINE_RE_2.match(line)
-                usingSHA1 = False
+                usingSHA = False
             else:
-                usingSHA1 = True
+                usingSHA = True
             if m is None:
                 raise RuntimeError(
                     "line '%s' does not match expected pattern" % line)
             dirName = m.group(3)
-            tree = MerkleTree(dirName, usingSHA1)
+            tree = MerkleTree(dirName, usingSHA)
 #           if m.group(3) != 'bind':
 #               raise RuntimeError(
 #                       "expected 'bind' in first line, found %s" % m.group(3))
@@ -674,9 +678,10 @@ class MerkleTree(MerkleNode):
                 line = line.rstrip()
                 if line == '':
                     continue
-                if usingSHA1:
+                if usingSHA == Q.USING_SHA1:
                     m = re.match(MerkleTree.OTHER_LINE_RE_1, line)
                 else:
+                    # FIX ME FIX ME FIX ME
                     m = re.match(MerkleTree.OTHER_LINE_RE_2, line)
 
                 if m is None:
@@ -689,7 +694,7 @@ class MerkleTree(MerkleNode):
         return tree
 
     @staticmethod
-    def createFromFileSystem(pathToDir, usingSHA1=False,
+    def createFromFileSystem(pathToDir, usingSHA=False,
                              exRE=None, matchRE=None):
         """
         Create a MerkleTree based on the information in the directory
@@ -705,16 +710,17 @@ class MerkleTree(MerkleNode):
         if path == '':
             raise RuntimeError("cannot parse inclusive path " + pathToDir)
 
-        tree = MerkleTree(name, usingSHA1, exRE, matchRE)
+        tree = MerkleTree(name, usingSHA, exRE, matchRE)
 
         # Create data structures for constituent files and subdirectories
         # These are sorted by the bare name
         # empty if you just append .sort()
         files = sorted(os.listdir(pathToDir))
         tree._binHash = None
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             shaX = hashlib.sha1()
         else:
+            # FIX ME FIX ME FIX ME
             shaX = hashlib.sha256()
         if files:
             shaXCount = 0
@@ -731,12 +737,12 @@ class MerkleTree(MerkleNode):
                 # os.path.isdir(path) follows symbolic links
                 if S_ISDIR(mode):
                     node = MerkleTree.createFromFileSystem(
-                        pathToFile, usingSHA1, exRE, matchRE)
+                        pathToFile, usingSHA, exRE, matchRE)
                 # S_ISLNK(mode) is true if symbolic link
                 # isfile(path) follows symbolic links
                 elif os.path.isfile(pathToFile):        # S_ISREG(mode):
                     node = MerkleLeaf.createFromFileSystem(
-                        pathToFile, file, usingSHA1)
+                        pathToFile, file, usingSHA)
                 # otherwise, just ignore it ;-)
 
                 if node:
@@ -800,9 +806,10 @@ class MerkleTree(MerkleNode):
         s = []                             # a list of strings
         spaces = SP.getSpaces(indent)
         if self._binHash is None:
-            if self._usingSHA1:
+            if self._usingSHA == Q.USING_SHA1:
                 top = "%s%s %s/\n" % (spaces, SHA1_HEX_NONE, self.name)
             else:
+                # FIX ME FIX ME FIX ME
                 top = "%s%s %s/\n" % (spaces, SHA2_HEX_NONE, self.name)
         else:
             top = "%s%s %s/\n" % (spaces, self.hexHash, self.name)
@@ -827,9 +834,10 @@ class MerkleTree(MerkleNode):
         s = []                             # a list of strings
         spaces = SP.getSpaces(indent)
         if self._binHash is None:
-            if self._usingSHA1:
+            if self._usingSHA == Q.USING_SHA1:
                 top = "%s%s %s/\n" % (spaces, SHA1_HEX_NONE, self.name)
             else:
+                # FIX ME FIX ME FIX ME
                 top = "%s%s %s/\n" % (spaces, SHA2_HEX_NONE, self.name)
         else:
             top = "%s%s %s/\n" % (spaces, self.hexHash, self.name)

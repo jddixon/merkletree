@@ -6,6 +6,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
+from xlattice import Q
 from merkletree import *
 
 # This is the SHA1 test
@@ -22,10 +23,11 @@ class TestMerkleLeaf (unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def doTestSimpleConstructor(self, usingSHA1):
-        if usingSHA1:
+    def doTestSimpleConstructor(self, usingSHA):
+        if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
         else:
+            # FIX ME FIX ME FIX ME
             sha = hashlib.sha256()
 
         fileName = self.rng.nextFileName(8)
@@ -33,7 +35,7 @@ class TestMerkleLeaf (unittest.TestCase):
         sha.update(n)
         hash0 = sha.digest()
 
-        leaf0 = MerkleLeaf(fileName, usingSHA1, hash0)
+        leaf0 = MerkleLeaf(fileName, usingSHA, hash0)
         self.assertEqual(fileName, leaf0.name)
         self.assertEqual(hash0, leaf0.binHash)
 
@@ -44,7 +46,7 @@ class TestMerkleLeaf (unittest.TestCase):
         self.rng.nextBytes(n)
         sha.update(n)
         hash1 = sha.digest()
-        leaf1 = MerkleLeaf(fileName2, usingSHA1, hash1)
+        leaf1 = MerkleLeaf(fileName2, usingSHA, hash1)
         self.assertEqual(fileName2, leaf1.name)
         self.assertEqual(hash1, leaf1.binHash)
 
@@ -61,8 +63,8 @@ class TestMerkleLeaf (unittest.TestCase):
         #self.assertEqual(leaf1bis, leaf1)
 
     def testSimplestConstructor(self):
-        self.doTestSimpleConstructor(usingSHA1=True)
-        self.doTestSimpleConstructor(usingSHA1=False)
+        self.doTestSimpleConstructor(usingSHA=True)
+        self.doTestSimpleConstructor(usingSHA=False)
 
 if __name__ == '__main__':
     unittest.main()
