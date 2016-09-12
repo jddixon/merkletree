@@ -6,7 +6,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from xlattice import Q
+from xlattice import Q, checkUsingSHA
 from merkletree import *
 
 # This is the SHA1 test
@@ -24,11 +24,13 @@ class TestMerkleLeaf (unittest.TestCase):
 
     # actual unit tests #############################################
     def doTestSimpleConstructor(self, usingSHA):
+        checkUsingSHA(usingSHA)
         if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
-        else:
-            # FIX ME FIX ME FIX ME
+        elif usingSHA == Q.USING_SHA2:
             sha = hashlib.sha256()
+        elif usingSHA == Q.USING_SHA3:
+            sha = hashlib.sha3_256()
 
         fileName = self.rng.nextFileName(8)
         n = self.rng.someBytes(8)
@@ -63,8 +65,8 @@ class TestMerkleLeaf (unittest.TestCase):
         #self.assertEqual(leaf1bis, leaf1)
 
     def testSimplestConstructor(self):
-        self.doTestSimpleConstructor(usingSHA=True)
-        self.doTestSimpleConstructor(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestSimpleConstructor(usingSHA=using)
 
 if __name__ == '__main__':
     unittest.main()
