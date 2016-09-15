@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.1.2
+    2016-09-15
+        * add sha3 support                                          SLOC 2254
 v5.1.1
     2016-09-12
         * fixed FIX_MEs; add sha3 support                           SLOC 2253
@@ -231,6 +234,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 
