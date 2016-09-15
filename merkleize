@@ -10,7 +10,8 @@ import sys
 import time
 
 from argparse import ArgumentParser
-from xlattice import Q
+from xlattice import (Q, checkUsingSHA,
+                      parseUsingSHA, fixUsingSHA, showUsingSHA, checkUPath)
 from xlattice.util import makeExRE, makeMatchRE
 
 from merkletree import *
@@ -96,8 +97,6 @@ def main():
     DESC = 'generate the merkletree corresponding to a directory'
     parser = ArgumentParser(description=DESC)
 
-    parser.add_argument('-1', '--usingSHA', action='store_true',
-                        help='use SHA1 hash instead of default SHA256')
     parser.add_argument('-d', '--outDir',
                         help='write serialized merkletree here')
     parser.add_argument('-I', '--indent', default=1, type=int,
@@ -114,18 +113,17 @@ def main():
                         help='include only files with matching names')
     parser.add_argument('-t', '--showTimestamp', action='store_true',
                         help='output UTC time')
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='be chatty')
     parser.add_argument('-V', '--showVersion', action='store_true',
                         help='output the version number of this program')
     parser.add_argument('-x', '--hashOutput', action='store_true',
                         help='output the top level hash')
     parser.add_argument('-X', '--exclude', action='append',
                         help='ignore files matching this pattern')
-
+    parseUsingSHA(parser)
     args = parser.parse_args()
 
     # fixups --------------------------------------------------------
+    fixUsingSHA(args)
     if args.indent < 1:
         args.indent = 1
     elif args.indent > 8:
@@ -137,6 +135,7 @@ def main():
         args.outPath = None
 
     # sanity checks -------------------------------------------------
+    checkUsingSHA(args.usingSHA)
     if not args.justShow:
         if args.inDir is None or len(args.inDir) == 0:
             print("null or empty input directory name")
@@ -168,8 +167,7 @@ def main():
         print('showTree         = ' + str(args.showTree))
         print('showVersion      = ' + str(args.showVersion))
         print('timestamp        = ' + str(args.timestamp))
-        print('usingSHA        = ' + str(args.usingSHA))
-        print('verbose          = ' + str(args.verbose))
+        showUsingSHA(args)
 
         if args.exclude and len(args.exclude) > 0:
             print("exclude:")
