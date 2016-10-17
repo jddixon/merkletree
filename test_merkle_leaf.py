@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 # testMerkleLeaf.py
-import hashlib
 import time
 import unittest
+import hashlib
+
+import sha3     # monkey-patches hashlib
 
 from rnglib import SimpleRNG
 from xlattice import Q, checkUsingSHA

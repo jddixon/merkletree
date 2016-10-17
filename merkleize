@@ -14,7 +14,7 @@ from xlattice import (Q, checkUsingSHA,
                       parseUsingSHA, fixUsingSHA, showUsingSHA, checkUPath)
 from xlattice.util import makeExRE, makeMatchRE
 
-from merkletree import *
+from merkletree import (__version__, __version_date__)
 
 # In this preliminary version of the code we walk through a directory
 # in canonical order (ASCII collating sequence) building an SHA1 hash
