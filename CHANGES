@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.1.3
+    2016-10-17
+        * add pylint, coverage; rename files per PEP 8              SLOC 2384
 v5.1.2
     2016-09-15
         * add sha3 support                                          SLOC 2254
@@ -234,6 +237,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 

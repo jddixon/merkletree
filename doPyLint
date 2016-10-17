@@ -1,0 +1,4 @@
+pylint setup.py merkletree      \
+    merkleize                 \
+    test*.py
+

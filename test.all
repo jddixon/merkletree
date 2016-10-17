@@ -4,12 +4,12 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/merkletree
   
-  ./testMerkleDoc.py
-  ./testMerkleDoc2.py
-  ./testMerkleLeaf.py
-  ./testMerkleTree.py
-  ./testNewMakeExRE.py
-  ./testOldMakeExRE.py
+  ./test_merkle_doc.py
+  ./test_merkle_doc2.py
+  ./test_merkle_leaf.py
+  ./test_merkle_tree.py
+  ./test_new_make_exre.py
+  ./test_old_make_exre.py
   
 else
   echo "DEV_BASE is not defined"
