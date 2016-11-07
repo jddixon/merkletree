@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
-
 # testMakeExRE.py
 
-import hashlib
-import os
-import re
-import shutil
+""" Test the make_exre() function. """
+
 import time
 import unittest
 
 from rnglib import SimpleRNG
-from xlattice.util import makeExRE
+from xlattice.util import make_ex_re
 
 
-class TestMakeExRE (unittest.TestCase):
+class TestMakeExRE(unittest.TestCase):
+    """ Test the make_exre() function. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -21,33 +19,39 @@ class TestMakeExRE (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def doTestForExpectedExclusions(self, exRE):
-        self.assertIsNotNone(exRE.match('junkEverywhere')
-                             )   # begins with 'junk'
-        self.assertIsNotNone(exRE.match('.merkle'))          # a file
-        self.assertIsNotNone(exRE.match('.svn'))             # the directory
-        self.assertIsNotNone(exRE.match('.foo.swp'))         # vi backup file
+    def do_test_for_expected_exclusions(self, ex_re):
+        """ Verify that expected exclusions work for specific pattern. """
+        self.assertIsNotNone(ex_re.match('junkEverywhere')
+                             )  # begins with 'junk'
+        self.assertIsNotNone(ex_re.match('.merkle'))          # a file
+        self.assertIsNotNone(ex_re.match('.svn'))             # the directory
+        self.assertIsNotNone(ex_re.match('.foo.swp'))         # vi backup file
 
-    def doTestForExpectedMatches(self, matchRE, names):
+    def do_test_for_expected_matches(self, match_re, names):
+        """ Verify that expected matches work for specific pattern and names. """
         for name in names:
-            self.assertIsNotNone(matchRE.match(name))
+            self.assertIsNotNone(match_re.match(name))
 
-    def doTestForExpectedMatchFailures(self, matchRE, names):
+    def do_test_for_expected_match_failures(self, match_re, names):
+        """
+        Verify that expected match failures occur for specific pattern
+        and listed names.
+        """
         for name in names:
-            m = matchRE.match(name)
-            if m:
+            match_ = match_re.match(name)
+            if match_:
                 self.fail(("UNEXPECTED MATCH ON '%s'" % name))
 
-    def testNewMakeExRE(self):
+    def test_new_make_ex_re(self):
         """
         Test utility for making excluded file name regexes.
         """
 
         # test the null pattern, which should not match anything
-        exRE = makeExRE(None)
-        self.assertIsNotNone(exRE)
-        self.assertIsNone(exRE.match('bar'))
-        self.assertIsNone(exRE.match('foo'))
+        ex_re = make_ex_re(None)
+        self.assertIsNotNone(ex_re)
+        self.assertIsNone(ex_re.match('bar'))
+        self.assertIsNone(ex_re.match('foo'))
 
         exc = []
         exc.append('foo*')
@@ -56,48 +60,49 @@ class TestMakeExRE (unittest.TestCase):
         exc.append('.*.swp')
         exc.append('.merkle')
         exc.append('.svn')
-        exRE = makeExRE(exc)
-        self.doTestForExpectedExclusions(exRE)
+        ex_re = make_ex_re(exc)
+        self.do_test_for_expected_exclusions(ex_re)
 
-        self.assertIsNotNone(exRE.match('foobarf'))
-        self.assertIsNone(exRE.match(' foobarf'))
+        self.assertIsNotNone(ex_re.match('foobarf'))
+        self.assertIsNone(ex_re.match(' foobarf'))
 
-        self.assertIsNotNone(exRE.match('ohMybar'))
+        self.assertIsNotNone(ex_re.match('ohMybar'))
 
-        self.assertIsNone(exRE.match('ohMybarf'))
-        self.assertIsNotNone(exRE.match('junky'))
-        self.assertIsNone(exRE.match(' junk'))      # not at beginning
+        self.assertIsNone(ex_re.match('ohMybarf'))
+        self.assertIsNotNone(ex_re.match('junky'))
+        self.assertIsNone(ex_re.match(' junk'))      # not at beginning
 
-    def testNewMakeMatchRE(self):
+    def test_new_make_match_re(self):
         """
         Test utility for making matched file name regexes.
         """
-        matchRE = makeExRE(None)
-        self.assertIsNotNone(matchRE)
+        match_re = make_ex_re(None)
+        self.assertIsNotNone(match_re)
 
         matches = []
         matches.append('foo*')
         matches.append('*bar')
         matches.append('junk*')
-        matchRE = makeExRE(matches)
-        self.doTestForExpectedMatches(matchRE,
-                                      ['foo', 'foolish', 'roobar', 'junky'])
-        self.doTestForExpectedMatchFailures(matchRE,
-                                            [' foo', 'roobarf', 'myjunk'])
+        match_re = make_ex_re(matches)
+        self.do_test_for_expected_matches(
+            match_re, ['foo', 'foolish', 'roobar', 'junky'])
+        self.do_test_for_expected_match_failures(
+            match_re, [' foo', 'roobarf', 'myjunk'])
 
         matches = ['*.tgz']
-        matchRE = makeExRE(matches)
-        self.doTestForExpectedMatches(matchRE,
-                                      ['junk.tgz', 'notSoFoolish.tgz'])
-        self.doTestForExpectedMatchFailures(matchRE,
-                                            ['junk.tar.gz', 'foolish.tar.gz'])
+        match_re = make_ex_re(matches)
+        self.do_test_for_expected_matches(
+            match_re, ['junk.tgz', 'notSoFoolish.tgz'])
+        self.do_test_for_expected_match_failures(
+            match_re, ['junk.tar.gz', 'foolish.tar.gz'])
 
         matches = ['*.tgz', '*.tar.gz']
-        matchRE = makeExRE(matches)
-        self.doTestForExpectedMatches(matchRE,
-                                      ['junk.tgz', 'notSoFoolish.tgz',
-                                       'junk.tar.gz', 'ohHello.tar.gz'])
-        self.doTestForExpectedMatchFailures(matchRE,
-                                            ['junk.gz', 'foolish.tar'])
+        match_re = make_ex_re(matches)
+        self.do_test_for_expected_matches(
+            match_re, ['junk.tgz', 'notSoFoolish.tgz',
+                       'junk.tar.gz', 'ohHello.tar.gz'])
+        self.do_test_for_expected_match_failures(
+            match_re, ['junk.gz', 'foolish.tar'])
+
 if __name__ == '__main__':
     unittest.main()

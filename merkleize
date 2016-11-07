@@ -1,87 +1,87 @@
 #!/usr/bin/python3
-
 # merkleize, part of merkletree
 
-import base64
-import binascii
-import hashlib
+"""
+Walk a directory tree collecting relevant file names and hashes.
+
+In this preliminary version of the code we walk through a directory
+in canonical order (ASCII collating sequence) building an SHA1 hash
+of the files in the directory.  If a file name begins with DOT ('.')
+it is ignored.  If it is an ordinary file we take its content hash
+and add that to the hash we are building (we might want to also add
+a line to .merkle containing the content hash and the file name).
+If the file is a subdirectory we recurse to get its hash (and might
+add a name+hash line to .merkle for that as well).  When there are
+no more files we will write the hash of hashes for files in the
+directory followed by a single dot, representing the file name.
+"""
+
 import os
 import sys
 import time
 
 from argparse import ArgumentParser
-from xlattice import (Q, checkUsingSHA,
-                      parseUsingSHA, fixUsingSHA, showUsingSHA, checkUPath)
-from xlattice.util import makeExRE, makeMatchRE
+from xlattice import (check_using_sha,
+                      parseUsingSHA, fix_using_sha, show_using_sha)
+from xlattice.util import make_ex_re, make_match_re
 
-from merkletree import (__version__, __version_date__)
-
-# In this preliminary version of the code we walk through a directory
-# in canonical order (ASCII collating sequence) building an SHA1 hash
-# of the files in the directory.  If a file name begins with DOT ('.')
-# it is ignored.  If it is an ordinary file we take its content hash
-# and add that to the hash we are building (we might want to also add
-# a line to .merkle containing the content hash and the file name).
-# If the file is a subdirectory we recurse to get its hash (and might
-# add a name+hash line to .merkle for that as well).  When there are
-# no more files we will write the hash of hashes for files in the
-# directory followed by a single dot, representing the file name.
+from merkletree import (__version__, __version_date__, MerkleDoc)
 
 
-def merkleizeDirectory(args):
+def merkleize_directory(args):
 
     # get and check args; XXX should throw exceptions if problems
     # are encountered
 
     exclusions = args.exclude
-    exRE = makeExRE(exclusions)
-    hashOutput = args.hashOutput
+    ex_re = make_ex_re(exclusions)
+    hash_output = args.hash_output
     indent = args.indent
-    inDir = args.inDir
-    justShow = args.justShow
-    matches = args.matchPat
-    matchRE = makeMatchRE(matches)
-    outPath = args.outPath
-    showTimestamp = args.showTimestamp
-    showTree = args.showTree
-    showVersion = args.showVersion
+    in_dir = args.in_dir
+    just_show = args.just_show
+    matches = args.match_pat
+    match_re = make_match_re(matches)
+    out_path = args.out_path
+    show_timestamp = args.show_timestamp
+    show_tree = args.show_tree
+    show_version = args.show_version
     timestamp = args.timestamp
-    usingSHA = args.usingSHA
+    using_sha = args.using_sha
     verbose = args.verbose
 
-    (dirName, path) = (None, None)
+    (dir_name, path) = (None, None)
 
-    if not justShow and not inDir:
-        raise RuntimeError("no inDir specified")
-    elif inDir and inDir.find('/') != -1:
-        (path, foo, dirName) = inDir.rpartition('/')
+    if not just_show and not in_dir:
+        raise RuntimeError("no in_dir specified")
+    elif in_dir and in_dir.find('/') != -1:
+        (path, _, dir_name) = in_dir.rpartition('/')
     else:
         path = '.'
-        dirName = inDir
+        dir_name = in_dir
 
     if verbose:
-        print("dirName:         %s" % dirName)
+        print("dirName:         %s" % dir_name)
         print("path:            %s" % path)
 
-    pathToDir = os.path.join(path, dirName)
-    doc = MerkleDoc.createFromFileSystem(
-        pathToDir, usingSHA, exclusions, matches)
+    path_to_dir = os.path.join(path, dir_name)
+    doc = MerkleDoc.create_from_file_system(
+        path_to_dir, using_sha, exclusions, matches)
     tree = doc.tree
 
-    s = []
-    if showTree:
-        s.append(tree.toString(0))       # no top-level indent
-    if hashOutput:
-        s.append("%s\n" % tree.hexHash)                      # ditto
+    string = []
+    if show_tree:
+        string.append(tree.to_string(0))       # no top-level indent
+    if hash_output:
+        string.append("%s\n" % tree.hex_hash)                      # ditto
 
-    output = ''.join(s)
-    if outPath:
-        (outDir, junk, outFile) = outPath.rpartition('/')
-        print("OUTPATH: %s => %s %s" % (outPath, outDir, outFile))
-        if not os.path.exists(outDir):
-            os.makedirs(outDir)         # possile uncaught exception
-        with open(outPath, "w") as f:
-            f.write(output)
+    output = ''.join(string)
+    if out_path:
+        (out_dir, _, out_file) = out_path.rpartition('/')
+        print("OUTPATH: %s => %s %s" % (out_path, out_dir, out_file))
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)         # possile uncaught exception
+        with open(out_path, "w") as file:
+            file.write(output)
     else:
         sys.stdout.write(output)
 
@@ -94,28 +94,28 @@ def main():
 
     # parse the command line ----------------------------------------
 
-    DESC = 'generate the merkletree corresponding to a directory'
-    parser = ArgumentParser(description=DESC)
+    desc = 'generate the merkletree corresponding to a directory'
+    parser = ArgumentParser(description=desc)
 
-    parser.add_argument('-d', '--outDir',
+    parser.add_argument('-d', '--out_dir',
                         help='write serialized merkletree here')
     parser.add_argument('-I', '--indent', default=1, type=int,
                         help='number of spaces to indent list (default=1)')
-    parser.add_argument('-i', '--inDir',
+    parser.add_argument('-i', '--in_dir',
                         help='write serialized merkletree here')
-    parser.add_argument('-j', '--justShow', action='store_true',
+    parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
-    parser.add_argument('-m', '--showTree', action='store_true',
+    parser.add_argument('-m', '--show_tree', action='store_true',
                         help='output the merkletree hash+filename lines')
-    parser.add_argument('-o', '--outFile', default=timestamp,
+    parser.add_argument('-o', '--out_file', default=timestamp,
                         help='write output to this file (default = timestamp)')
-    parser.add_argument('-P', '--matchPat', action='append',
+    parser.add_argument('-P', '--match_pat', action='append',
                         help='include only files with matching names')
     parser.add_argument('-t', '--showTimestamp', action='store_true',
                         help='output UTC time')
-    parser.add_argument('-V', '--showVersion', action='store_true',
+    parser.add_argument('-V', '--show_version', action='store_true',
                         help='output the version number of this program')
-    parser.add_argument('-x', '--hashOutput', action='store_true',
+    parser.add_argument('-x', '--hash_output', action='store_true',
                         help='output the top level hash')
     parser.add_argument('-X', '--exclude', action='append',
                         help='ignore files matching this pattern')
@@ -123,65 +123,65 @@ def main():
     args = parser.parse_args()
 
     # fixups --------------------------------------------------------
-    fixUsingSHA(args)
+    fix_using_sha(args)
     if args.indent < 1:
         args.indent = 1
     elif args.indent > 8:
         args.indent = 8
     args.timestamp = timestamp
-    if args.outDir:
-        args.outPath = os.path.join(args.outDir, args.outFile)
+    if args.out_dir:
+        args.out_path = os.path.join(args.out_dir, args.out_file)
     else:
-        args.outPath = None
+        args.out_path = None
 
     # sanity checks -------------------------------------------------
-    checkUsingSHA(args.usingSHA)
-    if not args.justShow:
-        if args.inDir is None or len(args.inDir) == 0:
+    check_using_sha(args.using_sha)
+    if not args.just_show:
+        if args.in_dir is None or len(args.in_dir) == 0:
             print("null or empty input directory name")
             parser.print_usage()
             sys.exit(1)
-        if not os.path.exists(args.inDir):
-            print("directory does not exist: %s" % args.inDir)
+        if not os.path.exists(args.in_dir):
+            print("directory does not exist: %s" % args.in_dir)
             parser.print_usage()
             sys.exit(1)
 
     # complete setup ------------------------------------------------
-    appName = 'merkleize %s' % __version__
+    app_name = 'merkleize %s' % __version__
 
     # maybe show options and such -----------------------------------
-    if args.verbose or args.justShow or args.showVersion:
-        print("%s %s" % (appName, __version_date__))
+    if args.verbose or args.just_show or args.show_version:
+        print("%s %s" % (app_name, __version_date__))
 
-    if args.verbose or args.justShow:
+    if args.verbose or args.just_show:
         print('exclude          = ' + str(args.exclude))
-        print('hashOutput       = ' + str(args.hashOutput))
+        print('hash_output      = ' + str(args.hash_output))
         print('indent           = ' + str(args.indent))
-        print('inDir            = ' + str(args.inDir))
-        print('justShow         = ' + str(args.justShow))
-        print('matchPat         = ' + str(args.matchPat))
-        print('outDir           = ' + str(args.outDir))
-        print('outFile          = ' + str(args.outFile))
-        print('outPath          = ' + str(args.outPath))
-        print('showTimestamp    = ' + str(args.showTimestamp))
-        print('showTree         = ' + str(args.showTree))
-        print('showVersion      = ' + str(args.showVersion))
+        print('in_dir           = ' + str(args.in_dir))
+        print('just_show        = ' + str(args.just_show))
+        print('match_pat        = ' + str(args.match_pat))
+        print('out_dir          = ' + str(args.out_dir))
+        print('out_file         = ' + str(args.out_file))
+        print('out_path         = ' + str(args.out_path))
+        print('showTimestamp    = ' + str(args.show_timestamp))
+        print('show_tree        = ' + str(args.show_tree))
+        print('show_version     = ' + str(args.show_version))
         print('timestamp        = ' + str(args.timestamp))
-        showUsingSHA(args)
+        show_using_sha(args)
 
         if args.exclude and len(args.exclude) > 0:
             print("exclude:")
             for exclusion in args.exclude:
                 print("    %s" % exclusion)
-        if args.matchPat and len(args.matchPat) > 0:
+        if args.match_pat and len(args.match_pat) > 0:
             print("match:")
-            for match in args.matchPat:
+            for match in args.match_pat:
                 print("    %s" % match)
 
-    if args.justShow:
+    if args.just_show:
         sys.exit(0)
 
-    merkleizeDirectory(args)
+    merkleize_directory(args)
 
 if __name__ == '__main__':
     main()
