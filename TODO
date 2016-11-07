@@ -1,7 +1,13 @@
 ~/dev/py/merkletree/TODO
 
+2016-11-07
+    * need to review tests: got "directory tmp/j already exists"        * OK
+        running test.all                                                * OK
+    * more work needed on pylint, coverage
+    * README.md needs updating
+
 2016-04-18
-    * MAJOR CHANGE: replace exRE with uses regular expressions 
+    * MAJOR CHANGE: replace exRE with uses regular expressions
         with something using wildcards
 
 2015-12-19
@@ -16,14 +22,14 @@
 2015-09-08
     * URGENT: tests should cover the executable, merkleize
     * document the package API as well as the command line
-    * docs should include example of 
+    * docs should include example of
 
 2015-08-01
     * flip hash and filename to match NLHTree, stepping to v6.0.0
-    * should be able to read v5.0.0 files (hash first) but write 
+    * should be able to read v5.0.0 files (hash first) but write
         v6.0.0 files (filename first)
 2015-08-01 (edited from -05-05)
-    * need tests to verify that exclusions and matchList work as 
+    * need tests to verify that exclusions and matchList work as
         expected
 
 2105-07-13 (edited from -07-09)
@@ -43,11 +49,11 @@
     * actually drop sha1File and sha256File, which are deprecated       * DONE
 
 2015-05-22
-    * investigate why {FIRST,OTHER}_LINE_RE2 containt XYZ at 
+    * investigate why {FIRST,OTHER}_LINE_RE2 containt XYZ at
         beginning of pattern
 
 2015-05-19
-    * urgently need constructor from nested lists 
+    * urgently need constructor from nested lists
         and tests
 2015-05-02
     * in the process, reorder the code to make structure more obvious
@@ -59,11 +65,11 @@
     * needs clarification: original code has bind(), bound(), path()
         as methods of MerkleNode class
 2015-04-30
-    * testMerkleTree needs to be modified to test different values of 
+    * testMerkleTree needs to be modified to test different values of
         deltaIndent
     * add option -b to display hashes base64
 
-    * FIX: in its current form, software just blows up if an 
+    * FIX: in its current form, software just blows up if an
         unexpected character is found in a file name
         - in general, need to handle any reasonable unicode name
         - should display error message rather than just panicking
@@ -74,14 +80,14 @@
     * bring documentation up to vmmgr/__init__.py level
 2014-06-24
     * NEED TO REVIEW: any use of self. in a static method is an error
-    * add tests of createFromFile() to testMerkleTree.py                
+    * add tests of createFromFile() to testMerkleTree.py
 
 2014-06-21
     * review code, dropping debug statements unless warranted
     * search for 'tests at the binary level', which appears to have
         been an elementary error (comparison of address instead of
         value)
-        - the question is whether equal values are being tested -- or 
+        - the question is whether equal values are being tested -- or
             identical values
     * MerkleDoc.createFromFileSystem() claims to return a MerkleTree
         but actually returns a MerkleDoc containging the tree
@@ -89,32 +95,32 @@
             which contains the absolute path of the document and a
             separate hash.
 2014-06-18
-    * FIX: if the argument following the -i option, a directory name, 
-        has a trailing slash ('/'), it returns a runtime error.  
+    * FIX: if the argument following the -i option, a directory name,
+        has a trailing slash ('/'), it returns a runtime error.
         Remember that the directory name may be just '/'.
 
-2012-01-28 
+2012-01-28
     * -M option must be able to write .merkle files into a shadow
         directory structure (see 2011-07-26)
 
-2011-08-08 
+2011-08-08
     * merkleize needs to be able to return doc (not just MerkleTree)
     * indentation appears to be wrong if eg -i /usr/local/src/py
 
-2011-07-26 
+2011-07-26
     * need -M, which writes .merkle files in each directory
 
 2011-07-25 i
     * after using MerkleTree hash, set ptr to zero to ease GC
 
-2011-07-24 
+2011-07-24
     * MerkleTree.bind() is STUBBED
     * MerkleTree.equals() is STUBBED, needs recursion
 
-2011-07-16 
+2011-07-16
     * FIX: merkleize can't handle top level directory such as /upages
 
-2011-07-13 
+2011-07-13
     * MerkleTree constructor should not allow null exRE
     * review code for missing try blocks, other obvious sloppy work
     * add unit tests to source distribution

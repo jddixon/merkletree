@@ -1,0 +1,3 @@
+sdRenameInFiles -v1rw                   \
+    -m ../xlattice_py/name-pairs-api    \
+    test*.py merkleize merkletree/__init__.py

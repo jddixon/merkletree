@@ -7,28 +7,28 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-merkletree v5.1.3
-2016-10-17 21:20:29
+merkletree v5.2.0
+2016-11-07 23:05:56
 # BEGIN CONTENT #
 merkletree
  .dvcz
-  builds cc6bf4fe68118bdbca6d30fe0fd4ed3214a4e421
+  builds 2fa285f4ec9f0450bc2c9aaba0a42b657743abd1
   copyright 341b426b5d23a84b929e0a59078c58bc76595a70
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList 5343489c633b347b3a6d9b090522675bed1f1899
+  lastBuildList 9b6cb049514c5da7bd4e12c845c56ba50a25bb72
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg fc46ababd29105cc77dcef352341d0e219d96209
   projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
-  version 3ca5fa497befe0bc251f752d1fd5875b080537dc
+  version 29abe4a2f50504fc117ea6b5036b5f700fd85817
  .gitignore 2bc4bcb7826ea9b5fb999444fe18f6785df1de72
- CHANGES 27b3aafd9695a4206e391acdffad19ea7fb5c15a
+ CHANGES 4aa49a260e1fe93d8d479b7b8fffc438772ec94e
  LICENSE-MIT.md 0d07d7f09fd91a4c193acd95e1a1afa0c8e4f286
  MANIFEST.in 2f437c4d5cb4af779fc66924182ca82b9abaace7
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
  README.md dd53cdab4bba00499e0ff512013c6a387eab9022
- TODO bf3b6a633b8be90b15eacb6ef7686e4b77a85f7e
- bkp2U d982596a989d6a303a563b5d8844d8fa87f20383
- checkCoverage c17285d7affb7cc8249f8fc1f922faaa69962e6a
+ TODO f3aeb9117422f9443571069c8729b4d9846e0787
+ bkp2U 1be7325c1c79fdf55c2872deb266efde03e1a18d
+ checkCoverage 250a40b80bc599d45d538d53b6d882061fe08647
  countem 6155fc3e3bc505ed6e2315ed1572c1f845d35204
  dist
   merkletree-1.1.1.tar.gz 2554aba52422222b12e8261c9d682000e41f5f74
@@ -75,6 +75,7 @@ merkletree
   merkletree-5.1.1.tar.gz 944e6a2e545dba63979297adb16b073280145e20
   merkletree-5.1.2.tar.gz 8f6a4bb99d8def34b38b00918fb7f2a77ec8fe5d
   merkletree-5.1.3.tar.gz 19dd936bcfc34c5c4b01117219dc1f0e7697d9b6
+  merkletree-5.2.0.tar.gz 2ee1b0d33091e8776543ad8d83c279544a165721
  doPyLint ad8e7798d026bc8f0a8cd20fb666fde1dc35239a
  ghpDoc
   TODO 6fa7b1dec0b84b2560077a8544e2283eddfb7a2f
@@ -94,22 +95,26 @@ merkletree
    xlattice.batik.jpg debe9220564203118dc53df0f5a48d77669fe367
   index.md 92f40dfd804d04cc45e6435496edc5031c045931
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
- merkleize 51f80ff859d0e0d96c42fe264672a8f4134d7df6
+ merkleize 3965831cdfb8a7189aa665f1b9ceae9ccf5b7d94
  merkletree
-  __init__.py 375959d4bc16d6e1dfa9410c3398ab9f78f9fbb1
+  __init__.py 17539e1c3e0f86c30a07a2db420e7e9225a17d21
+ name-pairs-api e9a577bb4f75b30d7655d5b35bf76540ca49827e
+ name-pairs-local 7641bd715269c711f54a5c852b8940e93cb67089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- setup.py 08fec15e45b60319a3a93c4aa497ebe880a40a29
+ renameLocal 7f4495f5140ae0f4785109d8a326829143c6e33e
+ renamePerXLattice 48d07eb66be8296d10db22288fef1f46b4282611
+ setup.py e5e20bfc8061b5f3f180bf75a0551031014f1e49
  styleit d6c91aa1ff057277d090f083e85efc82d03aad68
  test.all 2c641de681c0121a6a443425e508ddd74d153795
  testData
   dat.xlattice.org 08ac8f60ea44856e34c565b4d459a2d0547e5db9
   dat2.xlattice.org c653333f4518980911dd1592cb8986073ca98930
- test_merkle_doc.py c96e92270cf5b04a433be894b4eeeed33ad71556
- test_merkle_doc2.py 7c45f10781c6508a9b8fdd282912dac30a0d2a19
- test_merkle_leaf.py d8d6c5d95090dae3764d9deb7521050ff7c9e673
- test_merkle_tree.py 1455b554000cfc00c57f76022af6c582ab8b77fd
- test_new_make_exre.py 6197ec9d5143fe0b778278638040455702d8e0fb
- test_old_make_exre.py a26eaaacc4133d66729e804bba3cfd3fdd546d74
+ test_merkle_doc.py 5c3e957729d6ccb9c4a707a243f7dd70df83c2dc
+ test_merkle_doc2.py de0cc3c312c8d05e326084a3b8b90d096959f9fc
+ test_merkle_leaf.py efacda6a8becbe6f8daabfcea58ff03516868261
+ test_merkle_tree.py ed8cbe48b22efb8d9afa1b02e66f859c13dd180c
+ test_new_make_exre.py 3cf5b9a767099f98907179fd4660317645a14000
+ test_old_make_exre.py f8a0695f54726b1831dd8d0c197e035fabee47f2
 # END CONTENT #
 
-m3Ken0gCVIMZzMWNi8vrFA7QJLDufPtFw0P9V30kAgUwYq+wEji6nI+bvpqyyBC8InrnVxdsi1M15Nb5ZVQVxvefjNryoqs1h/nplNuBBKjZW9SScTLzSZqrJWeMlESqfxGh3cWdaZ4CwlOUJgJJEmh0ENORMO+M3k8s4xrfeV4aYVruwNVeXWT7XJOPW50SMIbGMugxO4RlqOKtH2Kexjr/ffjZ1vek0W7lO0+Ns9ECSThNL0i+MzKR6zSEazp5QBWBNPF5ylD+BNo2M+qMMho/1aC5AA6ItR8PWjFf08MAsSr5ltjMWTG8m3WByAAu2UWrFfCfoqPfdWwyXQOCkw==
+mlGsynoQGnq1cyBC/1wzQBF1rl13TpWGrZX6ogjFPjdfbvAbcBqgC0/aA+5AR1zSv1s4ileDdoabkXpC3H7OPl3vtiLn2yn9Ain04C/7jPe8yTWgG/s4o1itAumTTTIqNGvr+9tIWlP6VRB242vdJQcD3f+JdqCeh22uo752diSj5oeBZKVtUTwDEGrTKjoRMuhvxhDzLBQPTU6chze9m4zuEPGIw0+vKjqhmYOVc3+V+9hILBtP9q8gh/E0BR6b2AJAdcYjEp6QQ/KXZMGjdvS6DV4X2HXdc3Gx8QqcO/nHnUAp7OPhL0uEg5mM6sabXwqu+Y7kEHDT5PfyRuD72Q==

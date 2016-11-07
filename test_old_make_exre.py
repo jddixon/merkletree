@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
+# testOldMakeExRE.py
 
-# testMakeExRE.py
+""" Test old version of utility for making excluded file name regexes. """
 
-import hashlib
-import os
-import re
-import shutil
 import time
 import unittest
 
 from rnglib import SimpleRNG
-from merkletree import *
-from xlattice import util
+from merkletree import MerkleDoc
 
 
-class TestMakeExRE (unittest.TestCase):
+class TestOldMakeExRE(unittest.TestCase):
+    """ Test old version of utility for making excluded file name regexes. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -22,27 +19,30 @@ class TestMakeExRE (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def doTestForExpectedExclusions(self, exRE):
-        # should always match
-        self.assertTrue(exRE.search('.'))
-        self.assertTrue(exRE.search('..'))
-        self.assertTrue(exRE.search('.merkle'))
-        self.assertTrue(exRE.search('.svn'))
-        self.assertTrue(exRE.search('.foo.swp'))          # vi backup file
-        self.assertTrue(exRE.search('junkEverywhere'))    # begins with 'junk'
+    def do_test_for_expected_exclusions(self, ex_re):
+        """ Verify that regex finds expecsted matches. """
+        self.assertTrue(ex_re.search('.'))
+        self.assertTrue(ex_re.search('..'))
+        self.assertTrue(ex_re.search('.merkle'))
+        self.assertTrue(ex_re.search('.svn'))
+        self.assertTrue(ex_re.search('.foo.swp'))          # vi backup file
+        self.assertTrue(ex_re.search('junkEverywhere'))    # begins with 'junk'
 
-    def doTestForExpectedMatches(self, matchRE, names):
+    def do_test_for_expected_matches(self, match_re, names):
+        """ Verify that regex finds listed names. """
         for name in names:
-            self.assertTrue(matchRE.search(name))
+            self.assertTrue(match_re.search(name))
 
-    def doTestForExpectedMatchFailures(self, matchRE, names):
+    def do_test_for_expected_match_failures(self, match_re, names):
+        """ Verify that names do NOT match specified regex. """
+
         for name in names:
-            m = matchRE.search(name)
-            if m:
+            match_ = match_re.search(name)
+            if match_:
                 print(("WE HAVE A MATCH ON '%s'" % name))
             # self.assertEqual( None, where )
 
-    def testOldMakeExRE(self):
+    def test_old_make_ex_re(self):
         """
         Test utility for making excluded file name regexes.
 
@@ -51,34 +51,34 @@ class TestMakeExRE (unittest.TestCase):
         ###################################################
 
         """
-        exRE = MerkleDoc.makeExRE(None)
-        self.assertTrue(exRE is not None)
-        self.doTestForExpectedExclusions(exRE)
+        ex_re = MerkleDoc.make_ex_re(None)
+        self.assertTrue(ex_re is not None)
+        self.do_test_for_expected_exclusions(ex_re)
 
         # should not be present
-        self.assertTrue(None == exRE.search('bar'))
-        self.assertTrue(None == exRE.search('foo'))
+        self.assertTrue(ex_re.search('bar') is None)
+        self.assertTrue(ex_re.search('foo') is None)
 
         exc = []
         exc.append('^foo')
         exc.append('bar$')
         exc.append('^junk*')
-        exRE = MerkleDoc.makeExRE(exc)
-        self.doTestForExpectedExclusions(exRE)
+        ex_re = MerkleDoc.make_ex_re(exc)
+        self.do_test_for_expected_exclusions(ex_re)
 
-        self.assertTrue(exRE.search('foobarf'))
-        self.assertTrue(None == exRE.search(' foobarf'))
-        self.assertFalse(exRE.search(' foobarf'))
+        self.assertTrue(ex_re.search('foobarf'))
+        self.assertTrue(ex_re.search(' foobarf') is None)
+        self.assertFalse(ex_re.search(' foobarf'))
 
         # bear in mind that match must be at the beginning
-        self.assertFalse(exRE.match('ohMybar'))
-        self.assertTrue(exRE.search('ohMybar'))
+        self.assertFalse(ex_re.match('ohMybar'))
+        self.assertTrue(ex_re.search('ohMybar'))
 
-        self.assertFalse(exRE.match('ohMybarf'))
-        self.assertTrue(exRE.search('junky'))
-        self.assertFalse(exRE.match(' junk'))
+        self.assertFalse(ex_re.match('ohMybarf'))
+        self.assertTrue(ex_re.search('junky'))
+        self.assertFalse(ex_re.match(' junk'))
 
-    def testOldMakeMatchRE(self):
+    def test_old_make_match_re(self):
         """
         Test utility for making matched file name regexes.
 
@@ -87,33 +87,33 @@ class TestMakeExRE (unittest.TestCase):
         ###################################################
 
         """
-        matchRE = MerkleDoc.makeMatchRE(None)
-        self.assertEqual(None, matchRE)
+        match_re = MerkleDoc.make_match_re(None)
+        self.assertEqual(None, match_re)
 
         matches = []
         matches.append('^foo')
         matches.append('bar$')
         matches.append('^junk*')
-        matchRE = MerkleDoc.makeMatchRE(matches)
-        self.doTestForExpectedMatches(matchRE,
-                                      ['foo', 'foolish', 'roobar', 'junky'])
-        self.doTestForExpectedMatchFailures(matchRE,
-                                            [' foo', 'roobarf', 'myjunk'])
+        match_re = MerkleDoc.make_match_re(matches)
+        self.do_test_for_expected_matches(
+            match_re, ['foo', 'foolish', 'roobar', 'junky'])
+        self.do_test_for_expected_match_failures(
+            match_re, [' foo', 'roobarf', 'myjunk'])
 
-        matches = ['\.tgz$']
-        matchRE = MerkleDoc.makeMatchRE(matches)
-        self.doTestForExpectedMatches(matchRE,
-                                      ['junk.tgz', 'notSoFoolish.tgz'])
-        self.doTestForExpectedMatchFailures(matchRE,
-                                            ['junk.tar.gz', 'foolish.tar.gz'])
+        matches = [r'\.tgz$']
+        match_re = MerkleDoc.make_match_re(matches)
+        self.do_test_for_expected_matches(
+            match_re, ['junk.tgz', 'notSoFoolish.tgz'])
+        self.do_test_for_expected_match_failures(
+            match_re, ['junk.tar.gz', 'foolish.tar.gz'])
 
-        matches = ['\.tgz$', '\.tar\.gz$']
-        matchRE = MerkleDoc.makeMatchRE(matches)
-        self.doTestForExpectedMatches(matchRE,
-                                      ['junk.tgz', 'notSoFoolish.tgz',
-                                       'junk.tar.gz', 'ohHello.tar.gz'])
-        self.doTestForExpectedMatchFailures(matchRE,
-                                            ['junk.gz', 'foolish.tar'])
+        matches = [r'\.tgz$', r'\.tar\.gz$']
+        match_re = MerkleDoc.make_match_re(matches)
+        self.do_test_for_expected_matches(
+            match_re, ['junk.tgz', 'notSoFoolish.tgz',
+                       'junk.tar.gz', 'ohHello.tar.gz'])
+        self.do_test_for_expected_match_failures(
+            match_re, ['junk.gz', 'foolish.tar'])
 
 if __name__ == '__main__':
     unittest.main()

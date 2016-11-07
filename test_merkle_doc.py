@@ -4,21 +4,20 @@
 
 import hashlib
 import os
-import re
 import shutil
 import time
 import unittest
 
 from rnglib import SimpleRNG
-from merkletree import *
-from xlattice import Q, checkUsingSHA, util
+from merkletree import MerkleDoc, MerkleTree, MerkleLeaf
+from xlattice import QQQ, check_using_sha, util
 
 ONE = 1
 FOUR = 4
 MAX_NAME_LEN = 8
 
 
-class TestMerkleDoc (unittest.TestCase):
+class TestMerkleDoc(unittest.TestCase):
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -27,165 +26,168 @@ class TestMerkleDoc (unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def getTwoUniqueDirectoryNames(self):
-        dirName1 = self.rng.nextFileName(MAX_NAME_LEN)
-        dirName2 = dirName1
-        while dirName2 == dirName1:
-            dirName2 = self.rng.nextFileName(MAX_NAME_LEN)
-        self.assertTrue(len(dirName1) > 0)
-        self.assertTrue(len(dirName2) > 0)
-        self.assertTrue(dirName1 != dirName2)
-        return (dirName1, dirName2)
+    def get_two_unique_directory_names(self):
+        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        dir_name2 = dir_name1
+        while dir_name2 == dir_name1:
+            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+        self.assertTrue(len(dir_name1) > 0)
+        self.assertTrue(len(dir_name2) > 0)
+        self.assertTrue(dir_name1 != dir_name2)
+        return (dir_name1, dir_name2)
 
-    def makeOneNamedTestDirectory(self, name, depth, width):
-        dirPath = "tmp/%s" % name
-        if os.path.exists(dirPath):
-            print(("DEBUG: directory '%s' already exists; removing" % dirPath))
-            shutil.rmtree(dirPath)
-        self.rng.nextDataDir(dirPath, depth, width, 32)
-        return dirPath
+    def make_one_named_test_directory(self, name, depth, width):
+        dir_path = "tmp/%s" % name
+        if os.path.exists(dir_path):
+            shutil.rmtree(dir_path)
+        self.rng.nextDataDir(dir_path, depth, width, 32)
+        return dir_path
 
-    def makeTwoTestDirectories(self, depth, width):
-        dirName1 = self.rng.nextFileName(MAX_NAME_LEN)
-        dirPath1 = self.makeOneNamedTestDirectory(dirName1, depth, width)
+    def make_two_test_directories(self, depth, width):
+        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        dir_path1 = self.make_one_named_test_directory(dir_name1, depth, width)
 
-        dirName2 = dirName1
-        while dirName2 == dirName1:
-            dirName2 = self.rng.nextFileName(MAX_NAME_LEN)
-        dirPath2 = self.makeOneNamedTestDirectory(dirName2, depth, width)
+        dir_name2 = dir_name1
+        while dir_name2 == dir_name1:
+            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+        dir_path2 = self.make_one_named_test_directory(dir_name2, depth, width)
 
-        return (dirName1, dirPath1, dirName2, dirPath2)
+        return (dir_name1, dir_path1, dir_name2, dir_path2)
 
-    def verifyLeafSHA(self, node, pathToFile, usingSHA):
-        checkUsingSHA(usingSHA)
-        self.assertTrue(os.path.exists(pathToFile))
-        with open(pathToFile, "rb") as f:
-            data = f.read()
+    def verify_leaf_sha(self, node, path_to_file, using_sha):
+        check_using_sha(using_sha)
+        self.assertTrue(os.path.exists(path_to_file))
+        with open(path_to_file, "rb") as file:
+            data = file.read()
         self.assertFalse(data is None)
-        if usingSHA == Q.USING_SHA1:
+        # pylint: disable=redefined-variable-type
+        if using_sha == QQQ.USING_SHA1:
             sha = hashlib.sha1()
-        elif usingSHA == Q.USING_SHA2:
+        elif using_sha == QQQ.USING_SHA2:
             sha = hashlib.sha256()
-        elif usingSHA == Q.USING_SHA3:
+        elif using_sha == QQQ.USING_SHA3:
             sha = hashlib.sha3_256()
         sha.update(data)
-        hash = sha.digest()
-        self.assertEqual(hash, node.binHash)
+        hash_ = sha.digest()
+        self.assertEqual(hash_, node.bin_hash)
 
-    def verifyTreeSHA(self, node, pathToTree, usingSHA):
+    def verify_tree_sha(self, node, path_to_tree, using_sha):
         # we assume that the node is a MerkleTree
-        checkUsingSHA(usingSHA)
+        check_using_sha(using_sha)
         if node.nodes is None:
-            self.assertEqual(None, node.binHash)
+            self.assertEqual(None, node.bin_hash)
         else:
-            hashCount = 0
-            if usingSHA == Q.USING_SHA1:
+            hash_count = 0
+            # pylint: disable=redefined-variable-type
+            if using_sha == QQQ.USING_SHA1:
                 sha = hashlib.sha1()
-            elif usingSHA == Q.USING_SHA2:
+            elif using_sha == QQQ.USING_SHA2:
                 sha = hashlib.sha256()
-            elif usingSHA == Q.USING_SHA3:
+            elif using_sha == QQQ.USING_SHA3:
+                # pylint: disable=no-member
                 sha = hashlib.sha3_256()
-            for n in node.nodes:
-                pathToNode = os.path.join(pathToTree, n.name)
-                if isinstance(n, MerkleLeaf):
-                    self.verifyLeafSHA(n, pathToNode, usingSHA)
-                elif isinstance(n, MerkleTree):
-                    self.verifyTreeSHA(n, pathToNode, usingSHA)
+            for node_ in node.nodes:
+                path_to_node = os.path.join(path_to_tree, node_.name)
+                if isinstance(node_, MerkleLeaf):
+                    self.verify_leaf_sha(node_, path_to_node, using_sha)
+                elif isinstance(node_, MerkleTree):
+                    self.verify_tree_sha(node_, path_to_node, using_sha)
                 else:
                     print("DEBUG: unknown node type!")
                     self.fail("unknown node type!")
-                if (n.binHash is not None):
-                    hashCount += 1
-                    sha.update(n.binHash)
+                if node_.bin_hash is not None:
+                    hash_count += 1
+                    sha.update(node_.bin_hash)
 
-            if hashCount == 0:
-                self.assertEqual(None, node.binHash)
+            if hash_count == 0:
+                self.assertEqual(None, node.bin_hash)
             else:
-                self.assertEqual(sha.digest(), node.binHash)
+                self.assertEqual(sha.digest(), node.bin_hash)
 
     # actual unit tests #############################################
 
-    def testBoundFlatDirs(self):
+    def test_bound_flat_dirs(self):
         """test directory is single level, with four data files"""
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.doTestBoundFlatDirs(using)
+        for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
+            self.do_test_bound_flat_dirs(using)
 
-    def doTestBoundFlatDirs(self, usingSHA):
+    def do_test_bound_flat_dirs(self, using_sha):
 
-        (dirName1, dirPath1, dirName2, dirPath2) = \
-            self.makeTwoTestDirectories(ONE, FOUR)
+        (dir_name1, dir_path1, dir_name2, dir_path2) =\
+            self.make_two_test_directories(ONE, FOUR)
 
-        doc1 = MerkleDoc.createFromFileSystem(dirPath1, usingSHA)
+        doc1 = MerkleDoc.create_from_file_system(dir_path1, using_sha)
         tree1 = doc1.tree
-        self.assertEqual(dirName1, tree1.name)
+        self.assertTrue(isinstance(tree1, MerkleTree))
+        self.assertEqual(dir_name1, tree1.name)
         self.assertTrue(doc1.bound)
-        self.assertEqual(("tmp/%s" % dirName1), dirPath1)
+        self.assertEqual(("tmp/%s" % dir_name1), dir_path1)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
-        self.verifyTreeSHA(tree1, dirPath1, usingSHA)
+        self.verify_tree_sha(tree1, dir_path1, using_sha)
 
-        doc2 = MerkleDoc.createFromFileSystem(dirPath2, usingSHA)
+        doc2 = MerkleDoc.create_from_file_system(dir_path2, using_sha)
         tree2 = doc2.tree
-        self.assertEqual(dirName2, tree2.name)
+        self.assertEqual(dir_name2, tree2.name)
         self.assertTrue(doc2.bound)
-        self.assertEqual(("tmp/%s" % dirName2), dirPath2)
+        self.assertEqual(("tmp/%s" % dir_name2), dir_path2)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(FOUR, len(nodes2))
-        self.verifyTreeSHA(tree2, dirPath2, usingSHA)
+        self.verify_tree_sha(tree2, dir_path2, using_sha)
 
-        self.assertTrue(tree1.equal(tree1))
-        self.assertFalse(tree1.equal(tree2))
-        self.assertFalse(tree1.equal(None))
+        self.assertEqual(tree1, tree1)
+        self.assertFalse(tree1 == tree2)
+        self.assertFalse(tree1 is None)
 
-        doc1Str = doc1.toString()
-        doc1Rebuilt = MerkleDoc.createFromSerialization(doc1Str, usingSHA)
+        doc1_str = doc1.to_string()
+        doc1_rebuilt = MerkleDoc.create_from_serialization(doc1_str, using_sha)
         # DEBUG
         #print("flat doc:\n" + doc1Str)
         #print("rebuilt flat doc:\n" + doc1Rebuilt.toString())
         # END
-        self.assertTrue(doc1.equal(doc1Rebuilt))  # MANGO
+        self.assertTrue(doc1.equal(doc1_rebuilt))  # MANGO
 
-    def testBoundNeedleDirs(self):
+    def test_bound_needle_dirs(self):
         """test directories four deep with one data file at the lowest level"""
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.doTestBoundNeedleDirs(using)
+        for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
+            self.do_test_bound_needle_dirs(using)
 
-    def doTestBoundNeedleDirs(self, usingSHA):
-        checkUsingSHA(usingSHA)
-        (dirName1, dirPath1, dirName2, dirPath2) = \
-            self.makeTwoTestDirectories(FOUR, ONE)
-        doc1 = MerkleDoc.createFromFileSystem(dirPath1, usingSHA)
+    def do_test_bound_needle_dirs(self, using_sha):
+        check_using_sha(using_sha)
+        (dir_name1, dir_path1, dir_name2, dir_path2) =\
+            self.make_two_test_directories(FOUR, ONE)
+        doc1 = MerkleDoc.create_from_file_system(dir_path1, using_sha)
         tree1 = doc1.tree
-        self.assertEqual(dirName1, tree1.name)
+        self.assertEqual(dir_name1, tree1.name)
         self.assertTrue(doc1.bound)
-        self.assertEqual(("tmp/%s" % dirName1), dirPath1)
+        self.assertEqual(("tmp/%s" % dir_name1), dir_path1)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
-        self.verifyTreeSHA(tree1, dirPath1, usingSHA)
+        self.verify_tree_sha(tree1, dir_path1, using_sha)
 
-        doc2 = MerkleDoc.createFromFileSystem(dirPath2, usingSHA)
+        doc2 = MerkleDoc.create_from_file_system(dir_path2, using_sha)
         tree2 = doc2.tree
-        self.assertEqual(dirName2, tree2.name)
+        self.assertEqual(dir_name2, tree2.name)
         self.assertTrue(doc2.bound)
-        self.assertEqual(("tmp/%s" % dirName2), dirPath2)
+        self.assertEqual(("tmp/%s" % dir_name2), dir_path2)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(ONE, len(nodes2))
-        self.verifyTreeSHA(tree2, dirPath2, usingSHA)
+        self.verify_tree_sha(tree2, dir_path2, using_sha)
 
         self.assertTrue(doc1.equal(doc1))
         self.assertFalse(doc1.equal(doc2))
 
-        doc1Str = doc1.toString()
-        doc1Rebuilt = MerkleDoc.createFromSerialization(doc1Str, usingSHA)
+        doc1_str = doc1.to_string()
+        doc1_rebuilt = MerkleDoc.create_from_serialization(doc1_str, using_sha)
 #       # DEBUG
 #       print "needle doc:\n" + doc1Str
 #       print "rebuilt needle doc:\n" + doc1Rebuilt.toString()
 #       # END
-        self.assertTrue(doc1.equal(doc1Rebuilt))       # FOO
+        self.assertTrue(doc1.equal(doc1_rebuilt))       # FOO
 
 if __name__ == '__main__':
     unittest.main()
