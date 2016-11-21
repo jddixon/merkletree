@@ -10,7 +10,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from merkletree import MerkleDoc, MerkleTree, MerkleLeaf
-from xlattice import QQQ, check_using_sha, util
+from xlattice import QQQ, check_using_sha
 
 ONE = 1
 FOUR = 4
@@ -66,6 +66,7 @@ class TestMerkleDoc(unittest.TestCase):
         elif using_sha == QQQ.USING_SHA2:
             sha = hashlib.sha256()
         elif using_sha == QQQ.USING_SHA3:
+            # pylint: disable=no-member
             sha = hashlib.sha3_256()
         sha.update(data)
         hash_ = sha.digest()
@@ -119,9 +120,11 @@ class TestMerkleDoc(unittest.TestCase):
         doc1 = MerkleDoc.create_from_file_system(dir_path1, using_sha)
         tree1 = doc1.tree
         self.assertTrue(isinstance(tree1, MerkleTree))
+        # pylint: disable=no-member
         self.assertEqual(dir_name1, tree1.name)
         self.assertTrue(doc1.bound)
         self.assertEqual(("tmp/%s" % dir_name1), dir_path1)
+        # pylint: disable=no-member
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
@@ -129,9 +132,11 @@ class TestMerkleDoc(unittest.TestCase):
 
         doc2 = MerkleDoc.create_from_file_system(dir_path2, using_sha)
         tree2 = doc2.tree
+        # pylint: disable=no-member
         self.assertEqual(dir_name2, tree2.name)
         self.assertTrue(doc2.bound)
         self.assertEqual(("tmp/%s" % dir_name2), dir_path2)
+        # pylint: disable=no-member
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(FOUR, len(nodes2))
@@ -160,9 +165,11 @@ class TestMerkleDoc(unittest.TestCase):
             self.make_two_test_directories(FOUR, ONE)
         doc1 = MerkleDoc.create_from_file_system(dir_path1, using_sha)
         tree1 = doc1.tree
+        # pylint: disable=no-member
         self.assertEqual(dir_name1, tree1.name)
         self.assertTrue(doc1.bound)
         self.assertEqual(("tmp/%s" % dir_name1), dir_path1)
+        # pylint: disable=no-member
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
@@ -170,9 +177,11 @@ class TestMerkleDoc(unittest.TestCase):
 
         doc2 = MerkleDoc.create_from_file_system(dir_path2, using_sha)
         tree2 = doc2.tree
+        # pylint: disable=no-member
         self.assertEqual(dir_name2, tree2.name)
         self.assertTrue(doc2.bound)
         self.assertEqual(("tmp/%s" % dir_name2), dir_path2)
+        # pylint: disable=no-member
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(ONE, len(nodes2))

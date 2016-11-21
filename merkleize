@@ -23,7 +23,7 @@ import time
 from argparse import ArgumentParser
 from xlattice import (check_using_sha,
                       parseUsingSHA, fix_using_sha, show_using_sha)
-from xlattice.util import make_ex_re, make_match_re
+#from xlattice.util import make_ex_re, make_match_re
 
 from merkletree import (__version__, __version_date__, MerkleDoc)
 
@@ -34,18 +34,12 @@ def merkleize_directory(args):
     # are encountered
 
     exclusions = args.exclude
-    ex_re = make_ex_re(exclusions)
     hash_output = args.hash_output
-    indent = args.indent
     in_dir = args.in_dir
     just_show = args.just_show
     matches = args.match_pat
-    match_re = make_match_re(matches)
     out_path = args.out_path
-    show_timestamp = args.show_timestamp
     show_tree = args.show_tree
-    show_version = args.show_version
-    timestamp = args.timestamp
     using_sha = args.using_sha
     verbose = args.verbose
 
@@ -70,8 +64,10 @@ def merkleize_directory(args):
 
     string = []
     if show_tree:
+        # pylint: disable=no-member
         string.append(tree.to_string(0))       # no top-level indent
     if hash_output:
+        # pylint: disable=no-member
         string.append("%s\n" % tree.hex_hash)                      # ditto
 
     output = ''.join(string)

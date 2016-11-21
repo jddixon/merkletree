@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 
 # testMerkleTree.py
-import hashlib
 import os
 import shutil
+import sys
 import time
 import unittest
+import hashlib
 
 from rnglib import SimpleRNG
 from xlattice import (QQQ, check_using_sha,
                       SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE)
 from merkletree import MerkleTree, MerkleLeaf
+
+if sys.version_info < (3, 6):
+    # pylint:disable=unused-import
+    import sha3                 # monkey-patches hashlib
 
 ONE = 1
 FOUR = 4
@@ -65,10 +70,11 @@ class TestMerkleTree(unittest.TestCase):
         elif using_sha == QQQ.USING_SHA2:
             sha = hashlib.sha256()
         elif using_sha == QQQ.USING_SHA3:
+            # pylint: disable=no-member
             sha = hashlib.sha3_256()
         sha.update(data)
-        hash = sha.digest()
-        self.assertEqual(hash, node.bin_hash)
+        hash_ = sha.digest()
+        self.assertEqual(hash_, node.bin_hash)
 
     def verify_tree_sha(self, node, path_to_node, using_sha):
         # we assume that the node is a MerkleTree
@@ -81,6 +87,7 @@ class TestMerkleTree(unittest.TestCase):
             elif using_sha == QQQ.USING_SHA2:
                 sha = hashlib.sha256()
             elif using_sha == QQQ.USING_SHA3:
+                # pylint: disable=no-member
                 sha = hashlib.sha3_256()
             for node_ in node.nodes:
                 path_to_file = os.path.join(path_to_node, node_.name)
@@ -131,7 +138,7 @@ class TestMerkleTree(unittest.TestCase):
         tree1_str = tree1.to_string(0)
 
         # there should be no indent on the first line
-        self.assertFalse(' ' == tree1_str[0])
+        self.assertFalse(tree1_str[0] == ' ')
 
         # no extra lines should be added
         lines = tree1_str.split('\n')

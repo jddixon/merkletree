@@ -4,7 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/merkletree
   
-  bl_list_gen \
+  bl_listgen \
     -d ../merkletree \
     -1L  \
     -u $DVCZ_UDIR \

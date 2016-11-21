@@ -40,7 +40,7 @@ class TestOldMakeExRE(unittest.TestCase):
             match_ = match_re.search(name)
             if match_:
                 print(("WE HAVE A MATCH ON '%s'" % name))
-            # self.assertEqual( None, where )
+            # self.assertIsNone(where) # vestigial?
 
     def test_old_make_ex_re(self):
         """

@@ -1,5 +1,11 @@
 ~/dev/py/merkletree/TODO
 
+2016-11-21
+    * there are unused code fragments in test_merkle_doc2.py
+    * URGENT: create_from_file() should fail but is not tested!
+    * need > 200 docstrings
+    * URGENT: test against xl_test_dir
+
 2016-11-07
     * need to review tests: got "directory tmp/j already exists"        * OK
         running test.all                                                * OK
