@@ -113,14 +113,21 @@ class TestMerkleDoc(unittest.TestCase):
 
     def test_bound_flat_dirs(self):
         """test directory is single level, with four data files"""
-        (dir_name1, dir_path1, dir_name2, dir_path2) =\
-            self.make_two_test_directories(ONE, FOUR)
 
+        dir_name1, dir_path1, dir_name2, dir_path2 = \
+            self.make_two_test_directories(ONE, FOUR)
         doc1 = MerkleDoc.create_from_file_system(dir_path1)
+        # pylint: disable=no-member
         tree1 = doc1.tree
+        # XXX This succeeds BUT pylint doesn't get this right: it sees
+        # doc1.tree as a function
+        self.assertTrue(isinstance(tree1, MerkleTree))
+
+        # pylint: disable=no-member
         self.assertEqual(dir_name1, tree1.name)
         self.assertTrue(doc1.bound)
         self.assertEqual(("tmp/%s" % dir_name1), dir_path1)
+        # pylint: disable=no-member
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
@@ -128,16 +135,21 @@ class TestMerkleDoc(unittest.TestCase):
 
         doc2 = MerkleDoc.create_from_file_system(dir_path2)
         tree2 = doc2.tree
+        # pylint: disable=no-member
         self.assertEqual(dir_name2, tree2.name)
         self.assertTrue(doc2.bound)
         self.assertEqual(("tmp/%s" % dir_name2), dir_path2)
+        # pylint: disable=no-member
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(FOUR, len(nodes2))
         self.verify_tree_sha256(tree2, dir_path2)
 
+        # pylint: disable=no-member
         self.assertTrue(tree1.equal(tree1))
+        # pylint: disable=no-member
         self.assertFalse(tree1.equal(tree2))
+        # pylint: disable=no-member
         self.assertFalse(tree1.equal(None))
 
         doc1_str = doc1.to_string()
@@ -150,9 +162,15 @@ class TestMerkleDoc(unittest.TestCase):
             self.make_two_test_directories(FOUR, ONE)
         doc1 = MerkleDoc.create_from_file_system(dir_path1)
         tree1 = doc1.tree
+        # XXX This succeeds BUT pylint doesn't get this right: it sees
+        # doc1.tree as a function
+        self.assertTrue(isinstance(tree1, MerkleTree))
+
+        # pylint: disable=no-member
         self.assertEqual(dir_name1, tree1.name)
         self.assertTrue(doc1.bound)
         self.assertEqual(("tmp/%s" % dir_name1), dir_path1)
+        # pylint: disable=no-member
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
@@ -160,9 +178,11 @@ class TestMerkleDoc(unittest.TestCase):
 
         doc2 = MerkleDoc.create_from_file_system(dir_path2)
         tree2 = doc2.tree
+        # pylint: disable=no-member
         self.assertEqual(dir_name2, tree2.name)
         self.assertTrue(doc2.bound)
         self.assertEqual(("tmp/%s" % dir_name2), dir_path2)
+        # pylint: disable=no-member
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(ONE, len(nodes2))
@@ -179,27 +199,29 @@ class TestMerkleDoc(unittest.TestCase):
 #       # END
         self.assertTrue(doc1.equal(doc1_rebuilt))       # FOO
 
-    def do_test_for_expected_exclusions(self, ex_re):
-        """ Verify that exclusion regexes work for these examples. """
-        self.assertTrue(ex_re.search('.'))
-        self.assertTrue(ex_re.search('..'))
-        self.assertTrue(ex_re.search('.merkle'))
-        self.assertTrue(ex_re.search('.svn'))
-        self.assertTrue(ex_re.search('.foo.swp'))          # vi backup file
-        self.assertTrue(ex_re.search('junkEverywhere'))    # begins with 'junk'
+# 2016-11-21: These FRAGMENTS are unused ----------------------------
 
-    def do_test_for_expected_matches(self, match_re, names):
-        """ Verify the match regex works for the names listed. """
-        for name in names:
-            self.assertTrue(match_re.search(name))
+#   def do_test_for_expected_exclusions(self, ex_re):
+#       """ Verify that exclusion regexes work for these examples. """
+#       self.assertTrue(ex_re.search('.'))
+#       self.assertTrue(ex_re.search('..'))
+#       self.assertTrue(ex_re.search('.merkle'))
+#       self.assertTrue(ex_re.search('.svn'))
+#       self.assertTrue(ex_re.search('.foo.swp'))          # vi backup file
+#       self.assertTrue(ex_re.search('junkEverywhere'))    # begins with 'junk'
 
-    def do_test_for_expected_match_failures(self, match_re, names):
-        """ Verify match regexes FAIL for the names listed. """
-        for name in names:
-            match_ = match_re.search(name)
-            if match_:
-                print("WE HAVE A MATCH ON '%s'" % name)
-            # self.assertEqual( None, where )
+#   def do_test_for_expected_matches(self, match_re, names):
+#       """ Verify the match regex works for the names listed. """
+#       for name in names:
+#           self.assertTrue(match_re.search(name))
+
+#   def do_test_for_expected_match_failures(self, match_re, names):
+#       """ Verify match regexes FAIL for the names listed. """
+#       for name in names:
+#           match_ = match_re.search(name)
+#           if match_:
+#               print("WE HAVE A MATCH ON '%s'" % name)
+#           self.assertIsNone( where )
 
 
 if __name__ == '__main__':

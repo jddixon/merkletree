@@ -5,20 +5,24 @@ import hashlib
 import os
 import re
 import sys
+from stat import S_ISDIR
+
 from xlattice import (SHA1_BIN_LEN, SHA2_BIN_LEN, SHA3_BIN_LEN,
                       SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
                       QQQ, check_using_sha, util)
 from xlattice.crypto import SP   # for getSpaces()
 from xlattice.u import file_sha1bin, file_sha2bin, file_sha3bin
-from stat import S_ISDIR
+
+if sys.version_info < (3, 6):
+    import sha3     # monkey-patches hashlib
 
 __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
            ]
 
-__version__ = '5.2.0'
-__version_date__ = '2016-11-07'
+__version__ = '5.2.1'
+__version_date__ = '2016-11-21'
 
 # -------------------------------------------------------------------
 
@@ -81,13 +85,16 @@ class MerkleNode(object):
 
     # XXX CONSIDER THIS DEPRECATED
     def equal(self, other):
-        return __eq__(self, other)
+        return self.__eq__(other)
+    # END DEPRECATED
 
     @property
-    def is_leaf(self): return self._is_leaf
+    def is_leaf(self):
+        return self._is_leaf
 
     @property
-    def name(self): return self._name
+    def name(self):
+        return self._name
 
 #   def path(self):
 #       raise RuntimeError('not implemented')
@@ -95,7 +102,8 @@ class MerkleNode(object):
     def __str__(self):
         raise RuntimeError('subclass must implement')
 
-    def using_sha(self): return self._using_sha
+    def using_sha(self):
+        return self._using_sha
 
 # -------------------------------------------------------------------
 
@@ -151,6 +159,7 @@ class MerkleDoc(MerkleNode):
             elif using_sha == QQQ.USING_SHA2:
                 sha = hashlib.sha256()
             elif using_sha == QQQ.USING_SHA3:
+                # pylint: disable=no-member
                 sha = hashlib.sha3_256()
             sha.update(bytes(tree.bin_hash))
             sha.update(path.encode('utf-8'))
@@ -169,13 +178,10 @@ class MerkleDoc(MerkleNode):
 
     def __eq__(self, other):
         """ignore boundedness"""
-        if isinstance(other, MerkleDoc)          and \
-                self._path == other.path         and \
-                self._bin_hash == other.bin_hash and \
-                self._tree == other.tree:
-            return True
-        else:
-            return False
+        return isinstance(other, MerkleDoc)      and \
+            self._path == other.path         and \
+            self._bin_hash == other.bin_hash and \
+            self._tree == other.tree
 
     # XXX DEPRECATED
     def equal(self, other):
@@ -204,6 +210,11 @@ class MerkleDoc(MerkleNode):
     def bound(self):
         return self._bound
 
+    @bound.setter
+    def bound(self, value):
+        # XXX validate
+        self._bound = value
+
     @property
     def using_sha(self):
         return self._using_sha
@@ -223,7 +234,7 @@ class MerkleDoc(MerkleNode):
         if not os.path.exists(path_to_dir):
             raise RuntimeError(
                 "MerkleTree: directory '%s' does not exist" % path_to_dir)
-        (path, delim, name) = path_to_dir.rpartition('/')
+        path, _, _ = path_to_dir.rpartition('/')
         if path == '':
             raise RuntimeError("cannot parse inclusive path " + path_to_dir)
         path += '/'
@@ -237,7 +248,7 @@ class MerkleDoc(MerkleNode):
                                                   ex_re, match_re)
         # creates the hash
         doc = MerkleDoc(path, using_sha, False, tree, ex_re, match_re)
-        doc._bound = True
+        doc.bound = True
         return doc
 
     @staticmethod
@@ -401,16 +412,14 @@ class MerkleLeaf(MerkleNode):
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
 
     def __eq__(self, other):
-        if isinstance(other, MerkleLeaf)            and\
-                self._name    == other._name        and\
-                self._bin_hash == other.bin_hash:
-            return True
-        else:
-            return False
+        return isinstance(other, MerkleLeaf)     and \
+            self._name == other.name         and \
+            self._bin_hash == other.bin_hash
 
     # XXX DEPRECATED
     def equal(self, other):
         return self.__eq__(other)
+    # END DEPRECATED
 
     def __str__(self):
         return self.to_string('')        # that is, no indent
@@ -427,12 +436,12 @@ class MerkleLeaf(MerkleNode):
             print(("INTERNAL ERROR: file does not exist: " + path_to_file))
         # XXX we convert from binary to hex and then right back to binary !!
         if using_sha == QQQ.USING_SHA1:
-            hash = file_sha1bin(path_to_file)
+            hash_ = file_sha1bin(path_to_file)
         elif using_sha == QQQ.USING_SHA2:
-            hash = file_sha2bin(path_to_file)
+            hash_ = file_sha2bin(path_to_file)
         elif using_sha == QQQ.USING_SHA3:
-            hash = file_sha3bin(path_to_file)
-        return MerkleLeaf(name, using_sha, hash)
+            hash_ = file_sha3bin(path_to_file)
+        return MerkleLeaf(name, using_sha, hash_)
 
     def to_string(self, indent=0):
         if self._bin_hash is None:
@@ -515,7 +524,7 @@ class MerkleTree(MerkleNode):
             return False
 
         if (not isinstance(other, MerkleTree)) or\
-           (self._name != other._name):
+           (self._name != other.name):
             return False
         if self.hex_hash != other.hex_hash:
             return False
@@ -526,21 +535,23 @@ class MerkleTree(MerkleNode):
         other_nodes = other.nodes
         if len(my_nodes) != len(other_nodes):
             return False
-        for i in range(len(my_nodes)):
-            my_node = my_nodes[i]
-            other_node = other_nodes[i]
-            if not my_node.equal(other_node):    # RECURSES
+        for ndx, my_node in enumerate(my_nodes):
+            other_node = other_nodes[ndx]
+            if not my_node == other_node:    # RECURSES
                 return False
         return True
 
+    # DEPRECATED
     def equal(self, other):
         return self.__eq__(other)
+    # END DEPRECATED
 
     def __str__(self):
         return self.to_string('')
 
     @property
-    def using_sha(self): return self._using_sha
+    def using_sha(self):
+        return self._using_sha
 
     #################################################################
     # METHODS LIFTED FROM bindmgr/bindlib/MerkleTree.py
@@ -623,7 +634,8 @@ class MerkleTree(MerkleNode):
                 nnn += 1
                 continue
             # XXX SHOULD/COULD CHECK THAT HASHES ARE OF THE RIGHT TYPE
-            (line_indent, hash, name, is_dir) = MerkleTree.parse_other_line(line)
+            line_indent, hash_, name, is_dir = MerkleTree.parse_other_line(
+                line)
             if line_indent < stk_depth:
                 while line_indent < stk_depth:
                     stk_depth -= 1
@@ -635,7 +647,7 @@ class MerkleTree(MerkleNode):
             if is_dir:
                 # create and set attributes of new node
                 new_tree = MerkleTree(name, using_sha)  # , curTree)
-                new_tree.bin_hash = hash
+                new_tree.bin_hash = hash_
                 # add the new node into the existing tree
                 cur_tree.add_node(new_tree)
                 stack.append(new_tree)
@@ -643,11 +655,11 @@ class MerkleTree(MerkleNode):
                 cur_tree = new_tree
             else:
                 # create and set attributes of new node
-                new_node = MerkleLeaf(name, using_sha, hash)
+                new_node = MerkleLeaf(name, using_sha, hash_)
                 # add the new node into the existing tree
                 cur_tree.add_node(new_node)
             nnn += 1
-        return root_tree         # BAR
+        return root_tree
 
     @staticmethod
     def create_from_serialization(string, using_sha=QQQ.USING_SHA2):
@@ -696,8 +708,7 @@ class MerkleTree(MerkleNode):
                 if match_ is None:
                     raise RuntimeError(
                         "line '%s' does not match expected pattern" % line)
-                # 2014-06-24 next line as found:
-                tree._add(match_.group(3), match_.group(2))
+                tree.add_node(match_.group(3), match_.group(2))
                 line = file.readline()     # , 'utf-8')
 
         return tree
@@ -721,18 +732,18 @@ class MerkleTree(MerkleNode):
             raise RuntimeError("cannot parse inclusive path " + path_to_dir)
 
         tree = MerkleTree(name, using_sha, ex_re, match_re)
-
-        # Create data structures for constituent files and subdirectories
-        # These are sorted by the bare name
-        # empty if you just append .sort()
-        files = sorted(os.listdir(path_to_dir))
-        tree._bin_hash = None
+        tree.bin_hash = None
         if using_sha == QQQ.USING_SHA1:
             sha = hashlib.sha1()
         elif using_sha == QQQ.USING_SHA2:
             sha = hashlib.sha256()
         elif using_sha == QQQ.USING_SHA3:
+            # pylint: disable=no-member
             sha = hashlib.sha3_256()
+
+        # Create data structures for constituent files and subdirectories
+        # These MUST BE SORTED by the bare name to meet specs.
+        files = sorted(os.listdir(path_to_dir))
         if files:
             sha_count = 0
             for file in files:
@@ -765,13 +776,9 @@ class MerkleTree(MerkleNode):
                     # SKIP NEXT TO EASE GARBAGE COLLECTION ??? XXX
                     # but that won't be a good idea if we are
                     # invoking toString()
-                    tree._nodes.append(node)
+                    tree.nodes.append(node)
             if sha_count:
                 tree._bin_hash = bytes(sha.digest())
-#       else:           # WE SEE THIS ERROR
-#           # this must be an error; . and .. are always present
-#           msg = "directory '%s' contains no files" % pathToDir
-#           raise RuntimeError(msg)
 
         return tree
 

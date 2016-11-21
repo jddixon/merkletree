@@ -3,15 +3,18 @@
 """ Test MerkleLeaf functionality. """
 
 # testMerkleLeaf.py
+import sys
 import time
 import unittest
 import hashlib
 
-import sha3     # monkey-patches hashlib
-
 from rnglib import SimpleRNG
 from xlattice import QQQ, check_using_sha
 from merkletree import MerkleLeaf
+
+if sys.version_info < (3, 6):
+    # pylint:disable=unused-import
+    import sha3     # monkey-patches hashlib
 
 # This is the SHA1 test
 
