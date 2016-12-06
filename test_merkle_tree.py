@@ -33,6 +33,7 @@ class TestMerkleTree(unittest.TestCase):
     # utility functions ---------------------------------------------
 
     def get_two_unique_directory_names(self):
+        """ Make two different quasi-random directory names."""
         dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
@@ -43,6 +44,7 @@ class TestMerkleTree(unittest.TestCase):
         return (dir_name1, dir_name2)
 
     def make_one_named_test_directory(self, name, depth, width):
+        """ Make a directory tree with a specific name, depth and width."""
         dir_path = "tmp/%s" % name
         if os.path.exists(dir_path):
             shutil.rmtree(dir_path)
@@ -50,6 +52,7 @@ class TestMerkleTree(unittest.TestCase):
         return dir_path
 
     def make_two_test_directories(self, depth, width):
+        """ Create two test directories with different names. """
         dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
         dir_path1 = self.make_one_named_test_directory(dir_name1, depth, width)
 
@@ -61,6 +64,9 @@ class TestMerkleTree(unittest.TestCase):
         return (dir_name1, dir_path1, dir_name2, dir_path2)
 
     def verify_leaf_sha(self, node, path_to_file, using_sha):
+        """
+        Verify a leaf node is hashed correctly, using a specific SHA hash type.
+        """
         self.assertTrue(os.path.exists(path_to_file))
         with open(path_to_file, "rb") as file:
             data = file.read()
@@ -78,11 +84,15 @@ class TestMerkleTree(unittest.TestCase):
         self.assertEqual(hash_, node.bin_hash)
 
     def verify_tree_sha(self, node, path_to_node, using_sha):
-        # we assume that the node is a MerkleTree
+        """
+        Verify tree elements are hashed correctly, assuming that the node
+        is a MerkleTree, using a specific SHA hash type.
+        """
         if node.nodes is None:
             self.assertEqual(None, node.bin_hash)
         else:
             hash_count = 0
+            # pylint: disable=redefined-variable-type
             if using_sha == QQQ.USING_SHA1:
                 sha = hashlib.sha1()
             elif using_sha == QQQ.USING_SHA2:
@@ -111,11 +121,19 @@ class TestMerkleTree(unittest.TestCase):
 
     # unit tests ----------------------------------------------------
 
-    def test_pathless_unbound_constructor(self):
+    def test_pathless_unbound(self):
+        """
+        Test basic characteristics of very simple MerkleTrees created
+        using our standard SHA hash types.
+        """
         for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
-            self.do_test_pathless_unbound_constructor(using)
+            self.do_test_pathless_unbound(using)
 
-    def do_test_pathless_unbound_constructor(self, using_sha):
+    def do_test_pathless_unbound(self, using_sha):
+        """
+        Test basic characteristics of very simple MerkleTrees created
+        using a specific SHA hash type.
+        """
         (dir_name1, dir_name2) = self.get_two_unique_directory_names()
 
         check_using_sha(using_sha)
@@ -154,6 +172,10 @@ class TestMerkleTree(unittest.TestCase):
         self.assertTrue(tree1.equal(tree1_rebuilt))
 
     def test_bound_flat_dirs(self):
+        """
+        Test handling of flat directories with a few data files
+        using varioush SHA hash types.
+        """
         for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
             self.do_test_bound_flat_dirs(using)
 
@@ -188,6 +210,9 @@ class TestMerkleTree(unittest.TestCase):
         self.assertTrue(tree1.equal(tree1_rebuilt))
 
     def test_bound_needle_dirs(self):
+        """
+        Test directories four deep with various SHA hash types.
+        """
         for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
             self.do_test_bound_needle_dirs(using)
 
@@ -225,6 +250,10 @@ class TestMerkleTree(unittest.TestCase):
     # tests of bugs previously found --------------------------------
 
     def test_gray_boxes_bug1(self):
+        """
+        Verify that bug #1 in handling serialization of grayboxes website
+        has been corrected.
+        """
         serialization =\
             '721a08022dd26e7be98b723f26131786fd2c0dc3 grayboxes.com/\n'       +\
             ' fcd3973c66230b9078a86a5642b4c359fe72d7da images/\n'            +\
@@ -293,6 +322,8 @@ class TestMerkleTree(unittest.TestCase):
         self.assertTrue(tree1.equal(tree2))
 
     def test_gray_boxes_bug3(self):
+        """ Test solution to bug in handling grayboxes website. """
+
         serialization =\
             '088d0e391e1a4872329e0f7ac5d45b2025363e26c199a74ea39901d109afd6ba grayboxes.com/\n' +\
             ' 24652ddc14687866e6b1251589aee7e1e3079a87f80cd7775214f6d837612a90 images/\n' +\

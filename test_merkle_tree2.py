@@ -1,26 +1,21 @@
 #!/usr/bin/env python3
-
 # testMerkleTree.py
+
+""" Test MerkleTree behavior with deeper directories. """
+
 import os
-import shutil
-import sys
 import time
 import unittest
-import hashlib
 
 from rnglib import SimpleRNG
-from xlattice import (QQQ, check_using_sha,
-                      SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE)
-from merkletree import MerkleTree, MerkleLeaf
-
-if sys.version_info < (3, 6):
-    # pylint:disable=unused-import
-    import sha3                 # monkey-patches hashlib
+from xlattice import QQQ
+from merkletree import MerkleTree
 
 MAX_NAME_LEN = 16
 
 
 class TestMerkleTree2(unittest.TestCase):
+    """ Test MerkleTree behavior with deeper directories. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -54,7 +49,7 @@ class TestMerkleTree2(unittest.TestCase):
         tree2 = MerkleTree.create_from_serialization(ser, using_sha)
 
         self.assertTrue(tree2.__eq__(tree))
-        self.assertEqual(tree2, tree)
+        self.assertEqual(tree2, tree)           # identical test
 
         # ROUND TRIP 2 ----------------------------------------------
         strings = ser.split('\n')
@@ -62,7 +57,19 @@ class TestMerkleTree2(unittest.TestCase):
         tree3 = MerkleTree.create_from_string_array(strings, using_sha)
         self.assertEqual(tree3, tree)
 
+        # ROUND TRIP 3 ----------------------------------------------
+        filename = os.path.join('tmp', self.rng.next_file_name(8))
+        while os.path.exists(filename):
+            filename = os.path.join('tmp', self.rng.next_file_name(8))
+        with open(filename, 'w') as file:
+            file.write(ser)
+
+        tree4 = MerkleTree.create_from_file(filename, using_sha)
+        self.assertEqual(tree4, tree)
+
     def test_deepish_trees(self):
+        """ Test behavior of deeper trees using various SHA hash types. """
+
         for using_sha in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3]:
             self.do_test_deepish_trees(using_sha)
 

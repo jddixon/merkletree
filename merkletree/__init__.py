@@ -8,6 +8,7 @@ import sys
 from stat import S_ISDIR
 
 from xlattice import (SHA1_BIN_LEN, SHA2_BIN_LEN, SHA3_BIN_LEN,
+                      SHA1_BIN_NONE, SHA2_BIN_NONE, SHA3_BIN_NONE,
                       SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
                       QQQ, check_using_sha, util)
 from xlattice.crypto import SP   # for getSpaces()
@@ -20,8 +21,8 @@ __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.2.2'
-__version_date__ = '2016-12-05'
+__version__ = '5.2.3'
+__version_date__ = '2016-12-06'
 
 # -------------------------------------------------------------------
 
@@ -431,15 +432,32 @@ class MerkleLeaf(MerkleNode):
         Returns a MerkleLeaf.  The name is part of pathToFile, but is
         passed to simplify the code.
         """
+        def reportIOError(exc):
+            # path = os.path.join(path_to_file, name)
+            print("error reading file %s: %s" % (
+                path_to_file, exc), file=sys.stderr)
+
         if not os.path.exists(path_to_file):
             print(("INTERNAL ERROR: file does not exist: " + path_to_file))
         # XXX we convert from binary to hex and then right back to binary !!
         if using_sha == QQQ.USING_SHA1:
-            hash_ = file_sha1bin(path_to_file)
+            try:
+                hash_ = file_sha1bin(path_to_file)
+            except OSError as exc:
+                reportIOError(exc)
+                hash_ = SHA1_BIN_NONE
         elif using_sha == QQQ.USING_SHA2:
-            hash_ = file_sha2bin(path_to_file)
+            try:
+                hash_ = file_sha2bin(path_to_file)
+            except OSError as exc:
+                reportIOError(exc)
+                hash_ = SHA2_BIN_NONE
         elif using_sha == QQQ.USING_SHA3:
-            hash_ = file_sha3bin(path_to_file)
+            try:
+                hash_ = file_sha3bin(path_to_file)
+            except OSError as exc:
+                reportIOError(exc)
+                hash_ = SHA3_BIN_NONE
         return MerkleLeaf(name, using_sha, hash_)
 
     def to_string(self, indent=0):
@@ -662,6 +680,8 @@ class MerkleTree(MerkleNode):
     @staticmethod
     def create_from_serialization(string, using_sha=QQQ.USING_SHA2):
         """
+        Create a MerkleTree by parsing its serialization (a single string),
+        given the SHA hash type used to create the MerkleTree.
         """
         if string is None:
             raise RuntimeError("MerkleTree.createFromSerialization: no input")
@@ -672,44 +692,16 @@ class MerkleTree(MerkleNode):
 
     @staticmethod
     def create_from_file(path_to_file, using_sha=QQQ.USING_SHA2):
+        """
+        Create a MerkleTree by parsing its on-disk serialization,
+        given the SHA hash type used to create the MerkleTree.
+        """
         if not os.path.exists(path_to_file):
             raise RuntimeError(
                 "MerkleTree.createFromFile: file '%s' does not exist" % path_to_file)
         with open(path_to_file, 'r') as file:
-            line = file.readline()     # , 'utf-8')
-            line = line.rstrip()
-            match_ = MerkleTree.FIRST_LINE_RE_1.match(line)
-            if match_ is None:
-                match_ = MerkleTree.FIRST_LINE_RE_2.match(line)
-                using_sha = False
-            else:
-                using_sha = True
-            if match_ is None:
-                raise RuntimeError(
-                    "line '%s' does not match expected pattern" % line)
-            dir_name = match_.group(3)
-            tree = MerkleTree(dir_name, using_sha)
-#           if m.group(3) != 'bind':
-#               raise RuntimeError(
-#                       "expected 'bind' in first line, found %s" % m.group(3))
-            tree.bin_hash = match_.group(2)
-            line = file.readline()     # , 'utf-8')
-            while line:
-                line = line.rstrip()
-                if line == '':
-                    continue
-                if using_sha == QQQ.USING_SHA1:
-                    match_ = re.match(MerkleTree.OTHER_LINE_RE_1, line)
-                elif using_sha == QQQ.USING_SHA2 or using_sha == QQQ.USING_SHA3:
-                    match_ = re.match(MerkleTree.OTHER_LINE_RE_2, line)
-
-                if match_ is None:
-                    raise RuntimeError(
-                        "line '%s' does not match expected pattern" % line)
-                tree.add_node(match_.group(3), match_.group(2))
-                line = file.readline()     # , 'utf-8')
-
-        return tree
+            text = file.read()
+        return MerkleTree.create_from_serialization(text, using_sha)
 
     @staticmethod
     def create_from_file_system(path_to_dir, using_sha=QQQ.USING_SHA2,
