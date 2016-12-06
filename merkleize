@@ -19,19 +19,21 @@ directory followed by a single dot, representing the file name.
 import os
 import sys
 import time
-
 from argparse import ArgumentParser
+
+from optionz import show_options        # requires argparse
 from xlattice import (check_using_sha,
-                      parseUsingSHA, fix_using_sha, show_using_sha)
+                      parseUsingSHA, fix_using_sha)
 #from xlattice.util import make_ex_re, make_match_re
 
 from merkletree import (__version__, __version_date__, MerkleDoc)
 
 
 def merkleize_directory(args):
-
-    # get and check args; XXX should throw exceptions if problems
-    # are encountered
+    """
+    Get and check args; XXX should throw exceptions if problems
+    are encountered.
+    """
 
     exclusions = args.exclude
     hash_output = args.hash_output
@@ -150,30 +152,7 @@ def main():
         print("%s %s" % (app_name, __version_date__))
 
     if args.verbose or args.just_show:
-        print('exclude          = ' + str(args.exclude))
-        print('hash_output      = ' + str(args.hash_output))
-        print('indent           = ' + str(args.indent))
-        print('in_dir           = ' + str(args.in_dir))
-        print('just_show        = ' + str(args.just_show))
-        print('match_pat        = ' + str(args.match_pat))
-        print('out_dir          = ' + str(args.out_dir))
-        print('out_file         = ' + str(args.out_file))
-        print('out_path         = ' + str(args.out_path))
-        print('showTimestamp    = ' + str(args.show_timestamp))
-        print('show_tree        = ' + str(args.show_tree))
-        print('show_version     = ' + str(args.show_version))
-        print('timestamp        = ' + str(args.timestamp))
-        show_using_sha(args)
-
-        if args.exclude and len(args.exclude) > 0:
-            print("exclude:")
-            for exclusion in args.exclude:
-                print("    %s" % exclusion)
-        if args.match_pat and len(args.match_pat) > 0:
-            print("match:")
-            for match in args.match_pat:
-                print("    %s" % match)
-
+        print(show_options(args))
     if args.just_show:
         sys.exit(0)
 

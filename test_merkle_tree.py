@@ -65,6 +65,7 @@ class TestMerkleTree(unittest.TestCase):
         with open(path_to_file, "rb") as file:
             data = file.read()
         self.assertFalse(data is None)
+        # pylint: disable=redefined-variable-type
         if using_sha == QQQ.USING_SHA1:
             sha = hashlib.sha1()
         elif using_sha == QQQ.USING_SHA2:

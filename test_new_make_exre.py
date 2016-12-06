@@ -21,8 +21,7 @@ class TestMakeExRE(unittest.TestCase):
 
     def do_test_for_expected_exclusions(self, ex_re):
         """ Verify that expected exclusions work for specific pattern. """
-        self.assertIsNotNone(ex_re.match('junkEverywhere')
-                             )  # begins with 'junk'
+        self.assertIsNotNone(ex_re.match('junkEverywhere'))   # 'junk...'
         self.assertIsNotNone(ex_re.match('.merkle'))          # a file
         self.assertIsNotNone(ex_re.match('.svn'))             # the directory
         self.assertIsNotNone(ex_re.match('.foo.swp'))         # vi backup file
