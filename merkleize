@@ -56,8 +56,8 @@ def merkleize_directory(args):
         dir_name = in_dir
 
     if verbose:
-        print("dirName:         %s" % dir_name)
-        print("path:            %s" % path)
+        print("dir_name:      %s" % dir_name)
+        print("path:          %s" % path)
 
     path_to_dir = os.path.join(path, dir_name)
     doc = MerkleDoc.create_from_file_system(
