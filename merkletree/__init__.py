@@ -18,11 +18,10 @@ if sys.version_info < (3, 6):
 
 __all__ = ['__version__', '__version_date__',
            # classes
-           'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError',
-           ]
+           'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.2.1'
-__version_date__ = '2016-11-21'
+__version__ = '5.2.2'
+__version_date__ = '2016-12-05'
 
 # -------------------------------------------------------------------
 
@@ -422,7 +421,7 @@ class MerkleLeaf(MerkleNode):
     # END DEPRECATED
 
     def __str__(self):
-        return self.to_string('')        # that is, no indent
+        return self.to_string(0)        # that is, no indent
 
     # OTHER METHODS AND PROPERTIES ##################################
 
@@ -523,8 +522,7 @@ class MerkleTree(MerkleNode):
         if other is None:
             return False
 
-        if (not isinstance(other, MerkleTree)) or\
-           (self._name != other.name):
+        if (not isinstance(other, MerkleTree)) or (self._name != other.name):
             return False
         if self.hex_hash != other.hex_hash:
             return False
@@ -537,7 +535,7 @@ class MerkleTree(MerkleNode):
             return False
         for ndx, my_node in enumerate(my_nodes):
             other_node = other_nodes[ndx]
-            if not my_node == other_node:    # RECURSES
+            if not my_node.__eq__(other_node):    # RECURSES
                 return False
         return True
 
@@ -547,7 +545,7 @@ class MerkleTree(MerkleNode):
     # END DEPRECATED
 
     def __str__(self):
-        return self.to_string('')
+        return self.to_string(0)
 
     @property
     def using_sha(self):
@@ -733,6 +731,7 @@ class MerkleTree(MerkleNode):
 
         tree = MerkleTree(name, using_sha, ex_re, match_re)
         tree.bin_hash = None
+        # pylint: disable=redefined-variable-type
         if using_sha == QQQ.USING_SHA1:
             sha = hashlib.sha1()
         elif using_sha == QQQ.USING_SHA2:
@@ -763,6 +762,7 @@ class MerkleTree(MerkleNode):
                 # S_ISLNK(mode) is true if symbolic link
                 # isfile(path) follows symbolic links
                 elif os.path.isfile(path_to_file):        # S_ISREG(mode):
+                    # pylint: disable=redefined-variable-type
                     node = MerkleLeaf.create_from_file_system(
                         path_to_file, file, using_sha)
                 # otherwise, just ignore it ;-)
@@ -778,7 +778,7 @@ class MerkleTree(MerkleNode):
                     # invoking toString()
                     tree.nodes.append(node)
             if sha_count:
-                tree._bin_hash = bytes(sha.digest())
+                tree.bin_hash = bytes(sha.digest())
 
         return tree
 
@@ -811,6 +811,7 @@ class MerkleTree(MerkleNode):
         return self._nodes
 
     def add_node(self, node):
+        """ Add a MerkleNode to a MerkleTree. """
         if node is None:
             raise RuntimeError("attempt to add null node")
         if not isinstance(node, MerkleTree)\
