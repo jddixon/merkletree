@@ -30,10 +30,10 @@ class TestMerkleDoc(unittest.TestCase):
         """
         Get two candidate directory names, making sure that they differ.
         """
-        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
-            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+            dir_name2 = self.rng.next_file_name(MAX_NAME_LEN)
         self.assertTrue(len(dir_name1) > 0)
         self.assertTrue(len(dir_name2) > 0)
         self.assertTrue(dir_name1 != dir_name2)
@@ -48,7 +48,7 @@ class TestMerkleDoc(unittest.TestCase):
         dir_path = "tmp/%s" % name
         if os.path.exists(dir_path):
             shutil.rmtree(dir_path)
-        self.rng.nextDataDir(dir_path, depth, width, 32)
+        self.rng.next_data_dir(dir_path, depth, width, 32)
         return dir_path
 
     def make_two_test_directories(self, depth, width):
@@ -56,12 +56,12 @@ class TestMerkleDoc(unittest.TestCase):
         Create two test directories under tmp/ with distinct names but the
         depth and width specified.
         """
-        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_path1 = self.make_one_named_test_directory(dir_name1, depth, width)
 
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
-            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+            dir_name2 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_path2 = self.make_one_named_test_directory(dir_name2, depth, width)
 
         return (dir_name1, dir_path1, dir_name2, dir_path2)

@@ -10,7 +10,7 @@ from stat import S_ISDIR
 from xlattice import (SHA1_BIN_LEN, SHA2_BIN_LEN, SHA3_BIN_LEN,
                       SHA1_BIN_NONE, SHA2_BIN_NONE, SHA3_BIN_NONE,
                       SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
-                      QQQ, check_using_sha, util)
+                      HashTypes, check_hashtype, util)
 from xlattice.crypto import SP   # for getSpaces()
 from xlattice.u import file_sha1bin, file_sha2bin, file_sha3bin
 
@@ -21,8 +21,8 @@ __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.2.3'
-__version_date__ = '2016-12-06'
+__version__ = '5.3.0'
+__version_date__ = '2017-01-13'
 
 # -------------------------------------------------------------------
 
@@ -35,8 +35,8 @@ class MerkleNode(object):
 
     #__slots__ = [ A PERFORMANCE ENHANCER ]
 
-    def __init__(self, name, is_leaf=False, using_sha=QQQ.USING_SHA2):
-        check_using_sha(using_sha)
+    def __init__(self, name, is_leaf=False, hashtype=HashTypes.SHA2):
+        check_hashtype(hashtype)
         self._bin_hash = None
         if name is None:
             raise RuntimeError("MerkleNode: null MerkleNode name")
@@ -45,16 +45,16 @@ class MerkleNode(object):
             raise RuntimeError("MerkleNode: null or empty name")
 
         self._is_leaf = is_leaf
-        self._using_sha = using_sha
+        self._hashtype = hashtype
 
     @property
     def hex_hash(self):
         if self._bin_hash is None:
-            if self._using_sha == QQQ.USING_SHA1:
+            if self._hashtype == HashTypes.SHA1:
                 return SHA1_HEX_NONE
-            elif self._using_sha == QQQ.USING_SHA2:
+            elif self._hashtype == HashTypes.SHA2:
                 return SHA2_HEX_NONE
-            elif self._using_sha == QQQ.USING_SHA3:
+            elif self._hashtype == HashTypes.SHA3:
                 return SHA3_HEX_NONE
         else:
             return str(binascii.b2a_hex(self._bin_hash), 'ascii')
@@ -102,8 +102,8 @@ class MerkleNode(object):
     def __str__(self):
         raise RuntimeError('subclass must implement')
 
-    def using_sha(self):
-        return self._using_sha
+    def hashtype(self):
+        return self._hashtype
 
 # -------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ class MerkleDoc(MerkleNode):
     """
 
     __slots__ = ['_bound', '_ex_re', '_match_re', '_path',
-                 '_tree', '_using_sha', ]
+                 '_tree', '_hashtype', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     # THIS PATTERN WON"T CATCH SOME ERRORS; eg it permits '///' in paths
@@ -124,12 +124,12 @@ class MerkleDoc(MerkleNode):
                                  re.IGNORECASE)
 
     # XXX MUST ADD matchRE and exRE and test on their values at this level
-    def __init__(self, path, using_sha=QQQ.USING_SHA2, binding=False,
+    def __init__(self, path, hashtype=HashTypes.SHA2, binding=False,
                  tree=None,
                  ex_re=None,    # exclusions, which are Regular Expressions
                  match_re=None):   # matches, also Regular Expressions
 
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         if path is None:
             raise RuntimeError("null MerkleDoc path")
         if tree:
@@ -140,7 +140,7 @@ class MerkleDoc(MerkleNode):
             raise RuntimeError('null MerkleTree and not binding')
         else:
             raise RuntimeError("MerkleDoc binding not yet implemented")
-        super().__init__(name, is_leaf=False, using_sha=using_sha)
+        super().__init__(name, is_leaf=False, hashtype=hashtype)
 
         path = path.strip()
         if len(path) == 0:
@@ -154,11 +154,11 @@ class MerkleDoc(MerkleNode):
             #print("MerkleDoc.__init__: usingSHA = %s" % str(usingSHA))
             # END
             # pylint:disable=redefined-variable-type
-            if using_sha == QQQ.USING_SHA1:
+            if hashtype == HashTypes.SHA1:
                 sha = hashlib.sha1()
-            elif using_sha == QQQ.USING_SHA2:
+            elif hashtype == HashTypes.SHA2:
                 sha = hashlib.sha256()
-            elif using_sha == QQQ.USING_SHA3:
+            elif hashtype == HashTypes.SHA3:
                 # pylint: disable=no-member
                 sha = hashlib.sha3_256()
             sha.update(bytes(tree.bin_hash))
@@ -216,19 +216,19 @@ class MerkleDoc(MerkleNode):
         self._bound = value
 
     @property
-    def using_sha(self):
-        return self._using_sha
+    def hashtype(self):
+        return self._hashtype
 
     # QUASI-CONSTRUCTORS ############################################
     @staticmethod
-    def create_from_file_system(path_to_dir, using_sha=QQQ.USING_SHA2,
+    def create_from_file_system(path_to_dir, hashtype=HashTypes.SHA2,
                                 exclusions=None, matches=None):
         """
         Create a MerkleDoc based on the information in the directory
         at pathToDir.  The name of the directory will be the last component
         of pathToDir.  Return the MerkleTree.
         """
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         if not path_to_dir:
             raise RuntimeError("cannot create a MerkleTree, no path set")
         if not os.path.exists(path_to_dir):
@@ -244,29 +244,29 @@ class MerkleDoc(MerkleNode):
         match_re = None
         if matches:
             match_re = util.make_match_re(matches)
-        tree = MerkleTree.create_from_file_system(path_to_dir, using_sha,
+        tree = MerkleTree.create_from_file_system(path_to_dir, hashtype,
                                                   ex_re, match_re)
         # creates the hash
-        doc = MerkleDoc(path, using_sha, False, tree, ex_re, match_re)
+        doc = MerkleDoc(path, hashtype, False, tree, ex_re, match_re)
         doc.bound = True
         return doc
 
     @staticmethod
-    def create_from_serialization(string, using_sha=QQQ.USING_SHA2):
-        check_using_sha(using_sha)
+    def create_from_serialization(string, hashtype=HashTypes.SHA2):
+        check_hashtype(hashtype)
         if string is None:
             raise RuntimeError("MerkleDoc.createFromSerialization: no input")
         s_array = string.split('\n')                # note CR-LF
-        return MerkleDoc.create_from_string_array(s_array, using_sha)
+        return MerkleDoc.create_from_string_array(s_array, hashtype)
 
     @staticmethod
-    def create_from_string_array(string, using_sha=QQQ.USING_SHA2):
+    def create_from_string_array(string, hashtype=HashTypes.SHA2):
         """
         The string array is expected to follow conventional indentation
         rules, with zero indentation on the first line and some number
         of leading spaces on all successive lines.
         """
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         if string is None:
             raise RuntimeError('null argument')
         # XXX check TYPE - must be array of strings
@@ -277,12 +277,12 @@ class MerkleDoc(MerkleNode):
             MerkleDoc.parse_first_line(string[0].rstrip())
         len_hash = len(doc_hash)
         if len_hash == SHA1_BIN_LEN:
-            if using_sha != QQQ.USING_SHA1:
+            if hashtype != HashTypes.SHA1:
                 raise RuntimeError("hash length %d inconsistent with %s" % (
-                    len_hash, using_sha))
+                    len_hash, hashtype))
         elif len_hash != SHA2_BIN_LEN:
             raise RuntimeError("hash length %d inconsistent with %s" % (
-                len_hash, using_sha))
+                len_hash, hashtype))
 
         # DEBUG
         # print("MerkleDoc.createFromStringArray:")
@@ -291,12 +291,12 @@ class MerkleDoc(MerkleNode):
         #print("    usingSHA=%s" % str(usingSHA))
         # END
 
-        tree = MerkleTree.create_from_string_array(string[1:], using_sha)
+        tree = MerkleTree.create_from_string_array(string[1:], hashtype)
 
         # def __init__ (self, path, binding = False, tree = None,
         #    exRE    = None,    # exclusions, which are Regular Expressions
         #    matchRE = None):   # matches, also Regular Expressions
-        doc = MerkleDoc(doc_path, using_sha=using_sha, tree=tree)
+        doc = MerkleDoc(doc_path, hashtype=hashtype, tree=tree)
         return doc
 
     # CLASS METHODS #################################################
@@ -390,10 +390,10 @@ class MerkleDoc(MerkleNode):
 
 class MerkleLeaf(MerkleNode):
 
-    __slots__ = ['_name', '_using_sha', ]
+    __slots__ = ['_name', '_hashtype', ]
 
-    def __init__(self, name, using_sha=QQQ.USING_SHA1, hash_=None):
-        super().__init__(name, is_leaf=True, using_sha=using_sha)
+    def __init__(self, name, hashtype=HashTypes.SHA1, hash_=None):
+        super().__init__(name, is_leaf=True, hashtype=hashtype)
 
         # JUNK
         if name is None:
@@ -427,7 +427,7 @@ class MerkleLeaf(MerkleNode):
     # OTHER METHODS AND PROPERTIES ##################################
 
     @staticmethod
-    def create_from_file_system(path_to_file, name, using_sha=QQQ.USING_SHA2):
+    def create_from_file_system(path_to_file, name, hashtype=HashTypes.SHA2):
         """
         Returns a MerkleLeaf.  The name is part of pathToFile, but is
         passed to simplify the code.
@@ -440,33 +440,33 @@ class MerkleLeaf(MerkleNode):
         if not os.path.exists(path_to_file):
             print(("INTERNAL ERROR: file does not exist: " + path_to_file))
         # XXX we convert from binary to hex and then right back to binary !!
-        if using_sha == QQQ.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             try:
                 hash_ = file_sha1bin(path_to_file)
             except OSError as exc:
                 reportIOError(exc)
                 hash_ = SHA1_BIN_NONE
-        elif using_sha == QQQ.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             try:
                 hash_ = file_sha2bin(path_to_file)
             except OSError as exc:
                 reportIOError(exc)
                 hash_ = SHA2_BIN_NONE
-        elif using_sha == QQQ.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             try:
                 hash_ = file_sha3bin(path_to_file)
             except OSError as exc:
                 reportIOError(exc)
                 hash_ = SHA3_BIN_NONE
-        return MerkleLeaf(name, using_sha, hash_)
+        return MerkleLeaf(name, hashtype, hash_)
 
     def to_string(self, indent=0):
         if self._bin_hash is None:
-            if self._using_sha == QQQ.USING_SHA1:
+            if self._hashtype == HashTypes.SHA1:
                 hash_ = SHA1_HEX_NONE
-            elif self._using_sha == QQQ.USING_SHA2:
+            elif self._hashtype == HashTypes.SHA2:
                 hash_ = SHA2_HEX_NONE
-            elif self._using_sha == QQQ.USING_SHA3:
+            elif self._hashtype == HashTypes.SHA3:
                 hash_ = SHA3_HEX_NONE
         else:
             hash_ = self.hex_hash
@@ -505,7 +505,7 @@ class MerkleLeaf(MerkleNode):
 class MerkleTree(MerkleNode):
 
     __slots__ = ['_bound', '_name', '_ex_re', '_bin_hash', '_match_re',
-                 '_nodes', '_using_sha', ]
+                 '_nodes', '_hashtype', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     FIRST_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.:]+/)$',
@@ -520,11 +520,11 @@ class MerkleTree(MerkleNode):
     #################################################################
     # exRE and matchRE must have been validated by the calling code
     #################################################################
-    def __init__(self, name, using_sha=False,
+    def __init__(self, name, hashtype=False,
                  ex_re=None,     # exclusions Regular Expression
                  match_re=None):    # matches Regular Expression
 
-        super().__init__(name, is_leaf=False, using_sha=using_sha)
+        super().__init__(name, is_leaf=False, hashtype=hashtype)
 
         self._ex_re = ex_re
         self._match_re = match_re
@@ -544,7 +544,7 @@ class MerkleTree(MerkleNode):
             return False
         if self.hex_hash != other.hex_hash:
             return False
-        if self.using_sha != other.using_sha:
+        if self.hashtype != other.hashtype:
             return False
 
         my_nodes = self.nodes
@@ -566,8 +566,8 @@ class MerkleTree(MerkleNode):
         return self.to_string(0)
 
     @property
-    def using_sha(self):
-        return self._using_sha
+    def hashtype(self):
+        return self._hashtype
 
     #################################################################
     # METHODS LIFTED FROM bindmgr/bindlib/MerkleTree.py
@@ -607,7 +607,7 @@ class MerkleTree(MerkleNode):
         return (node_depth, node_hash, node_name, is_dir)
 
     @staticmethod
-    def create_from_string_array(string, using_sha=QQQ.USING_SHA2):
+    def create_from_string_array(string, hashtype=HashTypes.SHA2):
         """
         The string array is expected to follow conventional indentation
         rules, with zero indentation on the first line and some number
@@ -624,14 +624,14 @@ class MerkleTree(MerkleNode):
             MerkleTree.parse_first_line(string[0].rstrip())
         len_hash = len(tree_hash)
         if len_hash == SHA1_BIN_LEN:
-            if using_sha != QQQ.USING_SHA1:
+            if hashtype != HashTypes.SHA1:
                 raise RuntimeError("hash length %d inconsistent with %s" % (
-                    len_hash, using_sha))
+                    len_hash, hashtype))
         elif len_hash != SHA2_BIN_LEN:
             raise RuntimeError("hash length %d inconsistent with %s" % (
-                len_hash, using_sha))
+                len_hash, hashtype))
 
-        root_tree = MerkleTree(dir_name, using_sha)    # an empty tree
+        root_tree = MerkleTree(dir_name, hashtype)    # an empty tree
         root_tree.bin_hash = tree_hash
 
         if indent != 0:
@@ -662,7 +662,7 @@ class MerkleTree(MerkleNode):
 
             if is_dir:
                 # create and set attributes of new node
-                new_tree = MerkleTree(name, using_sha)  # , curTree)
+                new_tree = MerkleTree(name, hashtype)  # , curTree)
                 new_tree.bin_hash = hash_
                 # add the new node into the existing tree
                 cur_tree.add_node(new_tree)
@@ -671,14 +671,14 @@ class MerkleTree(MerkleNode):
                 cur_tree = new_tree
             else:
                 # create and set attributes of new node
-                new_node = MerkleLeaf(name, using_sha, hash_)
+                new_node = MerkleLeaf(name, hashtype, hash_)
                 # add the new node into the existing tree
                 cur_tree.add_node(new_node)
             nnn += 1
         return root_tree
 
     @staticmethod
-    def create_from_serialization(string, using_sha=QQQ.USING_SHA2):
+    def create_from_serialization(string, hashtype=HashTypes.SHA2):
         """
         Create a MerkleTree by parsing its serialization (a single string),
         given the SHA hash type used to create the MerkleTree.
@@ -688,10 +688,10 @@ class MerkleTree(MerkleNode):
         if not isinstance(string, str):
             string = str(string, 'utf-8')
         s_array = string.split('\n')                # note CR-LF
-        return MerkleTree.create_from_string_array(s_array, using_sha)
+        return MerkleTree.create_from_string_array(s_array, hashtype)
 
     @staticmethod
-    def create_from_file(path_to_file, using_sha=QQQ.USING_SHA2):
+    def create_from_file(path_to_file, hashtype=HashTypes.SHA2):
         """
         Create a MerkleTree by parsing its on-disk serialization,
         given the SHA hash type used to create the MerkleTree.
@@ -701,17 +701,17 @@ class MerkleTree(MerkleNode):
                 "MerkleTree.createFromFile: file '%s' does not exist" % path_to_file)
         with open(path_to_file, 'r') as file:
             text = file.read()
-        return MerkleTree.create_from_serialization(text, using_sha)
+        return MerkleTree.create_from_serialization(text, hashtype)
 
     @staticmethod
-    def create_from_file_system(path_to_dir, using_sha=QQQ.USING_SHA2,
+    def create_from_file_system(path_to_dir, hashtype=HashTypes.SHA2,
                                 ex_re=None, match_re=None):
         """
         Create a MerkleTree based on the information in the directory
         at pathToDir.  The name of the directory will be the last component
         of pathToDir.  Return the MerkleTree.
         """
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         if not path_to_dir:
             raise RuntimeError("cannot create a MerkleTree, no path set")
         if not os.path.exists(path_to_dir):
@@ -721,14 +721,14 @@ class MerkleTree(MerkleNode):
         if path == '':
             raise RuntimeError("cannot parse inclusive path " + path_to_dir)
 
-        tree = MerkleTree(name, using_sha, ex_re, match_re)
+        tree = MerkleTree(name, hashtype, ex_re, match_re)
         tree.bin_hash = None
         # pylint: disable=redefined-variable-type
-        if using_sha == QQQ.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
-        elif using_sha == QQQ.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             sha = hashlib.sha256()
-        elif using_sha == QQQ.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             # pylint: disable=no-member
             sha = hashlib.sha3_256()
 
@@ -750,13 +750,13 @@ class MerkleTree(MerkleNode):
                 # os.path.isdir(path) follows symbolic links
                 if S_ISDIR(mode):
                     node = MerkleTree.create_from_file_system(
-                        path_to_file, using_sha, ex_re, match_re)
+                        path_to_file, hashtype, ex_re, match_re)
                 # S_ISLNK(mode) is true if symbolic link
                 # isfile(path) follows symbolic links
                 elif os.path.isfile(path_to_file):        # S_ISREG(mode):
                     # pylint: disable=redefined-variable-type
                     node = MerkleLeaf.create_from_file_system(
-                        path_to_file, file, using_sha)
+                        path_to_file, file, hashtype)
                 # otherwise, just ignore it ;-)
 
                 if node:
@@ -817,11 +817,11 @@ class MerkleTree(MerkleNode):
         string = []                             # a list of strings
         spaces = SP.get_spaces(indent)
         if self._bin_hash is None:
-            if self._using_sha == QQQ.USING_SHA1:
+            if self._hashtype == HashTypes.SHA1:
                 top = "%s%s %s/\n" % (spaces, SHA1_HEX_NONE, self.name)
-            elif self._using_sha == QQQ.USING_SHA2:
+            elif self._hashtype == HashTypes.SHA2:
                 top = "%s%s %s/\n" % (spaces, SHA2_HEX_NONE, self.name)
-            elif self._using_sha == QQQ.USING_SHA3:
+            elif self._hashtype == HashTypes.SHA3:
                 top = "%s%s %s/\n" % (spaces, SHA3_HEX_NONE, self.name)
         else:
             top = "%s%s %s/\n" % (spaces, self.hex_hash, self.name)
@@ -846,11 +846,11 @@ class MerkleTree(MerkleNode):
         string = []                             # a list of strings
         spaces = SP.get_spaces(indent)
         if self._bin_hash is None:
-            if self._using_sha == QQQ.USING_SHA1:
+            if self._hashtype == HashTypes.SHA1:
                 top = "%s%s %s/\n" % (spaces, SHA1_HEX_NONE, self.name)
-            elif self._using_sha == QQQ.USING_SHA2:
+            elif self._hashtype == HashTypes.SHA2:
                 top = "%s%s %s/\n" % (spaces, SHA2_HEX_NONE, self.name)
-            elif self._using_sha == QQQ.USING_SHA3:
+            elif self._hashtype == HashTypes.SHA3:
                 top = "%s%s %s/\n" % (spaces, SHA3_HEX_NONE, self.name)
         else:
             top = "%s%s %s/\n" % (spaces, self.hex_hash, self.name)
