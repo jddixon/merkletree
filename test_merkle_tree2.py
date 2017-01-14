@@ -8,7 +8,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from xlattice import QQQ
+from xlattice import HashTypes
 from merkletree import MerkleTree
 
 MAX_NAME_LEN = 16
@@ -23,7 +23,7 @@ class TestMerkleTree2(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def do_test_deepish_trees(self, using_sha):
+    def do_test_deepish_trees(self, hashtype):
         """
         Build a directory of random data, then its MerkleTree, then
         round trip to a serialization and back.
@@ -38,7 +38,7 @@ class TestMerkleTree2(unittest.TestCase):
         self.rng.next_data_dir(tree_top, depth=7, width=5, max_len=4096)
 
         # Build a MerkleTree specifying the directory.
-        tree = MerkleTree.create_from_file_system(tree_top, using_sha)
+        tree = MerkleTree.create_from_file_system(tree_top, hashtype)
 
         # ROUND TRIP 1 ----------------------------------------------
 
@@ -46,7 +46,7 @@ class TestMerkleTree2(unittest.TestCase):
         ser = tree.__str__()
 
         # Deserialize to make another MerkleTree.
-        tree2 = MerkleTree.create_from_serialization(ser, using_sha)
+        tree2 = MerkleTree.create_from_serialization(ser, hashtype)
 
         self.assertTrue(tree2.__eq__(tree))
         self.assertEqual(tree2, tree)           # identical test
@@ -54,7 +54,7 @@ class TestMerkleTree2(unittest.TestCase):
         # ROUND TRIP 2 ----------------------------------------------
         strings = ser.split('\n')
         strings = strings[:-1]
-        tree3 = MerkleTree.create_from_string_array(strings, using_sha)
+        tree3 = MerkleTree.create_from_string_array(strings, hashtype)
         self.assertEqual(tree3, tree)
 
         # ROUND TRIP 3 ----------------------------------------------
@@ -64,14 +64,14 @@ class TestMerkleTree2(unittest.TestCase):
         with open(filename, 'w') as file:
             file.write(ser)
 
-        tree4 = MerkleTree.create_from_file(filename, using_sha)
+        tree4 = MerkleTree.create_from_file(filename, hashtype)
         self.assertEqual(tree4, tree)
 
     def test_deepish_trees(self):
         """ Test behavior of deeper trees using various SHA hash types. """
 
-        for using_sha in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3]:
-            self.do_test_deepish_trees(using_sha)
+        for hashtype in HashTypes:
+            self.do_test_deepish_trees(hashtype)
 
 if __name__ == '__main__':
     unittest.main()

@@ -10,6 +10,7 @@
 .posted
 .sharedev
 .svn*
+.tmp
 .wrapped
 .xlattice
 CVS

@@ -9,7 +9,7 @@ import unittest
 import hashlib
 
 from rnglib import SimpleRNG
-from xlattice import (QQQ, check_using_sha,
+from xlattice import (HashTypes, check_hashtype,
                       SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE)
 from merkletree import MerkleTree, MerkleLeaf
 
@@ -34,10 +34,10 @@ class TestMerkleTree(unittest.TestCase):
 
     def get_two_unique_directory_names(self):
         """ Make two different quasi-random directory names."""
-        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
-            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+            dir_name2 = self.rng.next_file_name(MAX_NAME_LEN)
         self.assertTrue(len(dir_name1) > 0)
         self.assertTrue(len(dir_name2) > 0)
         self.assertTrue(dir_name1 != dir_name2)
@@ -48,22 +48,22 @@ class TestMerkleTree(unittest.TestCase):
         dir_path = "tmp/%s" % name
         if os.path.exists(dir_path):
             shutil.rmtree(dir_path)
-        self.rng.nextDataDir(dir_path, depth, width, 32)
+        self.rng.next_data_dir(dir_path, depth, width, 32)
         return dir_path
 
     def make_two_test_directories(self, depth, width):
         """ Create two test directories with different names. """
-        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_path1 = self.make_one_named_test_directory(dir_name1, depth, width)
 
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
-            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+            dir_name2 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_path2 = self.make_one_named_test_directory(dir_name2, depth, width)
 
         return (dir_name1, dir_path1, dir_name2, dir_path2)
 
-    def verify_leaf_sha(self, node, path_to_file, using_sha):
+    def verify_leaf_sha(self, node, path_to_file, hashtype):
         """
         Verify a leaf node is hashed correctly, using a specific SHA hash type.
         """
@@ -72,18 +72,18 @@ class TestMerkleTree(unittest.TestCase):
             data = file.read()
         self.assertFalse(data is None)
         # pylint: disable=redefined-variable-type
-        if using_sha == QQQ.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
-        elif using_sha == QQQ.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             sha = hashlib.sha256()
-        elif using_sha == QQQ.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             # pylint: disable=no-member
             sha = hashlib.sha3_256()
         sha.update(data)
         hash_ = sha.digest()
         self.assertEqual(hash_, node.bin_hash)
 
-    def verify_tree_sha(self, node, path_to_node, using_sha):
+    def verify_tree_sha(self, node, path_to_node, hashtype):
         """
         Verify tree elements are hashed correctly, assuming that the node
         is a MerkleTree, using a specific SHA hash type.
@@ -93,19 +93,19 @@ class TestMerkleTree(unittest.TestCase):
         else:
             hash_count = 0
             # pylint: disable=redefined-variable-type
-            if using_sha == QQQ.USING_SHA1:
+            if hashtype == HashTypes.SHA1:
                 sha = hashlib.sha1()
-            elif using_sha == QQQ.USING_SHA2:
+            elif hashtype == HashTypes.SHA2:
                 sha = hashlib.sha256()
-            elif using_sha == QQQ.USING_SHA3:
+            elif hashtype == HashTypes.SHA3:
                 # pylint: disable=no-member
                 sha = hashlib.sha3_256()
             for node_ in node.nodes:
                 path_to_file = os.path.join(path_to_node, node_.name)
                 if isinstance(node_, MerkleLeaf):
-                    self.verify_leaf_sha(node_, path_to_file, using_sha)
+                    self.verify_leaf_sha(node_, path_to_file, hashtype)
                 elif isinstance(node_, MerkleTree):
-                    self.verify_tree_sha(node_, path_to_file, using_sha)
+                    self.verify_tree_sha(node_, path_to_file, hashtype)
                 else:
                     self.fail("unknown node type!")
                 if node_.bin_hash is not None:
@@ -126,27 +126,27 @@ class TestMerkleTree(unittest.TestCase):
         Test basic characteristics of very simple MerkleTrees created
         using our standard SHA hash types.
         """
-        for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
+        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
             self.do_test_pathless_unbound(using)
 
-    def do_test_pathless_unbound(self, using_sha):
+    def do_test_pathless_unbound(self, hashtype):
         """
         Test basic characteristics of very simple MerkleTrees created
         using a specific SHA hash type.
         """
         (dir_name1, dir_name2) = self.get_two_unique_directory_names()
 
-        check_using_sha(using_sha)
-        tree1 = MerkleTree(dir_name1, using_sha)
+        check_hashtype(hashtype)
+        tree1 = MerkleTree(dir_name1, hashtype)
         self.assertEqual(dir_name1, tree1.name)
-        if using_sha == QQQ.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             self.assertEqual(SHA1_HEX_NONE, tree1.hex_hash)
-        elif using_sha == QQQ.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             self.assertEqual(SHA2_HEX_NONE, tree1.hex_hash)
-        elif using_sha == QQQ.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             self.assertEqual(SHA3_HEX_NONE, tree1.hex_hash)
 
-        tree2 = MerkleTree(dir_name2, using_sha)
+        tree2 = MerkleTree(dir_name2, hashtype)
         self.assertEqual(dir_name2, tree2.name)
 
         # these tests remain skimpy
@@ -168,7 +168,7 @@ class TestMerkleTree(unittest.TestCase):
         self.assertEqual(1, len(lines))
 
         tree1_rebuilt = MerkleTree.create_from_serialization(
-            tree1_str, using_sha)
+            tree1_str, hashtype)
         self.assertTrue(tree1.equal(tree1_rebuilt))
 
     def test_bound_flat_dirs(self):
@@ -176,28 +176,28 @@ class TestMerkleTree(unittest.TestCase):
         Test handling of flat directories with a few data files
         using varioush SHA hash types.
         """
-        for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
+        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
             self.do_test_bound_flat_dirs(using)
 
-    def do_test_bound_flat_dirs(self, using_sha):
+    def do_test_bound_flat_dirs(self, hashtype):
         """test directory is single level, with four data files"""
 
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(ONE, FOUR)
-        tree1 = MerkleTree.create_from_file_system(dir_path1, using_sha)
+        tree1 = MerkleTree.create_from_file_system(dir_path1, hashtype)
         self.assertEqual(dir_name1, tree1.name)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
-        self.verify_tree_sha(tree1, dir_path1, using_sha)
+        self.verify_tree_sha(tree1, dir_path1, hashtype)
 
-        tree2 = MerkleTree.create_from_file_system(dir_path2, using_sha)
+        tree2 = MerkleTree.create_from_file_system(dir_path2, hashtype)
         self.assertEqual(dir_name2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(FOUR, len(nodes2))
-        self.verify_tree_sha(tree2, dir_path2, using_sha)
+        self.verify_tree_sha(tree2, dir_path2, hashtype)
 
         # XXX COMMENTED OUT FOR DEBUGGING XXX
         #self.assertTrue  ( tree1.equal(tree1) )
@@ -206,41 +206,41 @@ class TestMerkleTree(unittest.TestCase):
 
         tree1_str = tree1.to_string(0)
         tree1_rebuilt = MerkleTree.create_from_serialization(
-            tree1_str, using_sha)
+            tree1_str, hashtype)
         self.assertTrue(tree1.equal(tree1_rebuilt))
 
     def test_bound_needle_dirs(self):
         """
         Test directories four deep with various SHA hash types.
         """
-        for using in [QQQ.USING_SHA1, QQQ.USING_SHA2, QQQ.USING_SHA3, ]:
+        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
             self.do_test_bound_needle_dirs(using)
 
-    def do_test_bound_needle_dirs(self, using_sha):
+    def do_test_bound_needle_dirs(self, hashtype):
         """test directories four deep with one data file at the lowest level"""
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(FOUR, ONE)
-        tree1 = MerkleTree.create_from_file_system(dir_path1, using_sha)
+        tree1 = MerkleTree.create_from_file_system(dir_path1, hashtype)
 
         self.assertEqual(dir_name1, tree1.name)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
-        self.verify_tree_sha(tree1, dir_path1, using_sha)
+        self.verify_tree_sha(tree1, dir_path1, hashtype)
 
-        tree2 = MerkleTree.create_from_file_system(dir_path2, using_sha)
+        tree2 = MerkleTree.create_from_file_system(dir_path2, hashtype)
         self.assertEqual(dir_name2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(ONE, len(nodes2))
-        self.verify_tree_sha(tree2, dir_path2, using_sha)
+        self.verify_tree_sha(tree2, dir_path2, hashtype)
 
         self.assertTrue(tree1.equal(tree1))
         self.assertFalse(tree1.equal(tree2))
 
         tree1_str = tree1.to_string(0)
         tree1_rebuilt = MerkleTree.create_from_serialization(
-            tree1_str, using_sha)
+            tree1_str, hashtype)
 #       # DEBUG
 #       print "NEEDLEDIR TREE1:\n" + tree1Str
 #       print "REBUILT TREE1:\n" + tree1Rebuilt.toString("")
@@ -265,14 +265,14 @@ class TestMerkleTree(unittest.TestCase):
         string = string[:-1]
         self.assertEqual(4, len(string))
 
-        tree2 = MerkleTree.create_from_string_array(string, QQQ.USING_SHA1)
+        tree2 = MerkleTree.create_from_string_array(string, HashTypes.SHA1)
 
         ser2 = tree2.to_string(0)
         self.assertEqual(serialization, ser2)
 
         # create from serialization ---------------------------------
         tree1 = MerkleTree.create_from_serialization(
-            serialization, QQQ.USING_SHA1)
+            serialization, HashTypes.SHA1)
 
         ser1 = tree1.to_string(0)
         self.assertEqual(serialization, ser1)
@@ -298,7 +298,7 @@ class TestMerkleTree(unittest.TestCase):
 
         # create from serialization ---------------------------------
         tree1 = MerkleTree.create_from_serialization(
-            serialization, QQQ.USING_SHA1)
+            serialization, HashTypes.SHA1)
 
 #       # DEBUG
 #       print "tree1 has %d nodes" % len(tree1.nodes)
@@ -314,7 +314,7 @@ class TestMerkleTree(unittest.TestCase):
         string = string[:-1]
         self.assertEqual(2511, len(string))
 
-        tree2 = MerkleTree.create_from_string_array(string, QQQ.USING_SHA1)
+        tree2 = MerkleTree.create_from_string_array(string, HashTypes.SHA1)
 
         ser2 = tree2.to_string(0)
         self.assertEqual(serialization, ser2)
@@ -335,14 +335,14 @@ class TestMerkleTree(unittest.TestCase):
         string = string[:-1]
         self.assertEqual(4, len(string))
 
-        tree2 = MerkleTree.create_from_string_array(string, QQQ.USING_SHA2)
+        tree2 = MerkleTree.create_from_string_array(string, HashTypes.SHA2)
 
         ser2 = tree2.to_string(0)
         self.assertEqual(serialization, ser2)
 
         # create from serialization ---------------------------------
         tree1 = MerkleTree.create_from_serialization(
-            serialization, QQQ.USING_SHA2)
+            serialization, HashTypes.SHA2)
 
         ser1 = tree1.to_string(0)
         self.assertEqual(serialization, ser1)
@@ -368,7 +368,7 @@ class TestMerkleTree(unittest.TestCase):
 
         # create from serialization ---------------------------------
         tree1 = MerkleTree.create_from_serialization(
-            serialization, QQQ.USING_SHA2)
+            serialization, HashTypes.SHA2)
 
         ser1 = tree1.to_string(0)
         self.assertEqual(serialization, ser1)
@@ -378,7 +378,7 @@ class TestMerkleTree(unittest.TestCase):
         string = string[:-1]
         self.assertEqual(2511, len(string))
 
-        tree2 = MerkleTree.create_from_string_array(string, QQQ.USING_SHA2)
+        tree2 = MerkleTree.create_from_string_array(string, HashTypes.SHA2)
 
         ser2 = tree2.to_string(0)
         self.assertEqual(serialization, ser2)

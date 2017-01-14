@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/CHANGES
 
+v5.3.0
+    2017-01-13
+        * corrected much erratic PEP8-ing; dropped dupe tests       SLOC 2202
 v5.2.3
     2016-12-06
         * modify merkleize to handle i/o errors
@@ -250,6 +253,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 
