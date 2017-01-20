@@ -21,7 +21,7 @@ import sys
 import time
 from argparse import ArgumentParser
 
-from optionz import show_options        # requires argparse
+from optionz import dump_options        # requires argparse
 from xlattice import (check_using_sha,
                       parseUsingSHA, fix_using_sha)
 #from xlattice.util import make_ex_re, make_match_re
@@ -152,7 +152,7 @@ def main():
         print("%s %s" % (app_name, __version_date__))
 
     if args.verbose or args.just_show:
-        print(show_options(args))
+        print(dump_options(args))
     if args.just_show:
         sys.exit(0)
 

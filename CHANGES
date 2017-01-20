@@ -1,5 +1,11 @@
 ~/dev/py/merkletree/CHANGES
 
+
+v5.3.1
+    2017-01-20
+        * web page updates plus some pylinting                      SLOC 2224
+    2017-01-19
+        * replaced optionz.show_options with dump_optins            SLOC 2202
 v5.3.0
     2017-01-13
         * corrected much erratic PEP8-ing; dropped dupe tests       SLOC 2202
@@ -253,6 +259,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 

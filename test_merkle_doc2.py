@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # testMerkleDoc2.py
 
-""" Test MerkleTree functionality at the document level. """
+""" Test MerkleTree functionality at the document level (second set). """
 
 import hashlib
 import os

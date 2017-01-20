@@ -7,25 +7,25 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-merkletree v5.3.0
-2017-01-14 00:01:34
+merkletree v5.3.1
+2017-01-20 22:09:05
 # BEGIN CONTENT #
 merkletree
  .dvcz
-  builds 5020e91950f27e6b144a3856111c01c1cde67837
+  builds 3d7c5ad86dd716e1075965bc137d64e227c5ad88
   copyright 341b426b5d23a84b929e0a59078c58bc76595a70
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList fbf76876a05b43cc9f909175b3a326a09e196186
+  lastBuildList 76e62bc49443e234a42a92b5d905db89948bc431
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg 0edea3571ae151f98b2a4ed9ea08b6bb0e928a1c
   projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
-  version 9bc926b6bc263207efc6e0acf77eb393dd6025c4
+  version 15a7a161602fcd241fd74ebdee1a07c0988c2e66
  .gitignore b2cc5fa149056ba0a01449dcdb19409728483a5c
- CHANGES 4017e95cc212295be0969722783588944fc33109
+ CHANGES 4e6e7f46f45c133df884fc1d332d9aaab330ce63
  LICENSE-MIT.md 0d07d7f09fd91a4c193acd95e1a1afa0c8e4f286
  MANIFEST.in 2f437c4d5cb4af779fc66924182ca82b9abaace7
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
- README.md dd53cdab4bba00499e0ff512013c6a387eab9022
+ README.md cd43ff75ee6a98961ce86a08547bb7986c33e916
  TODO d7e1e7afc984dc9cc8ab43410b313bf7618c4538
  bkp2U 0303656e4bec6af6bf68e4bc71ec1f8d2caeb25e
  checkCoverage 250a40b80bc599d45d538d53b6d882061fe08647
@@ -80,6 +80,7 @@ merkletree
   merkletree-5.2.2.tar.gz e5ff2e2d7c78cfab0417db9df8a81181af3db8a2
   merkletree-5.2.3.tar.gz a3f380e25c9b0b65ae76024efc5f851befb2aa44
   merkletree-5.3.0.tar.gz c447c97f8faf16fb6fd04a04a15865a30d17866f
+  merkletree-5.3.1.tar.gz 014775358d29fbe39170a3283392ca74e754983f
  doPyLint ad8e7798d026bc8f0a8cd20fb666fde1dc35239a
  ghpDoc
   TODO 6fa7b1dec0b84b2560077a8544e2283eddfb7a2f
@@ -97,11 +98,11 @@ merkletree
    xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
    xlattice.batik.jpg debe9220564203118dc53df0f5a48d77669fe367
-  index.md 92f40dfd804d04cc45e6435496edc5031c045931
+  index.md 1d51188c084255aab0a90436d44909edd174ec4c
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
- merkleize f9fb76d9eb576bf34a2db35fb19df4e50008dd6c
+ merkleize 6f2d0c6d1df8ca131a94331069d84503cce84cb8
  merkletree
-  __init__.py e29c482e328e51b86e5f75b9a9c1ae538feee6db
+  __init__.py fd33c37f6e6fd4d7c151534c807c6afde14314f5
  name-pairs-api e9a577bb4f75b30d7655d5b35bf76540ca49827e
  name-pairs-local 7641bd715269c711f54a5c852b8940e93cb67089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
@@ -113,13 +114,13 @@ merkletree
  testData
   dat.xlattice.org 08ac8f60ea44856e34c565b4d459a2d0547e5db9
   dat2.xlattice.org c653333f4518980911dd1592cb8986073ca98930
- test_merkle_doc.py 51210f5e4f7b1980fb4275ab672ea4e9b8f17cac
- test_merkle_doc2.py 691fa780e2485a2b1bac214b5f8d05b31281e6fb
+ test_merkle_doc.py 4c709bc4d2cba8c0710d8ed7735ed42499ff3a5b
+ test_merkle_doc2.py c1cc314593b945dedf3fb3b6f17d36ad49650da9
  test_merkle_leaf.py 1aa9d7b60ed6fa5b86cfcbb1b6add9bff179e7a2
- test_merkle_tree.py ca05026865d2887f26605c1826f758ffc5943ab3
+ test_merkle_tree.py afd2051af30a98fdbfa9362c4f8690245564e9f6
  test_merkle_tree2.py e20453296493da17ca87bed7d523d71a476dd9a8
  test_new_make_exre.py da0907638667fa6cca92a07e117c5e2586ffe8ae
  test_old_make_exre.py 05060d5f9b82a2e2778c420f87f3a73ab27cbd89
 # END CONTENT #
 
-G+LWmZcPQxBdqtY5zhUmMtdMkG76qDP/7USL2243RREvB59LY2GoBVdXnRdJCbtT+T8yzOAf0Ndd3T4LNs74Kbx56nvQAq9HkHt5eIYLqAL7+KoX5+2t2RM9/RdEfABaH4p8YdLcUDFMm2nKrzgARwWF11FwpICyxpr+x5JFCq0vE0aHLr4bLJ0PTZXtvdxG5EEEssOFraxVcymqi4o6v236txQiUryEw+HYgxUtl5S7k8h85NYetN3feHcAw3JCx3Sh2UPKDRZZp/2zNb1SiEux0Sd3QSZOVhsLfNOlFB5ftMc4f8V5XmLRUW7sNJTgPyVTonL7zLJ7FS2LuLjxgA==
+ZWwmFdw8vPDXOdSeAGOkBdTr5+PfMQbLj6z/uBV3wFyy08pIsfVamm0uU9uA8VROwnJs+5VAJug35o4xYjYdhO7g177dW5Op213E5Gfy8g7vnizNjiOv2luhbbgp+e4i1oC6RjSVKDexjTCZCDZrXPbiyrEfO7eTK+9YSb6Q8uAjUC4hB0wVWzGU8DI7iEwn3u5+BKSuJEbUgkAa5wmEuJFcYCnW1Ma5P7UvK6k0ZBxruWd3t384KsLoLbbqJkrzgCIyQde5Qs+icN6cA7RQCmy9ut5HHk9A8TAvKnpIfLt1pE9RH9Xoje5MFcyc4fgyOHnBDXro5Yb0d2lUUsES/g==

@@ -7,11 +7,15 @@
 [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree)
 for a
 directory structure.  A **Merkle tree** is a representation of the contents
-of the directory and its subdirectories in terms of hashes.
+of the directory and its subdirectories in terms of *hashes*.  In this case,
+the hashes used are those specified in various versions of the
+[Secure Hash Algorithm](https://en.wikipedia.org/wiki/Secure_Hash_Algorithm),
+a Federal cryptographic standard for securely deriving a (relatively) short
+number which can be used to uniquely identify a document.
 
 A file is represented by the hash of its
 contents.  A directory is represented by the hash of the hashes
-of its members, sorted.  This makes it very easy to verify the
+of its members, sorted by file name.  This makes it very easy to verify the
 contents of a directory:
 
 	merkleize -x -i  .
@@ -36,8 +40,8 @@ candidate matches and compare the resultant hash with the one you are searching
 for.
 
 **merkletree** currently uses either the older 160 bit/20 byte **SHA-1**
-or the more recent and supposedly more secure **SHA-256**, a 256 bit/32 byte
-hash.
+or the more recent and more secure **SHA-256** or **SHA-3**, where the latter
+two are 256 bit/32 byte hashes.
 
 ## What It's Used For
 
@@ -45,25 +49,41 @@ Verifying the integrity of file systems, of directory structures.
 
 ## Command Line
 
-	usage: merkleize [options]
-	where the options are
-	  -h, --help           to see this very useful message
-	  -1, --usingSHA1      use SHA-1 hash instead of default SHA-256
-	  -d  --outDir DIR     write serialized merkletree here
-	  -i, --inDir DIR      where DIR names directory being scanned
-	  -j, --justShow       list options and exit
-	  -m  --showTree       output the merkletree hash/filename pairs
-	  -o, --outFile NAME   write output to this file name
-	  -P, --match PAT      include ONLY files with matching names
-	  -t, --showTimestamp  output UTC timestamp to command line
-	  -v, --verbose        verbose: whether the program is chatty
-	  -V, --version        show version information
-	  -x, --hashOutput     whether to output the top level hash
-	  -X, --exclude PAT    don't include files with matching names
-	
-The default output file name is the UTC timestamp.
+    usage: merkleize [-h] [-d OUT_DIR] [-I INDENT] [-i IN_DIR] [-j] [-m]
+                     [-o OUT_FILE] [-P MATCH_PAT] [-t] [-V] [-x] [-X EXCLUDE] [-1]
+                     [-2] [-3] [-u U_PATH] [-v]
 
-*NOTE that **SHA-3** (Keccak) support has been withdrawn until it is supported by Python 3.*
+    generate the merkletree corresponding to a directory
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -d OUT_DIR, --out_dir OUT_DIR
+                            write serialized merkletree here
+      -I INDENT, --indent INDENT
+                            number of spaces to indent list (default=1)
+      -i IN_DIR, --in_dir IN_DIR
+                            write serialized merkletree here
+      -j, --just_show       show options and exit
+      -m, --show_tree       output the merkletree hash+filename lines
+      -o OUT_FILE, --out_file OUT_FILE
+                            write output to this file (default = timestamp)
+      -P MATCH_PAT, --match_pat MATCH_PAT
+                            include only files with matching names
+      -t, --showTimestamp   output UTC time
+      -V, --show_version    output the version number of this program
+      -x, --hash_output     output the top level hash
+      -X EXCLUDE, --exclude EXCLUDE
+                            ignore files matching this pattern
+      -1, --using_sha1      using the 160-bit SHA1 hash
+      -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
+      -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -u U_PATH, --u_path U_PATH
+                            path to uDir
+      -v, --verbose         be chatty
+	
+The default output file name is the UTC timestamp, the number of seconds
+since the epoch (1970-01-01), where 'UTC' is more or less the same of
+GMT, Greenwich Mean Time.
 
 ## Relationships
 
