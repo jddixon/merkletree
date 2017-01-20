@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-
 # testMerkleTree.py
+
+""" Test package functionality at the Tree level. """
+
 import os
 import shutil
 import sys
@@ -23,6 +25,7 @@ MAX_NAME_LEN = 8
 
 
 class TestMerkleTree(unittest.TestCase):
+    """ Test package functionality at the Tree level. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())

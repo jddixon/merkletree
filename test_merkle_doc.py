@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-
 # testMerkleDoc.py
+
+""" Test Merkletree functionality at the Document level. """
 
 import hashlib
 import os
@@ -18,6 +19,7 @@ MAX_NAME_LEN = 8
 
 
 class TestMerkleDoc(unittest.TestCase):
+    """ Test Merkletree functionality at the Document level. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -27,6 +29,8 @@ class TestMerkleDoc(unittest.TestCase):
 
     # utility functions #############################################
     def get_two_unique_directory_names(self):
+        """ Generate two quasi-random directory names. """
+
         dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
@@ -37,6 +41,11 @@ class TestMerkleDoc(unittest.TestCase):
         return (dir_name1, dir_name2)
 
     def make_one_named_test_directory(self, name, depth, width):
+        """
+        Create a randomly named directory under tmp/, removing any
+        existing directory of that name.
+        """
+
         dir_path = "tmp/%s" % name
         if os.path.exists(dir_path):
             shutil.rmtree(dir_path)
@@ -44,6 +53,10 @@ class TestMerkleDoc(unittest.TestCase):
         return dir_path
 
     def make_two_test_directories(self, depth, width):
+        """
+        Generate two different names, using them to create subdirectories
+        of tmp/.
+        """
         dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_path1 = self.make_one_named_test_directory(dir_name1, depth, width)
 
@@ -55,6 +68,9 @@ class TestMerkleDoc(unittest.TestCase):
         return (dir_name1, dir_path1, dir_name2, dir_path2)
 
     def verify_leaf_sha(self, node, path_to_file, hashtype):
+        """
+        Verify that a MerkleLeaf correctly describes a file, given a hash type.i
+        """
         check_hashtype(hashtype)
         self.assertTrue(os.path.exists(path_to_file))
         with open(path_to_file, "rb") as file:
@@ -73,6 +89,10 @@ class TestMerkleDoc(unittest.TestCase):
         self.assertEqual(hash_, node.bin_hash)
 
     def verify_tree_sha(self, node, path_to_tree, hashtype):
+        """
+        Given a MerkleTree, verify that it correctly describes the
+        directory whose path is passed.
+        """
         # we assume that the node is a MerkleTree
         check_hashtype(hashtype)
         if node.nodes is None:
@@ -109,10 +129,11 @@ class TestMerkleDoc(unittest.TestCase):
 
     def test_bound_flat_dirs(self):
         """test directory is single level, with four data files"""
-        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
-            self.do_test_bound_flat_dirs(using)
+        for hashtype in HashTypes:
+            self.do_test_bound_flat_dirs(hashtype)
 
     def do_test_bound_flat_dirs(self, hashtype):
+        """ Test two flat directories with the specified hash type. """
 
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(ONE, FOUR)
@@ -156,10 +177,11 @@ class TestMerkleDoc(unittest.TestCase):
 
     def test_bound_needle_dirs(self):
         """test directories four deep with one data file at the lowest level"""
-        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
-            self.do_test_bound_needle_dirs(using)
+        for hashtype in HashTypes:
+            self.do_test_bound_needle_dirs(hashtype)
 
     def do_test_bound_needle_dirs(self, hashtype):
+        """ Run tests on two deeper directories. """
         check_hashtype(hashtype)
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(FOUR, ONE)
