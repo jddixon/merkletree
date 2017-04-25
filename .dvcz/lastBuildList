@@ -7,21 +7,21 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-merkletree v5.3.1
-2017-01-20 22:09:05
+merkletree v5.3.2
+2017-04-25 20:13:26
 # BEGIN CONTENT #
 merkletree
  .dvcz
-  builds 3d7c5ad86dd716e1075965bc137d64e227c5ad88
-  copyright 341b426b5d23a84b929e0a59078c58bc76595a70
+  builds 236eaed903ea1950d1ce4a9f24ac395a894e29a9
+  copyright 398f1ae7d41108936adf6f4f33209234106bd3ed
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList 76e62bc49443e234a42a92b5d905db89948bc431
+  lastBuildList efd2604f61d7346828f3322fc5112a666604fdbc
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg 0edea3571ae151f98b2a4ed9ea08b6bb0e928a1c
   projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
-  version 15a7a161602fcd241fd74ebdee1a07c0988c2e66
- .gitignore b2cc5fa149056ba0a01449dcdb19409728483a5c
- CHANGES 4e6e7f46f45c133df884fc1d332d9aaab330ce63
+  version 6bd294a611e36050adb0d9214916ec08d036f527
+ .gitignore 5185a3cb0539828e50edfc25d60c80ae291197fa
+ CHANGES 29b4463171d5f151844fe21d9c242fb7c1aa5288
  LICENSE-MIT.md 0d07d7f09fd91a4c193acd95e1a1afa0c8e4f286
  MANIFEST.in 2f437c4d5cb4af779fc66924182ca82b9abaace7
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
@@ -30,57 +30,6 @@ merkletree
  bkp2U 0303656e4bec6af6bf68e4bc71ec1f8d2caeb25e
  checkCoverage 250a40b80bc599d45d538d53b6d882061fe08647
  countem 6155fc3e3bc505ed6e2315ed1572c1f845d35204
- dist
-  merkletree-1.1.1.tar.gz 2554aba52422222b12e8261c9d682000e41f5f74
-  merkletree-2.0.0.tar.gz 6cc97227aa5c0355e36d38b80cc5226655b2902f
-  merkletree-2.0.1.tar.gz 22a12f4133cb0467eda14e31be025c2e58b762f4
-  merkletree-2.1.0.tar.gz f10fe8716db67839c950c4785db895266fad5e0a
-  merkletree-2.1.1.tar.gz b106a4abb1926e705d80c215c1473151fe424359
-  merkletree-2.1.2.tar.gz 36d8b8ff877d04beba0e1eeaee73600b5e87b604
-  merkletree-2.1.3.tar.gz 0a98912028d0a1429d842df43aa2b42b641b0589
-  merkletree-3.0.0.tar.gz 776840a0b179c1d7ce4b94b26765b342d22abadb
-  merkletree-3.0.1.tar.gz 97be0d9670b38e11ab4e1cf09a191ce07bb87380
-  merkletree-3.1.0.tar.gz 5422e081512198ed2aba7a02addd4aff408f1465
-  merkletree-3.1.1.tar.gz c23af5603e82fb533a4e271fc4c13d6732f19596
-  merkletree-3.1.2.tar.gz 9d757c120f896210fbc56ccaa2cb4920409c7644
-  merkletree-3.2.0.tar.gz 365604c3f6e79e75f045ad9d9992a3375fc12eb8
-  merkletree-4.0.0.tar.gz d074a008158a988d2bbbe70f6ecb054a894811ac
-  merkletree-4.0.1.tar.gz 499a50ee31cfe10fc7b5fd2969a32ddda70e4960
-  merkletree-4.0.2.tar.gz 2e39f9fa7bdd0d8077c3562d76084aebea47c796
-  merkletree-4.0.3.tar.gz 10b7cc49c289b7e4a3a7e2948734dca3bb875f82
-  merkletree-4.0.4.tar.gz be103b0d5e3274952b046aa1471e5216b35d6060
-  merkletree-4.0.5.tar.gz 7f3c5f10957c6367ca08e5be2ee9de0f4bae0962
-  merkletree-4.0.6.tar.gz 2024b19063dfefe709c5a5cdb4282f58832b5be1
-  merkletree-4.1.0.tar.gz bb27c91af119743f4b3709dbfc58ea9f3b200910
-  merkletree-4.1.1.tar.gz 504e8fe638bc9811ea97ca4e3ae7bfe211dcfc6e
-  merkletree-4.1.2.tar.gz 1ed099d0ec03475ed7dcd6b7d2501c770070d2e9
-  merkletree-4.1.3.tar.gz 5e59e8c6f7acf5846ecb25712aebc65486656566
-  merkletree-4.1.4.tar.gz 832eab173324eb695ab6d31757bbe801fcfb88f8
-  merkletree-5.0.0.tar.gz 5f42369aacaeb61f3f323c3870e435eab112d6ca
-  merkletree-5.0.1.tar.gz b70d34d5995fc20168798a3ffceb4b8c60ba81d6
-  merkletree-5.0.10.tar.gz a30775643225982d21eb38bd8f05ce2562f4fc7b
-  merkletree-5.0.11.tar.gz adb8fa2019796020a87c04bd940b9a19f6b81b48
-  merkletree-5.0.12.tar.gz e4559454a8977aa300f80a0b0e0c13fdf8d6ae8b
-  merkletree-5.0.13.tar.gz 0ad86bf9a19021e7aaf4732ace348baebb144cdb
-  merkletree-5.0.14.tar.gz c345d81c832e2ce7e958ee971a722bebe6167e9f
-  merkletree-5.0.15.tar.gz fadcde4adaf193e35a690ba22e49081174c480c7
-  merkletree-5.0.2.tar.gz 5d3a0de7488c3fd29507baf9572789269d5f4938
-  merkletree-5.0.3.tar.gz d1b491a6fb020cc20e939490ecca49547f463d91
-  merkletree-5.0.5.tar.gz d22f3e96419bae2018463cc68f147108934adfe9
-  merkletree-5.0.6.tar.gz c2be409cf7c8c9dbb00a9358df3d8f6a2e3ab207
-  merkletree-5.0.7.tar.gz 1f7a39fb0b2e4308b6fee60afd8eaf42b0ab6187
-  merkletree-5.0.8.tar.gz 2a3b6f1f0216c131f68d058bd5dea0ffc45193f8
-  merkletree-5.0.9.tar.gz e6bc3759ca78b42a4e5af8b8cdb84c0dfa296ba8
-  merkletree-5.1.0.tar.gz 5c50f9ca274ba7f0a286fe71a8a51c267e1c2143
-  merkletree-5.1.1.tar.gz 944e6a2e545dba63979297adb16b073280145e20
-  merkletree-5.1.2.tar.gz 8f6a4bb99d8def34b38b00918fb7f2a77ec8fe5d
-  merkletree-5.1.3.tar.gz 19dd936bcfc34c5c4b01117219dc1f0e7697d9b6
-  merkletree-5.2.0.tar.gz 2ee1b0d33091e8776543ad8d83c279544a165721
-  merkletree-5.2.1.tar.gz 82fa740c045bedab3ea496020f5286a826a6099a
-  merkletree-5.2.2.tar.gz e5ff2e2d7c78cfab0417db9df8a81181af3db8a2
-  merkletree-5.2.3.tar.gz a3f380e25c9b0b65ae76024efc5f851befb2aa44
-  merkletree-5.3.0.tar.gz c447c97f8faf16fb6fd04a04a15865a30d17866f
-  merkletree-5.3.1.tar.gz 014775358d29fbe39170a3283392ca74e754983f
  doPyLint ad8e7798d026bc8f0a8cd20fb666fde1dc35239a
  ghpDoc
   TODO 6fa7b1dec0b84b2560077a8544e2283eddfb7a2f
@@ -100,9 +49,9 @@ merkletree
    xlattice.batik.jpg debe9220564203118dc53df0f5a48d77669fe367
   index.md 1d51188c084255aab0a90436d44909edd174ec4c
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
- merkleize 6f2d0c6d1df8ca131a94331069d84503cce84cb8
+ merkleize a539736a668e6eb5cbd227ce036d70bc02c74ad0
  merkletree
-  __init__.py fd33c37f6e6fd4d7c151534c807c6afde14314f5
+  __init__.py 70eab907a36e91b3271b8c41c52627f1082ecc27
  name-pairs-api e9a577bb4f75b30d7655d5b35bf76540ca49827e
  name-pairs-local 7641bd715269c711f54a5c852b8940e93cb67089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
@@ -114,13 +63,13 @@ merkletree
  testData
   dat.xlattice.org 08ac8f60ea44856e34c565b4d459a2d0547e5db9
   dat2.xlattice.org c653333f4518980911dd1592cb8986073ca98930
- test_merkle_doc.py 4c709bc4d2cba8c0710d8ed7735ed42499ff3a5b
+ test_merkle_doc.py 865e5a74a26747b23e74c01c045954c23f16d915
  test_merkle_doc2.py c1cc314593b945dedf3fb3b6f17d36ad49650da9
- test_merkle_leaf.py 1aa9d7b60ed6fa5b86cfcbb1b6add9bff179e7a2
- test_merkle_tree.py afd2051af30a98fdbfa9362c4f8690245564e9f6
- test_merkle_tree2.py e20453296493da17ca87bed7d523d71a476dd9a8
- test_new_make_exre.py da0907638667fa6cca92a07e117c5e2586ffe8ae
- test_old_make_exre.py 05060d5f9b82a2e2778c420f87f3a73ab27cbd89
+ test_merkle_leaf.py 9dcdfa9d2d0c8ff938cc0fcc6bc30e241d215447
+ test_merkle_tree.py 86a7b46fa4a97432f2783a8da699846cfe511717
+ test_merkle_tree2.py 836bc0e0ab27f213877668090f342befa329caeb
+ test_new_make_exre.py e7bbdf5f917df06dbec044d70bbc7df260f28f43
+ test_old_make_exre.py a44bec6e113f3223ac0573762434e516972031cd
 # END CONTENT #
 
-ZWwmFdw8vPDXOdSeAGOkBdTr5+PfMQbLj6z/uBV3wFyy08pIsfVamm0uU9uA8VROwnJs+5VAJug35o4xYjYdhO7g177dW5Op213E5Gfy8g7vnizNjiOv2luhbbgp+e4i1oC6RjSVKDexjTCZCDZrXPbiyrEfO7eTK+9YSb6Q8uAjUC4hB0wVWzGU8DI7iEwn3u5+BKSuJEbUgkAa5wmEuJFcYCnW1Ma5P7UvK6k0ZBxruWd3t384KsLoLbbqJkrzgCIyQde5Qs+icN6cA7RQCmy9ut5HHk9A8TAvKnpIfLt1pE9RH9Xoje5MFcyc4fgyOHnBDXro5Yb0d2lUUsES/g==
+ZFOu7zGY6g5mh05El9BjaORU+tStIeGgZGtLgtL8O9t3vDMoSQqcLKK623PBmySDBRASnV7quKqA902Zpt6UQMmAnnQLEcLxxUsY+HuoFnhal6O7MT0455l/X/jjtBTggphv+XXDQFEWluvk6rbZZn7ryHP5HblmR9BnZ9RKUfCICps3np4ggQIg7IVJjyZ+hQ5dn+rk25y59Cb7KlZeVauYEcSjI+WFWb5QvnGXg9t3DAX8HZVYyH1NCznQ3yXGtHsxCL+FM3IFxLZB/RFBrbzMgLuF3V6y95TpVIKcfITbD3i/tophRjjKHuiF1vzGYVvo70d3shRv+IzNMkTOsw==

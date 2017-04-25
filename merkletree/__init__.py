@@ -21,8 +21,8 @@ __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.3.1'
-__version_date__ = '2017-01-20'
+__version__ = '5.3.2'
+__version_date__ = '2017-04-25'
 
 # -------------------------------------------------------------------
 
@@ -178,8 +178,8 @@ class MerkleDoc(MerkleNode):
 
     def __eq__(self, other):
         """ignore boundedness"""
-        return isinstance(other, MerkleDoc)      and \
-            self._path == other.path         and \
+        return isinstance(other, MerkleDoc) and \
+            self._path == other.path and \
             self._bin_hash == other.bin_hash and \
             self._tree == other.tree
 
@@ -412,8 +412,8 @@ class MerkleLeaf(MerkleNode):
     # IMPLEMENTATIONS OF ABSTRACT METHODS ###########################
 
     def __eq__(self, other):
-        return isinstance(other, MerkleLeaf)     and \
-            self._name == other.name         and \
+        return isinstance(other, MerkleLeaf) and \
+            self._name == other.name and \
             self._bin_hash == other.bin_hash
 
     # XXX DEPRECATED

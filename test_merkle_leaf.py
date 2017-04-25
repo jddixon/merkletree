@@ -80,5 +80,6 @@ class TestMerkleLeaf(unittest.TestCase):
         for hashtype in HashTypes:
             self.do_test_simple_constructor(hashtype=hashtype)
 
+
 if __name__ == '__main__':
     unittest.main()
