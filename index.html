@@ -9,12 +9,9 @@
 </head>
 <body>
 <div class="content">
-<h1>
-<a id="user-content-merkletree" class="anchor" href="#merkletree" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>merkletree</h1>
+<h1 class="libTop">merkletree</h1>
 
-<h2>
-<a id="user-content-what-it-does" class="anchor" href="#what-it-does" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What It Does</h2>
-
+<h2>What It Does</h2>
 <p><strong>merkletree</strong> is a Python package for creating a
 <a href="https://en.wikipedia.org/wiki/Merkle_tree">Merkle tree</a>
 for a
@@ -24,27 +21,20 @@ the hashes used are those specified in various versions of the
 <a href="https://en.wikipedia.org/wiki/Secure_Hash_Algorithm">Secure Hash Algorithm</a>,
 a Federal cryptographic standard for securely deriving a (relatively) short
 number which can be used to uniquely identify a document.</p>
-
 <p>A file is represented by the hash of its
 contents.  A directory is represented by the hash of the hashes
 of its members, sorted by file name.  This makes it very easy to verify the
 contents of a directory:</p>
-
 <pre><code>merkleize -x -i  .
 </code></pre>
-
 <p>outputs a single hash, a hexadecimal number.  If any file in the
 directory structure has been changed, the output from the above
 command will also change.</p>
-
-<h2>
-<a id="user-content-sha-the-secure-hash-algorithm" class="anchor" href="#sha-the-secure-hash-algorithm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SHA, the Secure Hash Algorithm</h2>
-
+<h2>SHA, the Secure Hash Algorithm</h2>
 <p>This package uses hash algorithms specified in the
 <a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">Secure Hash Standard</a>
 for hashing.  This is a standard published by the US National Institute of
 Standards and Techology (<strong>NIST</strong>).</p>
-
 <p>SHA is a cryptographically secure hash, meaning that for all
 practical purposes it is impossible to find two documents with the same hash.
 In other words, the SHA hashes are meant to be <strong>one-way</strong>: given a document,
@@ -52,19 +42,12 @@ it is very easy to determine its SHA hash, but given such a hash the only
 practical way to find out what document it corresponds to is to hash all
 candidate matches and compare the resultant hash with the one you are searching
 for.</p>
-
 <p><strong>merkletree</strong> currently uses either the older 160 bit/20 byte <strong>SHA-1</strong>
 or the more recent and more secure <strong>SHA-256</strong> or <strong>SHA-3</strong>, where the latter
 two are 256 bit/32 byte hashes.</p>
-
-<h2>
-<a id="user-content-what-its-used-for" class="anchor" href="#what-its-used-for" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What It's Used For</h2>
-
+<h2>What It's Used For</h2>
 <p>Verifying the integrity of file systems, of directory structures.</p>
-
-<h2>
-<a id="user-content-command-line" class="anchor" href="#command-line" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Command Line</h2>
-
+<h2>Command Line</h2>
 <pre><code>usage: merkleize [-h] [-d OUT_DIR] [-I INDENT] [-i IN_DIR] [-j] [-m]
                  [-o OUT_FILE] [-P MATCH_PAT] [-t] [-V] [-x] [-X EXCLUDE] [-1]
                  [-2] [-3] [-u U_PATH] [-v]
@@ -97,23 +80,15 @@ optional arguments:
                         path to uDir
   -v, --verbose         be chatty
 </code></pre>
-
 <p>The default output file name is the UTC timestamp, the number of seconds
 since the epoch (1970-01-01), where 'UTC' is more or less the same of
 GMT, Greenwich Mean Time.</p>
-
-<h2>
-<a id="user-content-relationships" class="anchor" href="#relationships" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Relationships</h2>
-
+<h2>Relationships</h2>
 <p>Merkletree was implemented as part of the <a href="http://www.xlattice.org">XLattice</a>
 project.  A Go language implementation forms part of
 <a href="https://jddixon.github.io/xlattice_go">xlattice_go</a>.</p>
-
-<h2>
-<a id="user-content-project-status" class="anchor" href="#project-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Status</h2>
-
+<h2>Project Status</h2>
 <p>Merkletree has been in use for several years.  There are no known bugs.</p>
-
 <h2>Licensing</h2>
 <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />The material on this github.io website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
 <p>Project software is licensed under an MIT license.
