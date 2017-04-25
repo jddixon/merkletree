@@ -73,5 +73,6 @@ class TestMerkleTree2(unittest.TestCase):
         for hashtype in HashTypes:
             self.do_test_deepish_trees(hashtype)
 
+
 if __name__ == '__main__':
     unittest.main()

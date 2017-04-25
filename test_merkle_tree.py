@@ -258,9 +258,9 @@ class TestMerkleTree(unittest.TestCase):
         has been corrected.
         """
         serialization =\
-            '721a08022dd26e7be98b723f26131786fd2c0dc3 grayboxes.com/\n'       +\
-            ' fcd3973c66230b9078a86a5642b4c359fe72d7da images/\n'            +\
-            '  15e47f4eb55197e1bfffae897e9d5ce4cba49623 grayboxes.gif\n'    +\
+            '721a08022dd26e7be98b723f26131786fd2c0dc3 grayboxes.com/\n' +\
+            ' fcd3973c66230b9078a86a5642b4c359fe72d7da images/\n' +\
+            '  15e47f4eb55197e1bfffae897e9d5ce4cba49623 grayboxes.gif\n' +\
             ' 2477b9ea649f3f30c6ed0aebacfa32cb8250f3df index.html\n'
 
         # create from string array ----------------------------------
@@ -387,6 +387,7 @@ class TestMerkleTree(unittest.TestCase):
         self.assertEqual(serialization, ser2)
 
         self.assertTrue(tree1.equal(tree2))
+
 
 if __name__ == '__main__':
     unittest.main()

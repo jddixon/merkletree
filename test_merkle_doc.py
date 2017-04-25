@@ -220,5 +220,6 @@ class TestMerkleDoc(unittest.TestCase):
 #       # END
         self.assertTrue(doc1.equal(doc1_rebuilt))       # FOO
 
+
 if __name__ == '__main__':
     unittest.main()

@@ -158,5 +158,6 @@ def main():
 
     merkleize_directory(args)
 
+
 if __name__ == '__main__':
     main()
