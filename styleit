@@ -4,7 +4,8 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/merkletree
   
-  autopep8 -ai -r merkletree merkleize *.py
+  autopep8 -air src/merkletree 
+  autopep8 -ai src/merkleize tests/*.py
   echo "not styling testData/ subdir"
   
 else

@@ -10,4 +10,4 @@ nosetests \
     --cover-branches \
     --cover-inclusive  \
     --cover-package=merkletree  \
-    test*.py
+    tests/test*.py

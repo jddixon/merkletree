@@ -3,10 +3,9 @@
 include netDistrib.conf
 include .gitignore auto8it countem installit test.all
 include CHANGES README.md TODO
-include merkleize
+include src/merkleize
 recursive-include ghpDoc *
-recursive-include merkletree *.py
-recursive-include testData *
+recursive-include src/merkletree tests
 global-exclude junk* .*swp 
 prune   .svn
 

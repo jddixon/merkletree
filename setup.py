@@ -6,7 +6,7 @@
 import re
 from distutils.core import setup
 __version__ = re.search(r"__version__\s*=\s*'(.*)'",
-                        open('merkletree/__init__.py').read()).group(1)
+                        open('src/merkletree/__init__.py').read()).group(1)
 
 # see http://docs.python.org/distutils/setupscript.html
 
@@ -15,9 +15,9 @@ setup(name='merkletree',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       py_modules=[],
-      packages=['merkletree'],
+      packages=['src/merkletree'],
       # following could be in scripts/ subdir
-      scripts=['merkleize', ],          # front end module(s)
+      scripts=['src/merkleize', ],          # front end module(s)
       # MISSING description
       classifiers=[
           'License :: OSI Approved :: MIT License',

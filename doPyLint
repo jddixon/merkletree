@@ -1,4 +1,4 @@
-pylint setup.py merkletree      \
-    merkleize                 \
-    test*.py
+pylint setup.py src/merkletree      \
+    src/merkleize                 \
+    tests/test*.py
 
