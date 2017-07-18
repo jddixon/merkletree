@@ -6,7 +6,7 @@ then
   
   rm -rf build/* tmp/* 
   
-  pySloc -L py src/merkleize  -X cover -X htmlcov -X dist -v $@
+  pySloc -L py  -X cover -X htmlcov -X dist -v $@ merkletree src/merkleize tests/test_merkle_doc.py tests/test_merkle_doc2.py tests/test_merkle_leaf.py tests/test_merkle_tree.py tests/test_merkle_tree2.py tests/test_new_make_exre.py tests/test_old_make_exre.py setup.py
 else
   echo "DEV_BASE is not defined"
 fi
