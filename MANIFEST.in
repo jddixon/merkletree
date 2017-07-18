@@ -1,13 +1,11 @@
 # see http://docs.python.org/distutils/sourcedist.html
 
 include netDistrib.conf
-include .gitignore auto8it countem installit test.all
-include CHANGES README.md TODO
-include merkleize
+include CHANGES LICENSE* MANIFEST.in README* TODO
+include bkp2U checkCoverage countem doPyLint installit pylintrc styleit test.all
+include setup.py
+recursive-include src *
+recursive-include tests *
 recursive-include ghpDoc *
-recursive-include merkletree *.py
-recursive-include testData *
 global-exclude junk* .*swp 
 prune   .svn
-
-

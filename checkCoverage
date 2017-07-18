@@ -1,13 +1,12 @@
-# bindex/checkCoverage
+#!/usr/bin/env bash
 
-# see coverage.readthedocs.io/en/latestt/config.html
-#
-## last line should be test*.py
-nosetests \
-    --with-coverage --cover-html \
-    --cover-tests \
-    --cover-erase \
-    --cover-branches \
-    --cover-inclusive  \
-    --cover-package=merkletree  \
-    test*.py
+if [ ! -z "${DEV_BASE// }" ]
+then
+  # merkletree/checkCoverage
+  
+  # see coverage.readthedocs.io/en/latestt/config.html
+  #
+  nosetests     --with-coverage --cover-html     --cover-tests     --cover-erase     --cover-branches     --cover-inclusive      --cover-package=buildlist       tests/test*.py
+else
+  echo "DEV_BASE is not defined"
+fi

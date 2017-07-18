@@ -1,6 +1,12 @@
 ~/dev/py/merkletree/CHANGES
 
 
+v5.3.4
+    2017-07-18
+        * rewrite setup.py, MANIFEST.in; edit cfg files             SLOC 2457
+v5.3.3
+    2017-06-13
+        * restructure for pytest                                    SLOC 2442
 v5.3.2
     2017-04-25
         * drop dist/* from repos; plus minor edits                  SLOC 2497
@@ -262,6 +268,8 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
+
 
 
 

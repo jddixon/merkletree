@@ -4,13 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/merkletree
   
-  ./test_merkle_doc.py
-  ./test_merkle_doc2.py
-  ./test_merkle_leaf.py
-  ./test_merkle_tree.py
-  ./test_merkle_tree2.py
-  ./test_new_make_exre.py
-  ./test_old_make_exre.py
+  PYTHONPATH=".:src:test" pytest
   
 else
   echo "DEV_BASE is not defined"
