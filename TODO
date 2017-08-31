@@ -1,5 +1,8 @@
 ~/dev/py/merkletree/TODO
 
+2017-08-31
+    * tox fails: requirements are wrong
+
 2016-12-05
     * wrong number of arguments to add_node() call L709                 * FIXED
         - but test_merkle_tree2 exercises code successfully             * FIXED

@@ -69,7 +69,7 @@ class TestMerkleDoc(unittest.TestCase):
 
     def verify_leaf_sha(self, node, path_to_file, hashtype):
         """
-        Verify that a MerkleLeaf correctly describes a file, given a hash type.i
+        Verify that a MerkleLeaf correctly describes a file, given a hash type.
         """
         check_hashtype(hashtype)
         self.assertTrue(os.path.exists(path_to_file))
@@ -170,8 +170,8 @@ class TestMerkleDoc(unittest.TestCase):
         doc1_str = doc1.to_string()
         doc1_rebuilt = MerkleDoc.create_from_serialization(doc1_str, hashtype)
         # DEBUG
-        #print("flat doc:\n" + doc1Str)
-        #print("rebuilt flat doc:\n" + doc1Rebuilt.toString())
+        # print("flat doc:\n" + doc1Str)
+        # print("rebuilt flat doc:\n" + doc1Rebuilt.toString())
         # END
         self.assertTrue(doc1.equal(doc1_rebuilt))  # MANGO
 

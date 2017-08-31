@@ -7,8 +7,8 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-merkletree v5.3.4
-2017-07-18 19:23:44
+merkletree v5.3.5
+2017-08-31 19:22:47
 # BEGIN CONTENT #
 merkletree
  .cache
@@ -16,24 +16,24 @@ merkletree
    cache
     lastfailed bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f
  .dvcz
-  builds b71ccd2c1846c6f950adfa5b7b592263814c8c91
+  builds e8d9661687f8a3bf9dd6188238691c1793be552c
   copyright 398f1ae7d41108936adf6f4f33209234106bd3ed
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList 42480fb97cfbfde26899fd2138a62a316a519386
+  lastBuildList 9110f355653c135d51191f3f84defbf250e28b21
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  projCfg ea9971c1f30c2cc6dd9b6f899ccd42cafa4c5944
+  projCfg b7d7c8f09cf86a9edde7957424022ec645a74586
   projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
-  version c20ae21d7d3d40bbbf8ea8c4b49640243e97b8a5
- .gitignore 5185a3cb0539828e50edfc25d60c80ae291197fa
- CHANGES 75ffe38afa435ba8e29264d2abc6f091e56bf1a9
+  version e9de71945bd270627444ac17b6986e777bc442c8
+ .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
+ CHANGES 38a59927003f5ebc9ca9863a21fda35fde45a97e
  LICENSE-MIT.md 8848c7b511a1545a8519380c5b0eb9fa7bd0f6d6
- MANIFEST.in ab66c4ba9f7b7352eb828e32839a387bf990125b
+ MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
  README.md cd43ff75ee6a98961ce86a08547bb7986c33e916
- TODO d7e1e7afc984dc9cc8ab43410b313bf7618c4538
+ TODO 31d18ad2d7657d7ca97fad97117824c92f3d9eb0
  bkp2U 0303656e4bec6af6bf68e4bc71ec1f8d2caeb25e
  checkCoverage 422df30a9c785989f55e8ac7492358f994fa8003
- countem 9bf2e56ba176d199588b12952e2d2fd1c15012d8
+ countem 159196be3c669c913ca416d8477447b4fef76aa1
  doPyLint 31321ad99eb3b9ac0928a68c29a8b5b88c9472fb
  ghpDoc
   TODO 6fa7b1dec0b84b2560077a8544e2283eddfb7a2f
@@ -54,24 +54,27 @@ merkletree
   index.md 1d51188c084255aab0a90436d44909edd174ec4c
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- setup.py ff1b3f6047007679f819369e584719be1c8d2373
+ requirements.txt 91f669be46db936db1a405616161720bbcc5b1d0
+ setup.py 8ac8cb30e46891f92a2e0658fa0211513565367e
  src
   merkleize a539736a668e6eb5cbd227ce036d70bc02c74ad0
   merkletree
-   __init__.py 4443731a91a5b970d862e39d07911129580a6eb5
+   __init__.py f8e5d6fb162b8efe8bd1890025afb88462b0e0fe
  styleit 1d7cded2392ab36e4fcc61eefde6a1b0233091c8
  test.all bb79f261791d6d5c5a815088daac04faea7b891d
+ test_requirements.txt 72fe897a0a9c87199b1e6545f02c7904761186b2
  tests
   test_data
    dat.xlattice.org 08ac8f60ea44856e34c565b4d459a2d0547e5db9
    dat2.xlattice.org c653333f4518980911dd1592cb8986073ca98930
-  test_merkle_doc.py 865e5a74a26747b23e74c01c045954c23f16d915
+  test_merkle_doc.py 9a4fad0f63f06b1eee03c07df10c569885a68ce1
   test_merkle_doc2.py c1cc314593b945dedf3fb3b6f17d36ad49650da9
-  test_merkle_leaf.py 9dcdfa9d2d0c8ff938cc0fcc6bc30e241d215447
-  test_merkle_tree.py bb03805f94e61266f038f5e27ca24463cf9c5d0a
+  test_merkle_leaf.py 60bab1cd70334de2cf0ecedaec9945629f8f1b27
+  test_merkle_tree.py e2da4342ed409673dfca67cdb98f6c925bb295ac
   test_merkle_tree2.py 836bc0e0ab27f213877668090f342befa329caeb
-  test_new_make_exre.py e7bbdf5f917df06dbec044d70bbc7df260f28f43
+  test_new_make_exre.py 8f519135e3ff9fe7c638100cf43fe8edfdd70c9a
   test_old_make_exre.py a44bec6e113f3223ac0573762434e516972031cd
+ tox.ini 8cc245ad1516ee9bc9c624e6804e369e825630e2
 # END CONTENT #
 
-cUnU0rWxltgok/KaEs0BJ0IaVgo9jUbmeUxTeTFxVJt4I0bLZgT9oiU9v/gQjGFDQuCgw2+bV5gxRpYG7bRm9PMNvepeDNeoFBHUCOCoNjsGIVY77zCDbMOny/x5TlcdaqUAUGNYWYbxFpTPqZVxrLmojOsFkb8FjzW/tri1uv2GQT9DEq4esMMH4p4EyVrpPr4P3W+ph2Ko0guo6ob2sI5+F5EERs6rc9ZKHhizEekO+vuR0IZlJD+kDtggD+4XrPThNDHweA7OOKEzgaCgcQswHaCHGwywdVpSAnZiS4ItgqqVQ2TIwgRVhGy7XG4CEswQrbJOXoTe/6BovfVCNA==
+BTf7ikn8lz0FxskpU95PPiRMBWmn3MAqNJ67rqhWBtPgB73TwnThdbXmmrZ/IlbGeJs3jEcV8weX/b1QsvBB0BWKShKKNmkNixOXtodV9tVzBF6AHB+95bEc8gR+vmEe/CMx6urjzJ1nILydMo9HEqy4IK0apkcrFgOJzinQ6qhd6jPaX1koA5tLEIqrbNldfLdBHiRRAjf5MEj++H7v2BGkJUVwhsgyjNcPwENDSUeatS1jx0EnLILvhgFLhArfxbc8qnGge5MM6uHPdtBBv6R7WR2lu3cs5QHzjuTjnfUIdOeykBpHGcy8eZuABkZLtYyrefVfWYqg+AzBC+XnNA==

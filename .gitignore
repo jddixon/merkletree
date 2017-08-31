@@ -6,11 +6,13 @@
 .committed
 .coverage
 .dvczignore*
+.git
 .merkle
 .posted
 .sharedev
 .svn*
 .tmp
+.tox
 .wrapped
 .xlattice
 CVS

@@ -2,8 +2,8 @@
 project:merkletree
 package:merkletree
 mainlang:py
-version:5.3.3
-versionDate:2017-06-13
+version:5.3.4
+versionDate:2017-07-18
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -12,7 +12,6 @@ dir:std:tests
 dir:std:.dvcz
 dir:pkg:merkletree
 dir:local:testData
-dir:local:.cache
 dir:clr:build
 dir:clr:tmp
 :?files?:
@@ -30,6 +29,9 @@ code:std:pylintrc
 code:std:.coveragerc
 code:std:check.summary
 code:std:MANIFEST.in
+code:std:tox.ini
+code:std:requirements.txt
+code:std:test_requirements.txt
 txt:std:LICENSE-MIT.md
 txt:std:CHANGES
 txt:std:README.jdd
@@ -42,5 +44,6 @@ bash:std:styleit
 bash:std:test.all
 bash:std:doPyLint
 bash:std:checkCoverage
+py:std:setup.cfg
 py:std:setup.py
 py:global:merkleize

@@ -18,6 +18,7 @@ from merkletree import MerkleTree, MerkleLeaf
 if sys.version_info < (3, 6):
     # pylint:disable=unused-import
     import sha3                 # monkey-patches hashlib
+    assert sha3                 # get rid of warning
 
 ONE = 1
 FOUR = 4
@@ -202,8 +203,7 @@ class TestMerkleTree(unittest.TestCase):
         self.assertEqual(FOUR, len(nodes2))
         self.verify_tree_sha(tree2, dir_path2, hashtype)
 
-        # XXX COMMENTED OUT FOR DEBUGGING XXX
-        #self.assertTrue  ( tree1.equal(tree1) )
+        self.assertTrue(tree1.equal(tree1))
         self.assertFalse(tree1.equal(tree2))
         self.assertFalse(tree1.equal(None))
 
@@ -328,10 +328,14 @@ class TestMerkleTree(unittest.TestCase):
         """ Test solution to bug in handling grayboxes website. """
 
         serialization =\
-            '088d0e391e1a4872329e0f7ac5d45b2025363e26c199a74ea39901d109afd6ba grayboxes.com/\n' +\
-            ' 24652ddc14687866e6b1251589aee7e1e3079a87f80cd7775214f6d837612a90 images/\n' +\
-            '  1eb774eef9be1e696f69a2f95711be37915aac283bb4b34dcbaf7d032233e090 grayboxes.gif\n' +\
-            ' 6eacebda9fd55b59c0d2e48e2ed59ce9fd683379592f8e662b1de88e041f53c9 index.html\n'
+            '088d0e391e1a4872329e0f7ac5d45b2025363e26c199a7' + \
+            '4ea39901d109afd6ba grayboxes.com/\n' +\
+            ' 24652ddc14687866e6b1251589aee7e1e3079a87f80cd' + \
+            '7775214f6d837612a90 images/\n' +\
+            '  1eb774eef9be1e696f69a2f95711be37915aac283bb4' + \
+            'b34dcbaf7d032233e090 grayboxes.gif\n' +\
+            ' 6eacebda9fd55b59c0d2e48e2ed59ce9fd683379592f8' + \
+            'e662b1de88e041f53c9 index.html\n'
 
         # create from string array ----------------------------------
         string = serialization.split('\n')

@@ -15,6 +15,7 @@ from merkletree import MerkleLeaf
 if sys.version_info < (3, 6):
     # pylint:disable=unused-import
     import sha3     # monkey-patches hashlib
+    assert sha3     # no warning, please
 
 # This is the SHA1 test
 
@@ -67,13 +68,13 @@ class TestMerkleLeaf(unittest.TestCase):
         self.assertFalse(leaf0.equal(leaf1))
 
         # XXX USE NLHTree instead
-        #pair0    = leaf0.toPair()
-        #leaf0bis = MerkleLeaf.createFromPair(pair0)
-        #self.assertEqual(leaf0bis, leaf0)
+        # pair0    = leaf0.toPair()
+        # leaf0bis = MerkleLeaf.createFromPair(pair0)
+        # self.assertEqual(leaf0bis, leaf0)
 
-        #pair1    = leaf1.toPair()
-        #leaf1bis = MerkleLeaf.createFromPair(pair1)
-        #self.assertEqual(leaf1bis, leaf1)
+        # pair1    = leaf1.toPair()
+        # leaf1bis = MerkleLeaf.createFromPair(pair1)
+        # self.assertEqual(leaf1bis, leaf1)
 
     def test_simple_constructor(self):
         """ Test constructor for various SHA types. """

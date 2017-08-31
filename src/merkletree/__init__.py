@@ -7,7 +7,7 @@ import re
 import sys
 from stat import S_ISDIR
 
-from xlattice import (SHA1_BIN_LEN, SHA2_BIN_LEN, SHA3_BIN_LEN,
+from xlattice import (SHA1_BIN_LEN, SHA2_BIN_LEN,
                       SHA1_BIN_NONE, SHA2_BIN_NONE, SHA3_BIN_NONE,
                       SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
                       HashTypes, check_hashtype, util)
@@ -16,13 +16,14 @@ from xlattice.u import file_sha1bin, file_sha2bin, file_sha3bin
 
 if sys.version_info < (3, 6):
     import sha3     # monkey-patches hashlib
+    assert sha3     # no warnings, please
 
 __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.3.4'
-__version_date__ = '2017-07-18'
+__version__ = '5.3.5'
+__version_date__ = '2017-08-31'
 
 # -------------------------------------------------------------------
 
@@ -33,7 +34,7 @@ class MerkleParseError(RuntimeError):
 
 class MerkleNode(object):
 
-    #__slots__ = [ A PERFORMANCE ENHANCER ]
+    # __slots__ = [ A PERFORMANCE ENHANCER ]
 
     def __init__(self, name, is_leaf=False, hashtype=HashTypes.SHA2):
         check_hashtype(hashtype)
@@ -151,7 +152,7 @@ class MerkleDoc(MerkleNode):
         self._tree = tree
         if tree:
             # DEBUG
-            #print("MerkleDoc.__init__: usingSHA = %s" % str(usingSHA))
+            # print("MerkleDoc.__init__: usingSHA = %s" % str(usingSHA))
             # END
             # pylint:disable=redefined-variable-type
             if hashtype == HashTypes.SHA1:
@@ -286,9 +287,9 @@ class MerkleDoc(MerkleNode):
 
         # DEBUG
         # print("MerkleDoc.createFromStringArray:")
-        #print("    docHash = %s" % str(binascii.b2a_hex(docHash),'ascii'))
-        #print("    docPath = %s" % docPath)
-        #print("    usingSHA=%s" % str(usingSHA))
+        # print("    docHash = %s" % str(binascii.b2a_hex(docHash),'ascii'))
+        # print("    docPath = %s" % docPath)
+        # print("    usingSHA=%s" % str(usingSHA))
         # END
 
         tree = MerkleTree.create_from_string_array(string[1:], hashtype)
@@ -329,7 +330,8 @@ class MerkleDoc(MerkleNode):
             match_ = MerkleDoc.FIRST_LINE_RE_2.match(line)
         if match_ is None:
             raise RuntimeError(
-                "MerkleDoc first line <%s> does not match expected pattern" % line)
+                "MerkleDoc first line <%s> does not match expected pattern" %
+                line)
         doc_hash = bytes(binascii.a2b_hex(match_.group(1)))
         doc_path = match_.group(2)          # includes terminating slash
         return (doc_hash, doc_path)
@@ -508,14 +510,15 @@ class MerkleTree(MerkleNode):
                  '_nodes', '_hashtype', ]
 
     # notice the terminating forward slash and lack of newlines or CR-LF
-    FIRST_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.:]+/)$',
-                                 re.IGNORECASE)
-    OTHER_LINE_RE_1 = re.compile(r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.:~]+/?)$',
-                                 re.IGNORECASE)
-    FIRST_LINE_RE_2 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\-\.:]+/)$',
-                                 re.IGNORECASE)
-    OTHER_LINE_RE_2 = re.compile(r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\.:_]+/?)$',
-                                 re.IGNORECASE)
+    FIRST_LINE_RE_1 = re.compile(
+        r'^( *)([0-9a-f]{40}) ([a-z0-9_\-\.:]+/)$', re.IGNORECASE)
+    OTHER_LINE_RE_1 = re.compile(
+        r'^([ XYZ]*)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.:~]+/?)$', re.IGNORECASE)
+    FIRST_LINE_RE_2 = re.compile(
+        r'^( *)([0-9a-f]{64}) ([a-z0-9_\-\.:]+/)$', re.IGNORECASE)
+    OTHER_LINE_RE_2 = re.compile(
+        r'^([ XYZ]*)([0-9a-f]{64}) ([a-z0-9_\$\+\-\.:_]+/?)$',
+        re.IGNORECASE)
 
     #################################################################
     # exRE and matchRE must have been validated by the calling code
@@ -581,7 +584,8 @@ class MerkleTree(MerkleNode):
             match_ = MerkleTree.FIRST_LINE_RE_2.match(line)
         if match_ is None:
             raise RuntimeError(
-                "MerkleTree first line \"%s\" does not match expected pattern" % line)
+                "MerkleTree first line \"%s\" doesn't match expected pattern" %
+                line)
         indent = len(match_.group(1))         # count of leading spaces
         tree_hash = bytes(binascii.a2b_hex(match_.group(2)))
         dir_name = match_.group(3)          # includes terminating slash
@@ -595,7 +599,8 @@ class MerkleTree(MerkleNode):
             match_ = re.match(MerkleTree.OTHER_LINE_RE_2, line)
         if match_ is None:
             raise RuntimeError(
-                "MerkleTree other line <%s> does not match expected pattern" % line)
+                "MerkleTree other line <%s> does not match expected pattern" %
+                line)
         node_depth = len(match_.group(1))
         node_hash = bytes(binascii.a2b_hex(match_.group(2)))
         node_name = match_.group(3)
@@ -642,7 +647,6 @@ class MerkleTree(MerkleNode):
         cur_tree = root_tree
         stack.append(cur_tree)           # rootTree
         stk_depth += 1                  # always step after pushing tree
-        last_was_dir = False
 
         for nnn in range(1, len(string)):
             line = string[nnn].rstrip()
@@ -698,7 +702,8 @@ class MerkleTree(MerkleNode):
         """
         if not os.path.exists(path_to_file):
             raise RuntimeError(
-                "MerkleTree.createFromFile: file '%s' does not exist" % path_to_file)
+                "MerkleTree.createFromFile: file '%s' does not exist" %
+                path_to_file)
         with open(path_to_file, 'r') as file:
             text = file.read()
         return MerkleTree.create_from_serialization(text, hashtype)
