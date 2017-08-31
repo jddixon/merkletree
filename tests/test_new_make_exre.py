@@ -27,7 +27,9 @@ class TestMakeExRE(unittest.TestCase):
         self.assertIsNotNone(ex_re.match('.foo.swp'))         # vi backup file
 
     def do_test_for_expected_matches(self, match_re, names):
-        """ Verify that expected matches work for specific pattern and names. """
+        """
+        Verify that expected matches work for specific pattern and names.
+        """
         for name in names:
             self.assertIsNotNone(match_re.match(name))
 
