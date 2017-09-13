@@ -7,8 +7,8 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-merkletree v5.3.5
-2017-08-31 19:22:47
+merkletree v5.3.6
+2017-09-13 20:31:03
 # BEGIN CONTENT #
 merkletree
  .cache
@@ -16,16 +16,16 @@ merkletree
    cache
     lastfailed bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f
  .dvcz
-  builds e8d9661687f8a3bf9dd6188238691c1793be552c
+  builds c007099b98c9cdc9711734ff938c9518472efe67
   copyright 398f1ae7d41108936adf6f4f33209234106bd3ed
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList 9110f355653c135d51191f3f84defbf250e28b21
+  lastBuildList 56d1cb659b156380b9a80e8319efcf855bd88812
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg b7d7c8f09cf86a9edde7957424022ec645a74586
   projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
-  version e9de71945bd270627444ac17b6986e777bc442c8
+  version 908086fbfc0c81969854688c371281450cef9414
  .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
- CHANGES 38a59927003f5ebc9ca9863a21fda35fde45a97e
+ CHANGES c1546b0eb5f752aa63775b1dc14e6b9badcd08c4
  LICENSE-MIT.md 8848c7b511a1545a8519380c5b0eb9fa7bd0f6d6
  MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
@@ -54,15 +54,15 @@ merkletree
   index.md 1d51188c084255aab0a90436d44909edd174ec4c
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- requirements.txt 91f669be46db936db1a405616161720bbcc5b1d0
+ requirements.txt ee835633072d3448723319541f13897f1293aa3e
  setup.py 8ac8cb30e46891f92a2e0658fa0211513565367e
  src
   merkleize a539736a668e6eb5cbd227ce036d70bc02c74ad0
   merkletree
-   __init__.py f8e5d6fb162b8efe8bd1890025afb88462b0e0fe
+   __init__.py ce77e5ccbf7a2909b97e4a076b4a292b5fda4fd1
  styleit 1d7cded2392ab36e4fcc61eefde6a1b0233091c8
  test.all bb79f261791d6d5c5a815088daac04faea7b891d
- test_requirements.txt 72fe897a0a9c87199b1e6545f02c7904761186b2
+ test_requirements.txt 1bbce0d54753048ac963a78f773e68f3d0611703
  tests
   test_data
    dat.xlattice.org 08ac8f60ea44856e34c565b4d459a2d0547e5db9
@@ -74,7 +74,7 @@ merkletree
   test_merkle_tree2.py 836bc0e0ab27f213877668090f342befa329caeb
   test_new_make_exre.py 8f519135e3ff9fe7c638100cf43fe8edfdd70c9a
   test_old_make_exre.py a44bec6e113f3223ac0573762434e516972031cd
- tox.ini 8cc245ad1516ee9bc9c624e6804e369e825630e2
+ tox.ini 0958ce8837727d69783d1e0937697d18185c5097
 # END CONTENT #
 
-BTf7ikn8lz0FxskpU95PPiRMBWmn3MAqNJ67rqhWBtPgB73TwnThdbXmmrZ/IlbGeJs3jEcV8weX/b1QsvBB0BWKShKKNmkNixOXtodV9tVzBF6AHB+95bEc8gR+vmEe/CMx6urjzJ1nILydMo9HEqy4IK0apkcrFgOJzinQ6qhd6jPaX1koA5tLEIqrbNldfLdBHiRRAjf5MEj++H7v2BGkJUVwhsgyjNcPwENDSUeatS1jx0EnLILvhgFLhArfxbc8qnGge5MM6uHPdtBBv6R7WR2lu3cs5QHzjuTjnfUIdOeykBpHGcy8eZuABkZLtYyrefVfWYqg+AzBC+XnNA==
+LTzEFzt+BNWvz0U0M2OsdNUa4XtmQpI3Ztk1CytpztfxCNiLBFGD3CB8eSvE5ZxUCdOtvz1AVZr6+G7kINMYecvY2MkdijsUcvUSg0HXKxtZVYtbB8oVqweaT5SPrC+WhceAJ8HLL13yGxhCwGXPAKt7wJcZ3/KzMBP+4BpqiUSGvppmu2MTXXVgYoSdfNdwz0cbP9FOQM0kxMoQVfbDpUGIXfQCN65Gk1oIIzizPW2+3Qo6AYPFc7SMMMtijGnnHZnLOUA+MkUkvl+APcqKGsKK0A9NIsT7vvmii9DG4e5HhObkdmIfbiTwSBvB3DFt1we/3v18QnSMMkBlIpHYhw==
