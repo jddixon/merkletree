@@ -1,3 +1,2 @@
 # merkletree/test_requirements.txt
-sha3
 
