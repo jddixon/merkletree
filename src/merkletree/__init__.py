@@ -22,8 +22,8 @@ __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.3.6'
-__version_date__ = '2017-09-13'
+__version__ = '5.3.7'
+__version_date__ = '2017-09-24'
 
 # -------------------------------------------------------------------
 
