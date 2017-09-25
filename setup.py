@@ -12,7 +12,7 @@ if exists('README.md'):
         long_desc = file.read()
 
 setup(name='merkletree',
-      version='5.3.5',
+      version='5.3.7',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       long_description=long_desc,
@@ -22,7 +22,7 @@ setup(name='merkletree',
       include_package_data=False,
       zip_safe=False,
       scripts=['src/merkleize'],
-      description='enhancements to random number generator',
+      description='merkle tree library',
       url='https://jddixon.github.io/merkletree',
       classifiers=[
           'Development Status :: 4 - Beta',
