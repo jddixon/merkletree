@@ -19,21 +19,21 @@ class TestMakeExRE(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def do_test_for_expected_exclusions(self, ex_re):
+    def _expected_exclusions(self, ex_re):
         """ Verify that expected exclusions work for specific pattern. """
         self.assertIsNotNone(ex_re.match('junkEverywhere'))   # 'junk...'
         self.assertIsNotNone(ex_re.match('.merkle'))          # a file
         self.assertIsNotNone(ex_re.match('.svn'))             # the directory
         self.assertIsNotNone(ex_re.match('.foo.swp'))         # vi backup file
 
-    def do_test_for_expected_matches(self, match_re, names):
+    def _expected_matches(self, match_re, names):
         """
         Verify that expected matches work for specific pattern and names.
         """
         for name in names:
             self.assertIsNotNone(match_re.match(name))
 
-    def do_test_for_expected_match_failures(self, match_re, names):
+    def _expected_match_failures(self, match_re, names):
         """
         Verify that expected match failures occur for specific pattern
         and listed names.
@@ -62,7 +62,7 @@ class TestMakeExRE(unittest.TestCase):
         exc.append('.merkle')
         exc.append('.svn')
         ex_re = make_ex_re(exc)
-        self.do_test_for_expected_exclusions(ex_re)
+        self._expected_exclusions(ex_re)
 
         self.assertIsNotNone(ex_re.match('foobarf'))
         self.assertIsNone(ex_re.match(' foobarf'))
@@ -85,24 +85,24 @@ class TestMakeExRE(unittest.TestCase):
         matches.append('*bar')
         matches.append('junk*')
         match_re = make_ex_re(matches)
-        self.do_test_for_expected_matches(
+        self._expected_matches(
             match_re, ['foo', 'foolish', 'roobar', 'junky'])
-        self.do_test_for_expected_match_failures(
+        self._expected_match_failures(
             match_re, [' foo', 'roobarf', 'myjunk'])
 
         matches = ['*.tgz']
         match_re = make_ex_re(matches)
-        self.do_test_for_expected_matches(
+        self._expected_matches(
             match_re, ['junk.tgz', 'notSoFoolish.tgz'])
-        self.do_test_for_expected_match_failures(
+        self._expected_match_failures(
             match_re, ['junk.tar.gz', 'foolish.tar.gz'])
 
         matches = ['*.tgz', '*.tar.gz']
         match_re = make_ex_re(matches)
-        self.do_test_for_expected_matches(
+        self._expected_matches(
             match_re, ['junk.tgz', 'notSoFoolish.tgz',
                        'junk.tar.gz', 'ohHello.tar.gz'])
-        self.do_test_for_expected_match_failures(
+        self._expected_match_failures(
             match_re, ['junk.gz', 'foolish.tar'])
 
 

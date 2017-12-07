@@ -75,7 +75,6 @@ class TestMerkleTree(unittest.TestCase):
         with open(path_to_file, "rb") as file:
             data = file.read()
         self.assertFalse(data is None)
-        # pylint: disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
         elif hashtype == HashTypes.SHA2:
@@ -96,7 +95,6 @@ class TestMerkleTree(unittest.TestCase):
             self.assertEqual(None, node.bin_hash)
         else:
             hash_count = 0
-            # pylint: disable=redefined-variable-type
             if hashtype == HashTypes.SHA1:
                 sha = hashlib.sha1()
             elif hashtype == HashTypes.SHA2:
@@ -154,9 +152,9 @@ class TestMerkleTree(unittest.TestCase):
         self.assertEqual(dir_name2, tree2.name)
 
         # these tests remain skimpy
-        self.assertTrue(tree1.equal(tree1))
-        self.assertFalse(tree1.equal(tree2))
-        self.assertFalse(tree1.equal(None))
+        self.assertFalse(tree1 is None)
+        self.assertTrue(tree1 == tree1)
+        self.assertFalse(tree1 == tree2)
 
         tree1_str = tree1.to_string(0)
 
@@ -173,7 +171,7 @@ class TestMerkleTree(unittest.TestCase):
 
         tree1_rebuilt = MerkleTree.create_from_serialization(
             tree1_str, hashtype)
-        self.assertTrue(tree1.equal(tree1_rebuilt))
+        self.assertTrue(tree1 == tree1_rebuilt)
 
     def test_bound_flat_dirs(self):
         """
@@ -203,14 +201,14 @@ class TestMerkleTree(unittest.TestCase):
         self.assertEqual(FOUR, len(nodes2))
         self.verify_tree_sha(tree2, dir_path2, hashtype)
 
-        self.assertTrue(tree1.equal(tree1))
-        self.assertFalse(tree1.equal(tree2))
-        self.assertFalse(tree1.equal(None))
+        self.assertFalse(tree1 is None)
+        self.assertTrue(tree1 == tree1)
+        self.assertFalse(tree1 == tree2)
 
         tree1_str = tree1.to_string(0)
         tree1_rebuilt = MerkleTree.create_from_serialization(
             tree1_str, hashtype)
-        self.assertTrue(tree1.equal(tree1_rebuilt))
+        self.assertTrue(tree1 == tree1_rebuilt)
 
     def test_bound_needle_dirs(self):
         """
@@ -238,8 +236,8 @@ class TestMerkleTree(unittest.TestCase):
         self.assertEqual(ONE, len(nodes2))
         self.verify_tree_sha(tree2, dir_path2, hashtype)
 
-        self.assertTrue(tree1.equal(tree1))
-        self.assertFalse(tree1.equal(tree2))
+        self.assertTrue(tree1 == tree1)
+        self.assertFalse(tree1 == tree2)
 
         tree1_str = tree1.to_string(0)
         tree1_rebuilt = MerkleTree.create_from_serialization(
@@ -248,7 +246,7 @@ class TestMerkleTree(unittest.TestCase):
 #       print "NEEDLEDIR TREE1:\n" + tree1Str
 #       print "REBUILT TREE1:\n" + tree1Rebuilt.toString("")
 #       # END
-        self.assertTrue(tree1.equal(tree1_rebuilt))   # GEEP
+        self.assertTrue(tree1 == tree1_rebuilt)
 
     # tests of bugs previously found --------------------------------
 
@@ -280,7 +278,7 @@ class TestMerkleTree(unittest.TestCase):
         ser1 = tree1.to_string(0)
         self.assertEqual(serialization, ser1)
 
-        self.assertTrue(tree1.equal(tree2))
+        self.assertTrue(tree1 == tree2)
 
         # 2014-06-26 tagged this on here to test firstLineRE_1()
         first_line = string[0]
@@ -322,7 +320,7 @@ class TestMerkleTree(unittest.TestCase):
         ser2 = tree2.to_string(0)
         self.assertEqual(serialization, ser2)
 
-        self.assertTrue(tree1.equal(tree2))
+        self.assertTrue(tree1 == tree2)
 
     def test_gray_boxes_bug3(self):
         """ Test solution to bug in handling grayboxes website. """
@@ -354,7 +352,7 @@ class TestMerkleTree(unittest.TestCase):
         ser1 = tree1.to_string(0)
         self.assertEqual(serialization, ser1)
 
-        self.assertTrue(tree1.equal(tree2))            # GEEP
+        self.assertTrue(tree1 == tree2)
 
         # 2014-06-26 tagged this on here to test firstLineRE_1()
         first_line = string[0]
@@ -390,7 +388,7 @@ class TestMerkleTree(unittest.TestCase):
         ser2 = tree2.to_string(0)
         self.assertEqual(serialization, ser2)
 
-        self.assertTrue(tree1.equal(tree2))
+        self.assertTrue(tree1 == tree2)
 
 
 if __name__ == '__main__':

@@ -36,7 +36,6 @@ class TestMerkleLeaf(unittest.TestCase):
         """ Test constructor for specific SHA type. """
 
         check_hashtype(hashtype)
-        # pylint: disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
         elif hashtype == HashTypes.SHA2:
@@ -64,8 +63,8 @@ class TestMerkleLeaf(unittest.TestCase):
         self.assertEqual(file_name2, leaf1.name)
         self.assertEqual(hash1, leaf1.bin_hash)
 
-        self.assertTrue(leaf0.equal(leaf0))
-        self.assertFalse(leaf0.equal(leaf1))
+        self.assertTrue(leaf0 == leaf0)
+        self.assertFalse(leaf0 == leaf1)
 
         # XXX USE NLHTree instead
         # pair0    = leaf0.toPair()

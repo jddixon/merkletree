@@ -1,37 +1,29 @@
-# projConfig.toml for merkletree
-
 [meta]
-    version= '0.1.0'
+version = "0.1.0"
 
 [project]
-    name = 'merkletree'             # external name = distribution name
-    package = 'merkletree'             # internal name
-    main_lang = 'py'
-    version = '5.3.7'
-    version_date = '2017-09-24'
-    author = 'Jim Dixon'
-    author_email = 'jdd@gmail.com'
-    description='merkle tree library'
-    copyright = '2011-2017'
-    dev_status = 'beta'
-    license = 'mit'
-    relpath = 'py/merkletree'
-    state = 'shared'
-    url = 'https://jddixon.github.io/merkletree'
+name = "merkletree"
+package = "merkletree"
+main_lang = "py"
+version = "5.3.8"
+version_date = "2017-12-06"
+author = "Jim Dixon"
+author_email = "jdd@gmail.com"
+description = "merkle tree library"
+copyright = "2011-2017"
+dev_status = "beta"
+license = "mit"
+relpath = "py/merkletree"
+state = "shared"
+url = "https://jddixon.github.io/merkletree"
 
 [py]
-    packages = ['merkletree']
-    package_dir = ['src']
-    test_dir = 'tests'
-    py_modules = []
-    scripts=['src/merkleize']
-    ext_modules = []
-
-    # sdReq output
-    distshare = ['optionz','rnglib','xlattice_py']
-    requirements=['setuptools','pysha3']
-    test_requirements=[]
-
-    # trove stuff is TBD
-
-
+packages = [ "merkletree",]
+package_dir = [ "src",]
+test_dir = "tests"
+py_modules = []
+scripts = [ "src/merkleize",]
+ext_modules = []
+distshare = [ "optionz", "rnglib", "xlattice_py",]
+requirements = [ "setuptools", "pysha3",]
+test_requirements = []

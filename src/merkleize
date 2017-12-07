@@ -22,8 +22,8 @@ import time
 from argparse import ArgumentParser
 
 from optionz import dump_options        # requires argparse
-from xlattice import (check_using_sha,
-                      parseUsingSHA, fix_using_sha)
+from xlattice import (check_hashtype,
+                      parse_hashtype_etc, fix_hashtype)
 #from xlattice.util import make_ex_re, make_match_re
 
 from merkletree import (__version__, __version_date__, MerkleDoc)
@@ -35,19 +35,13 @@ def merkleize_directory(args):
     are encountered.
     """
 
-    exclusions = args.exclude
-    hash_output = args.hash_output
     in_dir = args.in_dir
-    just_show = args.just_show
     matches = args.match_pat
     out_path = args.out_path
-    show_tree = args.show_tree
-    using_sha = args.using_sha
-    verbose = args.verbose
 
     (dir_name, path) = (None, None)
 
-    if not just_show and not in_dir:
+    if not args.just_show and not in_dir:
         raise RuntimeError("no in_dir specified")
     elif in_dir and in_dir.find('/') != -1:
         (path, _, dir_name) = in_dir.rpartition('/')
@@ -55,20 +49,20 @@ def merkleize_directory(args):
         path = '.'
         dir_name = in_dir
 
-    if verbose:
+    if args.verbose:
         print("dir_name:      %s" % dir_name)
         print("path:          %s" % path)
 
     path_to_dir = os.path.join(path, dir_name)
     doc = MerkleDoc.create_from_file_system(
-        path_to_dir, using_sha, exclusions, matches)
+        path_to_dir, args.using_sha, args.exclude, matches)
     tree = doc.tree
 
     string = []
-    if show_tree:
+    if args.show_tree:
         # pylint: disable=no-member
         string.append(tree.to_string(0))       # no top-level indent
-    if hash_output:
+    if args.hash_output:
         # pylint: disable=no-member
         string.append("%s\n" % tree.hex_hash)                      # ditto
 
@@ -85,6 +79,7 @@ def merkleize_directory(args):
 
 
 def main():
+    """ Collect command line arguments. """
 
     # program defaults ----------------------------------------------
 
@@ -117,11 +112,11 @@ def main():
                         help='output the top level hash')
     parser.add_argument('-X', '--exclude', action='append',
                         help='ignore files matching this pattern')
-    parseUsingSHA(parser)
+    parse_hashtype_etc(parser)
     args = parser.parse_args()
 
     # fixups --------------------------------------------------------
-    fix_using_sha(args)
+    fix_hashtype(args)
     if args.indent < 1:
         args.indent = 1
     elif args.indent > 8:
@@ -133,9 +128,9 @@ def main():
         args.out_path = None
 
     # sanity checks -------------------------------------------------
-    check_using_sha(args.using_sha)
+    check_hashtype(args.using_sha)
     if not args.just_show:
-        if args.in_dir is None or len(args.in_dir) == 0:
+        if args.in_dir is None or not args.in_dir:
             print("null or empty input directory name")
             parser.print_usage()
             sys.exit(1)

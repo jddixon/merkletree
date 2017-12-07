@@ -1,5 +1,12 @@
 # merkletree/__init__.py
 
+"""
+MerkleTree, a tree structure in which each component node as an SHA
+hash associated with it.  If it is a leaf, this is the hash of its
+contents.  If it is a tree or a document, it is the hash of the hashes
+of its immediate children.
+"""
+
 import binascii
 import hashlib
 import os
@@ -19,20 +26,45 @@ if sys.version_info < (3, 6):
     assert sha3     # no warnings, please
 
 __all__ = ['__version__', '__version_date__',
+           # BELONGS IN xlattice_py:
+           'get_hash_func',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.3.7'
-__version_date__ = '2017-09-24'
+__version__ = '5.3.8'
+__version_date__ = '2017-12-06'
 
 # -------------------------------------------------------------------
 
 
+def get_hash_func(hashtype):
+    """
+    Given a HashType, return the appropriate library SHA hash function or
+    None if there is no matching hash func.
+
+    XXX THIS METHOD BELONGS IN xlattice_py
+    """
+    sha = None
+    if hashtype == HashTypes.SHA1:
+        sha = hashlib.sha1()
+    elif hashtype == HashTypes.SHA2:
+        sha = hashlib.sha256()
+    elif hashtype == HashTypes.SHA3:
+        # pylint: disable=no-member
+        sha = hashlib.sha3_256()
+    return sha
+
+
 class MerkleParseError(RuntimeError):
+    """ Class for MerkleTree/Doc parse errors. """
     pass
 
 
 class MerkleNode(object):
+    """
+    Abstract class to which all Nodes in a MerkleDoc or MerkleTree
+    belong.
+    """
 
     # __slots__ = [ A PERFORMANCE ENHANCER ]
 
@@ -42,7 +74,7 @@ class MerkleNode(object):
         if name is None:
             raise RuntimeError("MerkleNode: null MerkleNode name")
         self._name = name.strip()
-        if len(self._name) == 0:
+        if not self._name:
             raise RuntimeError("MerkleNode: null or empty name")
 
         self._is_leaf = is_leaf
@@ -50,6 +82,9 @@ class MerkleNode(object):
 
     @property
     def hex_hash(self):
+        """
+        Return the hash associated with the MerkleNode as a hex value.
+        """
         if self._bin_hash is None:
             if self._hashtype == HashTypes.SHA1:
                 return SHA1_HEX_NONE
@@ -62,6 +97,9 @@ class MerkleNode(object):
 
     @hex_hash.setter
     def hex_hash(self, value):
+        """
+        Set the hash associated with the MerkleNode as a hex value.
+        """
         if self._bin_hash:
             raise RuntimeError('attempt to set non-null hash')
         self._bin_hash = bytes(binascii.a2b_hex(value))
@@ -70,6 +108,9 @@ class MerkleNode(object):
 
     @property
     def bin_hash(self):
+        """
+        Return the hash associated with the MerkleNode as a binary value.
+        """
         return self._bin_hash
 
     @bin_hash.setter
@@ -84,17 +125,14 @@ class MerkleNode(object):
     def __eq__(self, other):
         raise RuntimeError('subclass must implement')
 
-    # XXX CONSIDER THIS DEPRECATED
-    def equal(self, other):
-        return self.__eq__(other)
-    # END DEPRECATED
-
     @property
     def is_leaf(self):
+        """ Return whether this MerkleNode is a MerkleLeaf. """
         return self._is_leaf
 
     @property
     def name(self):
+        """ Return the name associated with the MerkleNode. """
         return self._name
 
 #   def path(self):
@@ -104,6 +142,7 @@ class MerkleNode(object):
         raise RuntimeError('subclass must implement')
 
     def hashtype(self):
+        """ Return the SHA hash type associated with the Node. """
         return self._hashtype
 
 # -------------------------------------------------------------------
@@ -144,7 +183,7 @@ class MerkleDoc(MerkleNode):
         super().__init__(name, is_leaf=False, hashtype=hashtype)
 
         path = path.strip()
-        if len(path) == 0:
+        if not path:
             raise RuntimeError("empty path")
         if not path.endswith('/'):
             path += '/'
@@ -154,14 +193,7 @@ class MerkleDoc(MerkleNode):
             # DEBUG
             # print("MerkleDoc.__init__: usingSHA = %s" % str(usingSHA))
             # END
-            # pylint:disable=redefined-variable-type
-            if hashtype == HashTypes.SHA1:
-                sha = hashlib.sha1()
-            elif hashtype == HashTypes.SHA2:
-                sha = hashlib.sha256()
-            elif hashtype == HashTypes.SHA3:
-                # pylint: disable=no-member
-                sha = hashlib.sha3_256()
+            sha = get_hash_func(hashtype)
             sha.update(bytes(tree.bin_hash))
             sha.update(path.encode('utf-8'))
             self._bin_hash = bytes(sha.digest())      # a binary value
@@ -184,22 +216,24 @@ class MerkleDoc(MerkleNode):
             self._bin_hash == other.bin_hash and \
             self._tree == other.tree
 
-    # XXX DEPRECATED
-    def equal(self, other):
-        return self.__eq__(other)
-
     @property
     def path(self):
-        """should return doc's path"""
+        """
+        Return the path (in the file system) associated with a MerkleDoc.
+        """
         return self._path
 
     @path.setter
     def path(self, value):
         # XXX CHECK value
+        """
+        Set the path (in the file system) associated with a MerkleDoc.
+        """
         self._path = value
 
     @property
     def tree(self):
+        """ Return the MerkleTree associated with a MerkleDoc. """
         return self._tree
 
     @tree.setter
@@ -209,10 +243,12 @@ class MerkleDoc(MerkleNode):
 
     @property
     def bound(self):
+        """ Whether a MerkleDoc is bound to a file. """
         return self._bound
 
     @bound.setter
     def bound(self, value):
+        """ Set whether a MerkleDoc is bound to a file. """
         # XXX validate
         self._bound = value
 
@@ -254,6 +290,9 @@ class MerkleDoc(MerkleNode):
 
     @staticmethod
     def create_from_serialization(string, hashtype=HashTypes.SHA2):
+        """
+        Create a MerkleDoc from string serialization (such as a file).
+        """
         check_hashtype(hashtype)
         if string is None:
             raise RuntimeError("MerkleDoc.createFromSerialization: no input")
@@ -271,7 +310,7 @@ class MerkleDoc(MerkleNode):
         if string is None:
             raise RuntimeError('null argument')
         # XXX check TYPE - must be array of strings
-        if len(string) == 0:
+        if not string:
             raise RuntimeError("empty string array")
 
         (doc_hash, doc_path) =\
@@ -370,11 +409,10 @@ class MerkleDoc(MerkleNode):
 
         Compile a regular expression which ORs match patterns.
         """
-        if match_list and len(match_list) > 0:
+        if match_list:
             match_pat = '|'.join(match_list)
             return re.compile(match_pat)
-        else:
-            return None
+        return None
 
     # SERIALIZATION #################################################
     def __str__(self):
@@ -382,6 +420,8 @@ class MerkleDoc(MerkleNode):
 
     # XXX indent is not used
     def to_string(self, indent=0):
+        """ Convert MerkleDoc to string form. """
+
         return ''.join([
             "%s %s\n" % (self.hex_hash, self.path),
             self._tree.to_string(indent)
@@ -391,6 +431,7 @@ class MerkleDoc(MerkleNode):
 
 
 class MerkleLeaf(MerkleNode):
+    """ Leaf form of MerkleNode. """
 
     __slots__ = ['_name', '_hashtype', ]
 
@@ -401,7 +442,7 @@ class MerkleLeaf(MerkleNode):
         if name is None:
             raise RuntimeError("MerkleLeaf: null MerkleLeaf name")
         self._name = name.strip()
-        if len(self._name) == 0:
+        if not self._name:
             raise RuntimeError("MerkleLeaf: null or empty name")
         # END JUNK
 
@@ -418,11 +459,6 @@ class MerkleLeaf(MerkleNode):
             self._name == other.name and \
             self._bin_hash == other.bin_hash
 
-    # XXX DEPRECATED
-    def equal(self, other):
-        return self.__eq__(other)
-    # END DEPRECATED
-
     def __str__(self):
         return self.to_string(0)        # that is, no indent
 
@@ -434,8 +470,8 @@ class MerkleLeaf(MerkleNode):
         Returns a MerkleLeaf.  The name is part of pathToFile, but is
         passed to simplify the code.
         """
-        def reportIOError(exc):
-            # path = os.path.join(path_to_file, name)
+        def report_io_error(exc):
+            """ Report an I/O error to stdout. """
             print("error reading file %s: %s" % (
                 path_to_file, exc), file=sys.stderr)
 
@@ -446,23 +482,24 @@ class MerkleLeaf(MerkleNode):
             try:
                 hash_ = file_sha1bin(path_to_file)
             except OSError as exc:
-                reportIOError(exc)
+                report_io_error(exc)
                 hash_ = SHA1_BIN_NONE
         elif hashtype == HashTypes.SHA2:
             try:
                 hash_ = file_sha2bin(path_to_file)
             except OSError as exc:
-                reportIOError(exc)
+                report_io_error(exc)
                 hash_ = SHA2_BIN_NONE
         elif hashtype == HashTypes.SHA3:
             try:
                 hash_ = file_sha3bin(path_to_file)
             except OSError as exc:
-                reportIOError(exc)
+                report_io_error(exc)
                 hash_ = SHA3_BIN_NONE
         return MerkleLeaf(name, hashtype, hash_)
 
     def to_string(self, indent=0):
+        """ Serialize MerkleLeaf as string . """
         if self._bin_hash is None:
             if self._hashtype == HashTypes.SHA1:
                 hash_ = SHA1_HEX_NONE
@@ -505,6 +542,7 @@ class MerkleLeaf(MerkleNode):
 
 
 class MerkleTree(MerkleNode):
+    """ Tree subclass of MerkleNode. """
 
     __slots__ = ['_bound', '_name', '_ex_re', '_bin_hash', '_match_re',
                  '_nodes', '_hashtype', ]
@@ -543,11 +581,10 @@ class MerkleTree(MerkleNode):
         if other is None:
             return False
 
-        if (not isinstance(other, MerkleTree)) or (self._name != other.name):
-            return False
-        if self.hex_hash != other.hex_hash:
-            return False
-        if self.hashtype != other.hashtype:
+        if (not isinstance(other, MerkleTree)) or \
+                (self._name != other.name) or \
+                self.hex_hash != other.hex_hash or \
+                self.hashtype != other.hashtype:
             return False
 
         my_nodes = self.nodes
@@ -559,11 +596,6 @@ class MerkleTree(MerkleNode):
             if not my_node.__eq__(other_node):    # RECURSES
                 return False
         return True
-
-    # DEPRECATED
-    def equal(self, other):
-        return self.__eq__(other)
-    # END DEPRECATED
 
     def __str__(self):
         return self.to_string(0)
@@ -594,6 +626,7 @@ class MerkleTree(MerkleNode):
 
     @staticmethod
     def parse_other_line(line):
+        """ Parse a non-first line. """
         match_ = re.match(MerkleTree.OTHER_LINE_RE_1, line)
         if match_ is None:
             match_ = re.match(MerkleTree.OTHER_LINE_RE_2, line)
@@ -612,21 +645,18 @@ class MerkleTree(MerkleNode):
         return (node_depth, node_hash, node_name, is_dir)
 
     @staticmethod
-    def create_from_string_array(string, hashtype=HashTypes.SHA2):
+    def create_from_string_array(strings, hashtype=HashTypes.SHA2):
         """
-        The string array is expected to follow conventional indentation
+        The strings array is expected to follow conventional indentation
         rules, with zero indentation on the first line and some number
         of leading spaces on all successive lines.
         """
-        if string is None:
-            raise RuntimeError('null argument')
 
         # XXX should check TYPE - must be array of strings
-
-        if len(string) == 0:
-            raise RuntimeError("empty string array")
+        if not strings:
+            raise RuntimeError("empty strings array")
         (indent, tree_hash, dir_name) =\
-            MerkleTree.parse_first_line(string[0].rstrip())
+            MerkleTree.parse_first_line(strings[0].rstrip())
         len_hash = len(tree_hash)
         if len_hash == SHA1_BIN_LEN:
             if hashtype != HashTypes.SHA1:
@@ -648,10 +678,9 @@ class MerkleTree(MerkleNode):
         stack.append(cur_tree)           # rootTree
         stk_depth += 1                  # always step after pushing tree
 
-        for nnn in range(1, len(string)):
-            line = string[nnn].rstrip()
-            if len(line) == 0:
-                nnn += 1
+        for ndx in range(1, len(strings)):
+            line = strings[ndx].rstrip()
+            if not line:
                 continue
             # XXX SHOULD/COULD CHECK THAT HASHES ARE OF THE RIGHT TYPE
             line_indent, hash_, name, is_dir = MerkleTree.parse_other_line(
@@ -678,7 +707,6 @@ class MerkleTree(MerkleNode):
                 new_node = MerkleLeaf(name, hashtype, hash_)
                 # add the new node into the existing tree
                 cur_tree.add_node(new_node)
-            nnn += 1
         return root_tree
 
     @staticmethod
@@ -723,19 +751,12 @@ class MerkleTree(MerkleNode):
             raise RuntimeError(
                 "MerkleTree: directory '%s' does not exist" % path_to_dir)
         (path, _, name) = path_to_dir.rpartition('/')
-        if path == '':
-            raise RuntimeError("cannot parse inclusive path " + path_to_dir)
+        if not path:
+            raise RuntimeError("can't parse inclusive path '%s'" % path_to_dir)
 
         tree = MerkleTree(name, hashtype, ex_re, match_re)
         tree.bin_hash = None
-        # pylint: disable=redefined-variable-type
-        if hashtype == HashTypes.SHA1:
-            sha = hashlib.sha1()
-        elif hashtype == HashTypes.SHA2:
-            sha = hashlib.sha256()
-        elif hashtype == HashTypes.SHA3:
-            # pylint: disable=no-member
-            sha = hashlib.sha3_256()
+        sha = get_hash_func(hashtype)
 
         # Create data structures for constituent files and subdirectories
         # These MUST BE SORTED by the bare name to meet specs.
@@ -751,22 +772,20 @@ class MerkleTree(MerkleNode):
                 node = None
                 path_to_file = os.path.join(path_to_dir, file)
                 string = os.lstat(path_to_file)        # ignores symlinks
-                mode = string.st_mode
                 # os.path.isdir(path) follows symbolic links
-                if S_ISDIR(mode):
+                if S_ISDIR(string.st_mode):
                     node = MerkleTree.create_from_file_system(
                         path_to_file, hashtype, ex_re, match_re)
                 # S_ISLNK(mode) is true if symbolic link
                 # isfile(path) follows symbolic links
                 elif os.path.isfile(path_to_file):        # S_ISREG(mode):
-                    # pylint: disable=redefined-variable-type
                     node = MerkleLeaf.create_from_file_system(
                         path_to_file, file, hashtype)
                 # otherwise, just ignore it ;-)
 
                 if node:
                     # update tree-level hash
-                    if node.bin_hash is not None:
+                    if node.bin_hash:
                         # note empty file has null hash  XXX NOT TRUE
                         sha_count += 1
                         sha.update(node.bin_hash)
