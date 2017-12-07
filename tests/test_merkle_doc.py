@@ -76,7 +76,6 @@ class TestMerkleDoc(unittest.TestCase):
         with open(path_to_file, "rb") as file:
             data = file.read()
         self.assertFalse(data is None)
-        # pylint: disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
         elif hashtype == HashTypes.SHA2:
@@ -99,7 +98,6 @@ class TestMerkleDoc(unittest.TestCase):
             self.assertEqual(None, node.bin_hash)
         else:
             hash_count = 0
-            # pylint: disable=redefined-variable-type
             if hashtype == HashTypes.SHA1:
                 sha = hashlib.sha1()
             elif hashtype == HashTypes.SHA2:
@@ -173,7 +171,7 @@ class TestMerkleDoc(unittest.TestCase):
         # print("flat doc:\n" + doc1Str)
         # print("rebuilt flat doc:\n" + doc1Rebuilt.toString())
         # END
-        self.assertTrue(doc1.equal(doc1_rebuilt))  # MANGO
+        self.assertTrue(doc1 == doc1_rebuilt)
 
     def test_bound_needle_dirs(self):
         """test directories four deep with one data file at the lowest level"""
@@ -209,8 +207,8 @@ class TestMerkleDoc(unittest.TestCase):
         self.assertEqual(ONE, len(nodes2))
         self.verify_tree_sha(tree2, dir_path2, hashtype)
 
-        self.assertTrue(doc1.equal(doc1))
-        self.assertFalse(doc1.equal(doc2))
+        self.assertTrue(doc1 == doc1)
+        self.assertFalse(doc1 == doc2)
 
         doc1_str = doc1.to_string()
         doc1_rebuilt = MerkleDoc.create_from_serialization(doc1_str, hashtype)
@@ -218,7 +216,7 @@ class TestMerkleDoc(unittest.TestCase):
 #       print "needle doc:\n" + doc1Str
 #       print "rebuilt needle doc:\n" + doc1Rebuilt.toString()
 #       # END
-        self.assertTrue(doc1.equal(doc1_rebuilt))       # FOO
+        self.assertTrue(doc1 == doc1_rebuilt)
 
 
 if __name__ == '__main__':

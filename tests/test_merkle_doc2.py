@@ -119,8 +119,6 @@ class TestMerkleDoc(unittest.TestCase):
         doc1 = MerkleDoc.create_from_file_system(dir_path1)
         # pylint: disable=no-member
         tree1 = doc1.tree
-        # XXX This succeeds BUT pylint doesn't get this right: it sees
-        # doc1.tree as a function
         self.assertTrue(isinstance(tree1, MerkleTree))
 
         # pylint: disable=no-member
@@ -146,15 +144,15 @@ class TestMerkleDoc(unittest.TestCase):
         self.verify_tree_sha256(tree2, dir_path2)
 
         # pylint: disable=no-member
-        self.assertTrue(tree1.equal(tree1))
+        self.assertTrue(tree1 == tree1)
         # pylint: disable=no-member
-        self.assertFalse(tree1.equal(tree2))
+        self.assertFalse(tree1 == tree2)
         # pylint: disable=no-member
-        self.assertFalse(tree1.equal(None))
+        self.assertFalse(tree1 is None)
 
         doc1_str = doc1.to_string()
         doc1_rebuilt = MerkleDoc.create_from_serialization(doc1_str)
-        self.assertTrue(doc1.equal(doc1_rebuilt))  # MANGO
+        self.assertTrue(doc1 == doc1_rebuilt)
 
     def test_bound_needle_dirs(self):
         """test directories four deep with one data file at the lowest level"""
@@ -162,8 +160,6 @@ class TestMerkleDoc(unittest.TestCase):
             self.make_two_test_directories(FOUR, ONE)
         doc1 = MerkleDoc.create_from_file_system(dir_path1)
         tree1 = doc1.tree
-        # XXX This succeeds BUT pylint doesn't get this right: it sees
-        # doc1.tree as a function
         self.assertTrue(isinstance(tree1, MerkleTree))
 
         # pylint: disable=no-member
@@ -188,8 +184,8 @@ class TestMerkleDoc(unittest.TestCase):
         self.assertEqual(ONE, len(nodes2))
         self.verify_tree_sha256(tree2, dir_path2)
 
-        self.assertTrue(doc1.equal(doc1))
-        self.assertFalse(doc1.equal(doc2))
+        self.assertTrue(doc1 == doc1)
+        self.assertFalse(doc1 == doc2)
 
         doc1_str = doc1.to_string()
         doc1_rebuilt = MerkleDoc.create_from_serialization(doc1_str)
@@ -197,7 +193,7 @@ class TestMerkleDoc(unittest.TestCase):
 #       print "needle doc:\n" + doc1Str
 #       print "rebuilt needle doc:\n" + doc1Rebuilt.toString()
 #       # END
-        self.assertTrue(doc1.equal(doc1_rebuilt))       # FOO
+        self.assertTrue(doc1 == doc1_rebuilt)       # FOO
 
 # 2016-11-21: These FRAGMENTS are unused ----------------------------
 
