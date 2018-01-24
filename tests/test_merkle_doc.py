@@ -67,7 +67,7 @@ class TestMerkleDoc(unittest.TestCase):
 
         return (dir_name1, dir_path1, dir_name2, dir_path2)
 
-    def verify_leaf_sha(self, node, path_to_file, hashtype):
+    def verify_leaf_hash(self, node, path_to_file, hashtype):
         """
         Verify that a MerkleLeaf correctly describes a file, given a hash type.
         """
@@ -83,11 +83,15 @@ class TestMerkleDoc(unittest.TestCase):
         elif hashtype == HashTypes.SHA3:
             # pylint: disable=no-member
             sha = hashlib.sha3_256()
+        elif hashtype == HashTypes.BLAKE2B:
+            sha = hashlib.blake2b(digest_size=32)
+        else:
+            raise NotImplementedError
         sha.update(data)
         hash_ = sha.digest()
         self.assertEqual(hash_, node.bin_hash)
 
-    def verify_tree_sha(self, node, path_to_tree, hashtype):
+    def verify_tree_hash(self, node, path_to_tree, hashtype):
         """
         Given a MerkleTree, verify that it correctly describes the
         directory whose path is passed.
@@ -105,12 +109,16 @@ class TestMerkleDoc(unittest.TestCase):
             elif hashtype == HashTypes.SHA3:
                 # pylint: disable=no-member
                 sha = hashlib.sha3_256()
+            elif hashtype == HashTypes.BLAKE2B:
+                sha = hashlib.blake2b(digest_size=32)
+            else:
+                raise NotImplementedError
             for node_ in node.nodes:
                 path_to_node = os.path.join(path_to_tree, node_.name)
                 if isinstance(node_, MerkleLeaf):
-                    self.verify_leaf_sha(node_, path_to_node, hashtype)
+                    self.verify_leaf_hash(node_, path_to_node, hashtype)
                 elif isinstance(node_, MerkleTree):
-                    self.verify_tree_sha(node_, path_to_node, hashtype)
+                    self.verify_tree_hash(node_, path_to_node, hashtype)
                 else:
                     print("DEBUG: unknown node type!")
                     self.fail("unknown node type!")
@@ -147,7 +155,7 @@ class TestMerkleDoc(unittest.TestCase):
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
-        self.verify_tree_sha(tree1, dir_path1, hashtype)
+        self.verify_tree_hash(tree1, dir_path1, hashtype)
 
         doc2 = MerkleDoc.create_from_file_system(dir_path2, hashtype)
         tree2 = doc2.tree
@@ -159,7 +167,7 @@ class TestMerkleDoc(unittest.TestCase):
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(FOUR, len(nodes2))
-        self.verify_tree_sha(tree2, dir_path2, hashtype)
+        self.verify_tree_hash(tree2, dir_path2, hashtype)
 
         self.assertEqual(tree1, tree1)
         self.assertFalse(tree1 == tree2)
@@ -193,7 +201,7 @@ class TestMerkleDoc(unittest.TestCase):
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
-        self.verify_tree_sha(tree1, dir_path1, hashtype)
+        self.verify_tree_hash(tree1, dir_path1, hashtype)
 
         doc2 = MerkleDoc.create_from_file_system(dir_path2, hashtype)
         tree2 = doc2.tree
@@ -205,7 +213,7 @@ class TestMerkleDoc(unittest.TestCase):
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
         self.assertEqual(ONE, len(nodes2))
-        self.verify_tree_sha(tree2, dir_path2, hashtype)
+        self.verify_tree_hash(tree2, dir_path2, hashtype)
 
         self.assertTrue(doc1 == doc1)
         self.assertFalse(doc1 == doc2)

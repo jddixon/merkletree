@@ -12,7 +12,8 @@ import hashlib
 
 from rnglib import SimpleRNG
 from xlattice import (HashTypes, check_hashtype,
-                      SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE)
+                      SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
+                      BLAKE2B_HEX_NONE)
 from merkletree import MerkleTree, MerkleLeaf
 
 if sys.version_info < (3, 6):
@@ -82,6 +83,10 @@ class TestMerkleTree(unittest.TestCase):
         elif hashtype == HashTypes.SHA3:
             # pylint: disable=no-member
             sha = hashlib.sha3_256()
+        elif hashtype == HashTypes.BLAKE2B:
+            sha = hashlib.blake2b(digest_size=32)
+        else:
+            raise NotImplementedError
         sha.update(data)
         hash_ = sha.digest()
         self.assertEqual(hash_, node.bin_hash)
@@ -102,6 +107,10 @@ class TestMerkleTree(unittest.TestCase):
             elif hashtype == HashTypes.SHA3:
                 # pylint: disable=no-member
                 sha = hashlib.sha3_256()
+            elif hashtype == HashTypes.BLAKE2B:
+                sha = hashlib.blake2b(digest_size=32)
+            else:
+                raise NotImplementedError
             for node_ in node.nodes:
                 path_to_file = os.path.join(path_to_node, node_.name)
                 if isinstance(node_, MerkleLeaf):
@@ -128,7 +137,8 @@ class TestMerkleTree(unittest.TestCase):
         Test basic characteristics of very simple MerkleTrees created
         using our standard SHA hash types.
         """
-        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
+        for using in [HashTypes.SHA1, HashTypes.SHA2,
+                      HashTypes.SHA3, HashTypes.BLAKE2B]:
             self.do_test_pathless_unbound(using)
 
     def do_test_pathless_unbound(self, hashtype):
@@ -147,7 +157,10 @@ class TestMerkleTree(unittest.TestCase):
             self.assertEqual(SHA2_HEX_NONE, tree1.hex_hash)
         elif hashtype == HashTypes.SHA3:
             self.assertEqual(SHA3_HEX_NONE, tree1.hex_hash)
-
+        elif hashtype == HashTypes.BLAKE2B:
+            self.assertEqual(BLAKE2B_HEX_NONE, tree1.hex_hash)
+        else:
+            raise NotImplementedError
         tree2 = MerkleTree(dir_name2, hashtype)
         self.assertEqual(dir_name2, tree2.name)
 

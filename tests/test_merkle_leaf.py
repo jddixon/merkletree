@@ -42,6 +42,8 @@ class TestMerkleLeaf(unittest.TestCase):
             sha = hashlib.sha256()
         elif hashtype == HashTypes.SHA3:
             sha = hashlib.sha3_256()
+        elif hashtype == HashTypes.BLAKE2B:
+            sha = hashlib.blake2b(digest_size=32)
 
         file_name = self.rng.next_file_name(8)
         nnn = self.rng.some_bytes(8)
@@ -76,7 +78,7 @@ class TestMerkleLeaf(unittest.TestCase):
         # self.assertEqual(leaf1bis, leaf1)
 
     def test_simple_constructor(self):
-        """ Test constructor for various SHA types. """
+        """ Test constructor for various hash types. """
         for hashtype in HashTypes:
             self.do_test_simple_constructor(hashtype=hashtype)
 
