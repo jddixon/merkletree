@@ -84,6 +84,7 @@ class TestMerkleTree(unittest.TestCase):
             # pylint: disable=no-member
             sha = hashlib.sha3_256()
         elif hashtype == HashTypes.BLAKE2B:
+            # pylint: disable=no-member
             sha = hashlib.blake2b(digest_size=32)
         else:
             raise NotImplementedError
@@ -108,6 +109,7 @@ class TestMerkleTree(unittest.TestCase):
                 # pylint: disable=no-member
                 sha = hashlib.sha3_256()
             elif hashtype == HashTypes.BLAKE2B:
+                # pylint: disable=no-member
                 sha = hashlib.blake2b(digest_size=32)
             else:
                 raise NotImplementedError

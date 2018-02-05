@@ -43,6 +43,7 @@ class TestMerkleLeaf(unittest.TestCase):
         elif hashtype == HashTypes.SHA3:
             sha = hashlib.sha3_256()
         elif hashtype == HashTypes.BLAKE2B:
+            # pylint: disable=no-member
             sha = hashlib.blake2b(digest_size=32)
 
         file_name = self.rng.next_file_name(8)

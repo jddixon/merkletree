@@ -14,12 +14,10 @@ import re
 import sys
 from stat import S_ISDIR
 
-from xlattice import(SHA1_BIN_LEN, SHA2_BIN_LEN,
-                     SHA1_BIN_NONE, SHA2_BIN_NONE, SHA3_BIN_NONE,
-                     SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
-                     SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
-                     BLAKE2B_BIN_LEN, BLAKE2B_HEX_LEN,
-                     BLAKE2B_BIN_NONE, BLAKE2B_HEX_NONE,
+from xlattice import(SHA1_BIN_LEN, SHA1_BIN_NONE, SHA1_HEX_NONE,
+                     SHA2_BIN_LEN, SHA2_BIN_NONE, SHA2_HEX_NONE,
+                     SHA3_BIN_LEN, SHA3_BIN_NONE, SHA3_HEX_NONE,
+                     BLAKE2B_BIN_LEN, BLAKE2B_BIN_NONE, BLAKE2B_HEX_NONE,
                      HashTypes, check_hashtype, util)
 from xlattice.crypto import SP   # for getSpaces()
 from xlattice.u import(file_sha1bin, file_sha2bin, file_sha3bin,
@@ -35,8 +33,8 @@ __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.3.9'
-__version_date__ = '2018-01-24'
+__version__ = '5.3.10'
+__version_date__ = '2018-02-04'
 
 # -------------------------------------------------------------------
 
@@ -57,6 +55,7 @@ def get_hash_func(hashtype):
         # pylint: disable=no-member
         sha = hashlib.sha3_256()
     elif hashtype == HashTypes.BLAKE2B:
+        # pylint: disable=no-member
         sha = hashlib.blake2b(digest_size=32)
     else:
         raise NotImplementedError
@@ -515,7 +514,7 @@ class MerkleLeaf(MerkleNode):
                 report_io_error(exc)
                 hash_ = BLAKE2B_BIN_NONE
         else:
-            raise NotimplementedError
+            raise NotImplementedError
 
         return MerkleLeaf(name, hashtype, hash_)
 
@@ -531,7 +530,7 @@ class MerkleLeaf(MerkleNode):
             elif self._hashtype == HashTypes.BLAKE2B:
                 hash_ = BLAKE2B_HEX_NONE
             else:
-                raise NotimplementedError
+                raise NotImplementedError
         else:
             hash_ = self.hex_hash
         string = "%s%s %s\n" % (SP.get_spaces(indent), hash_, self.name)
