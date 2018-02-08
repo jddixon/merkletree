@@ -8,27 +8,23 @@ k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
 merkletree
-2017-12-07 00:38:31
+2018-02-05 01:05:38
 # BEGIN CONTENT #
 merkletree
- .cache
-  v
-   cache
-    lastfailed bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f
  .dvcz
-  builds 6b24588b477d2dc54972ec001711717ed3c2f99d
+  builds db5353b59867cb37bf3bb9632142d4b8703a48c7
   fileMap.local 56031d040d441cec6b4fb866065026ba3fdcbd06
-  lastBuildList 8ccb96e56ceb2d548849e5724ec8263ee9f720d0
+  lastBuildList 7ab5d73d69adbbfb555e457f7407fbcf5a2196ca
   projCfg b7d7c8f09cf86a9edde7957424022ec645a74586
   projCfg.local 139a64f6b05b1566274295427ae7f88f6b8e14f5
-  projConfig.toml 6f555bcf94473d1fe3fd9c27a2f1268a09c2d3a4
+  projConfig.toml 815a9f41e0c4355edb358f7bb573c6c786abe7c2
  .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
- CHANGES c0a5ca80f8041d8c155e6377466ae4cee1947c86
+ CHANGES 7a5c9f8ded6c4182569fbc449a96e253d6a68e9b
  LICENSE-MIT.md 8848c7b511a1545a8519380c5b0eb9fa7bd0f6d6
  MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.jdd 29b0611709d981e6bbcee8e0fe7bce92852b0385
  README.md cd43ff75ee6a98961ce86a08547bb7986c33e916
- TODO 31d18ad2d7657d7ca97fad97117824c92f3d9eb0
+ TODO 5625639bc3e99ff2aeb9fad40275eb177097e7df
  bkp2U 0303656e4bec6af6bf68e4bc71ec1f8d2caeb25e
  checkCoverage 422df30a9c785989f55e8ac7492358f994fa8003
  countem 159196be3c669c913ca416d8477447b4fef76aa1
@@ -53,11 +49,11 @@ merkletree
  installit a93e91e7800f2a5eb734408bce28fcb59ea7a84f
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  requirements.txt ee835633072d3448723319541f13897f1293aa3e
- setup.py 741faeaa49d087d4f616571704d36096e0cd5bb2
+ setup.py bf912c71186a562f0660378b2d20abeed592b7f9
  src
   merkleize 8f3eda11c9cb2b77d7907461414de2b4db74baca
   merkletree
-   __init__.py d6c3e95935e9d30cae09bb29b9280f383dfe9f89
+   __init__.py df286ea81505baa18ad00f55049b9eb695c8294c
  styleit 1d7cded2392ab36e4fcc61eefde6a1b0233091c8
  test.all bb79f261791d6d5c5a815088daac04faea7b891d
  test_requirements.txt 1bbce0d54753048ac963a78f773e68f3d0611703
@@ -65,14 +61,14 @@ merkletree
   test_data
    dat.xlattice.org 08ac8f60ea44856e34c565b4d459a2d0547e5db9
    dat2.xlattice.org c653333f4518980911dd1592cb8986073ca98930
-  test_merkle_doc.py a4d9f88a6e8c54ee651b878025572dbc169215a9
+  test_merkle_doc.py bc8befd0d6bf933638c9e66bd4ffcb84bd2c1bf2
   test_merkle_doc2.py 525a12a48bd96033b6d9ae59c831b41909f77b54
-  test_merkle_leaf.py fb988f539e331af04d70cac637e245aa600dc019
-  test_merkle_tree.py 00ba4d2e98b45f284cd31b0ac320f3012a4a400c
+  test_merkle_leaf.py c9d826f48b4b3c72c4f4d135b0ffd862e63ab1c5
+  test_merkle_tree.py 11ee708f596a3b6f321ada9c66e8ecb463845e00
   test_merkle_tree2.py 836bc0e0ab27f213877668090f342befa329caeb
   test_new_make_exre.py e194ed585432858dec5f3ae9dabfc33e7a7d86d1
   test_old_make_exre.py 40f3506361ebbbdb6b3bdafbeda9aeb49f3f5e33
  tox.ini 0958ce8837727d69783d1e0937697d18185c5097
 # END CONTENT #
 
-RNgutm+tgIE6/jkABtUKhpVjRx1I7lFU2sEq9Mz/WFeqITezhf1Q8L9RScJMsaLOrh5n76OWjIjA2P6I33gED5Kv8JxecOXLgegR5ZgMVCoL56beII8xl7joXR0DBo9vxwVx9D1J0fiFZWDPPZMy/1zRnzT+xVh98mEMOs5vkM3VU3kjDBVPpMYqh5TPYbLrNq9/tz1CAzzEGU3RKuNvwek5AQafLVgTAQDcBxBvKvdIcYDn6IAP6b/xev9YCPbbD5xLvNnFDIvAky2j3r1uM+q16hUa9LA2+/duwTR2ZDIKDJozJJx8FSuvYFszc6AzjDXK+ANGaTnIgH1Ljk9spQ==
+QYeZKFLZ79G3ihAzMtoBbvSZ54ArinbOUglnyxwh+DC35BDA8W/rHkqp73nTt1r7g70YNU8OBH8kvGf0bt9G5LpM2Zj4ky19veOSnfSCtR30ZRz+1gyzj2Qf4Im7GY4cqFAuTwwfe8aB8vP6jNfXP+rsMAZDfAmIJyZbuZKpGGJ+0eeM0ThkHKovjiRP69LGN5U8LHjWUlnYmE/BkR9UBz56GXE7y5WCmXoYXOzwluAZIuCQloTpzywa2M3movmJiHZRnXFQjYBcwThvl6zvr+2z/v9QYN3oZN/Z0bOCoLupS0YpleANAw1Qz4znHN05+L3l64xpthOaqMj0REcNcg==

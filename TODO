@@ -1,5 +1,9 @@
 ~/dev/py/merkletree/TODO
 
+2018-01-24
+    * NotImplementedError should be UnknownHash or similar
+    * blake2b support needs to be documented
+
 2017-08-31
     * tox fails: requirements are wrong
 
