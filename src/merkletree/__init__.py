@@ -20,8 +20,7 @@ from xlattice import(SHA1_BIN_LEN, SHA1_BIN_NONE, SHA1_HEX_NONE,
                      BLAKE2B_BIN_LEN, BLAKE2B_BIN_NONE, BLAKE2B_HEX_NONE,
                      HashTypes, check_hashtype, util)
 from xlattice.crypto import SP   # for getSpaces()
-from xlattice.u import(file_sha1bin, file_sha2bin, file_sha3bin,
-                       file_blake2b_bin)
+from xlu import(file_sha1bin, file_sha2bin, file_sha3bin, file_blake2b_bin)
 
 if sys.version_info < (3, 6):
     import sha3     # monkey-patches hashlib
@@ -33,8 +32,8 @@ __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.3.10'
-__version_date__ = '2018-02-04'
+__version__ = '5.3.11'
+__version_date__ = '2018-02-13'
 
 # -------------------------------------------------------------------
 
