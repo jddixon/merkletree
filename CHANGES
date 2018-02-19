@@ -1,6 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
 
+v5.3.12
+    2018-02-18
+        * use xlutil instead of xlattice.util                       SLOC 2616
 v5.3.11
     2018-02-13
         * use xlu instead of xlattice.u                             SLOC 2614

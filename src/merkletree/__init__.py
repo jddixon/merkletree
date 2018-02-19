@@ -18,8 +18,9 @@ from xlattice import(SHA1_BIN_LEN, SHA1_BIN_NONE, SHA1_HEX_NONE,
                      SHA2_BIN_LEN, SHA2_BIN_NONE, SHA2_HEX_NONE,
                      SHA3_BIN_LEN, SHA3_BIN_NONE, SHA3_HEX_NONE,
                      BLAKE2B_BIN_LEN, BLAKE2B_BIN_NONE, BLAKE2B_HEX_NONE,
-                     HashTypes, check_hashtype, util)
-from xlattice.crypto import SP   # for getSpaces()
+                     HashTypes, check_hashtype)
+from xlutil import make_ex_re, make_match_re
+from xlcrypto import SP   # for getSpaces()
 from xlu import(file_sha1bin, file_sha2bin, file_sha3bin, file_blake2b_bin)
 
 if sys.version_info < (3, 6):
@@ -32,8 +33,8 @@ __all__ = ['__version__', '__version_date__',
            # classes
            'MerkleDoc', 'MerkleLeaf', 'MerkleTree', 'MerkleParseError', ]
 
-__version__ = '5.3.11'
-__version_date__ = '2018-02-13'
+__version__ = '5.3.12'
+__version_date__ = '2018-02-18'
 
 # -------------------------------------------------------------------
 
@@ -287,10 +288,10 @@ class MerkleDoc(MerkleNode):
         path += '/'
         ex_re = None
         if exclusions:
-            ex_re = util.make_ex_re(exclusions)
+            ex_re = make_ex_re(exclusions)
         match_re = None
         if matches:
-            match_re = util.make_match_re(matches)
+            match_re = make_match_re(matches)
         tree = MerkleTree.create_from_file_system(path_to_dir, hashtype,
                                                   ex_re, match_re)
         # creates the hash
@@ -390,7 +391,7 @@ class MerkleDoc(MerkleNode):
         """
         #############################################################
         THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED WHEREVER USED
-        WITH xlattice.util::makeExRE(), WHICH USES GLOBS.  This
+        WITH xlutil::makeExRE(), WHICH USES GLOBS.  This
         function uses regular expressions instead of globs.
         #############################################################
 
@@ -413,7 +414,7 @@ class MerkleDoc(MerkleNode):
         """
         #############################################################
         THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED WHEREVER USED
-        WITH xlattice.util::makeMatchRE(), WHICH USES GLOBS.  This
+        WITH xlutil::makeMatchRE(), WHICH USES GLOBS.  This
         function uses regular expressions instead of globs.
         #############################################################
 
