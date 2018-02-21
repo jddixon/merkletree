@@ -6,16 +6,11 @@
 import sys
 import time
 import unittest
-import hashlib
 
 from rnglib import SimpleRNG
 from xlattice import HashTypes, check_hashtype
+from xlcrypto.hash import XLSHA1, XLSHA2, XLSHA3, XLBLAKE2B_256
 from merkletree import MerkleLeaf
-
-if sys.version_info < (3, 6):
-    # pylint:disable=unused-import
-    import sha3     # monkey-patches hashlib
-    assert sha3     # no warning, please
 
 # This is the SHA1 test
 
@@ -37,14 +32,15 @@ class TestMerkleLeaf(unittest.TestCase):
 
         check_hashtype(hashtype)
         if hashtype == HashTypes.SHA1:
-            sha = hashlib.sha1()
+            sha = XLSHA1()
         elif hashtype == HashTypes.SHA2:
-            sha = hashlib.sha256()
+            sha = XLSHA2()
         elif hashtype == HashTypes.SHA3:
-            sha = hashlib.sha3_256()
+            sha = XLSHA3()
         elif hashtype == HashTypes.BLAKE2B:
-            # pylint: disable=no-member
-            sha = hashlib.blake2b(digest_size=32)
+            sha = XLBLAKE2B_256()
+        else:
+            raise NotImplementedError
 
         file_name = self.rng.next_file_name(8)
         nnn = self.rng.some_bytes(8)

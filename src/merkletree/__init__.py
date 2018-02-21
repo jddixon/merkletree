@@ -8,7 +8,6 @@ of its immediate children.
 """
 
 import binascii
-import hashlib
 import os
 import re
 import sys
@@ -17,15 +16,13 @@ from stat import S_ISDIR
 from xlattice import(SHA1_BIN_LEN, SHA1_BIN_NONE, SHA1_HEX_NONE,
                      SHA2_BIN_LEN, SHA2_BIN_NONE, SHA2_HEX_NONE,
                      SHA3_BIN_LEN, SHA3_BIN_NONE, SHA3_HEX_NONE,
-                     BLAKE2B_BIN_LEN, BLAKE2B_BIN_NONE, BLAKE2B_HEX_NONE,
+                     BLAKE2B_256_BIN_LEN, BLAKE2B_256_BIN_NONE,
+                     BLAKE2B_256_HEX_NONE,
                      HashTypes, check_hashtype)
 from xlutil import make_ex_re, make_match_re
 from xlcrypto import SP   # for getSpaces()
-from xlu import(file_sha1bin, file_sha2bin, file_sha3bin, file_blake2b_bin)
-
-if sys.version_info < (3, 6):
-    import sha3     # monkey-patches hashlib
-    assert sha3     # no warnings, please
+from xlcrypto.hash import XLSHA1, XLSHA2, XLSHA3, XLBLAKE2B_256
+from xlu import(file_sha1bin, file_sha2bin, file_sha3bin, file_blake2b_256_bin)
 
 __all__ = ['__version__', '__version_date__',
            # BELONGS IN xlattice_py:
@@ -48,15 +45,13 @@ def get_hash_func(hashtype):
     """
     sha = None
     if hashtype == HashTypes.SHA1:
-        sha = hashlib.sha1()
+        sha = XLSHA1()
     elif hashtype == HashTypes.SHA2:
-        sha = hashlib.sha256()
+        sha = XLSHA2()
     elif hashtype == HashTypes.SHA3:
-        # pylint: disable=no-member
-        sha = hashlib.sha3_256()
-    elif hashtype == HashTypes.BLAKE2B:
-        # pylint: disable=no-member
-        sha = hashlib.blake2b(digest_size=32)
+        sha = XLSHA3()
+    elif hashtype == HashTypes.BLAKE2B_256:
+        sha = XLBLAKE2B_256()
     else:
         raise NotImplementedError
     return sha
@@ -99,8 +94,8 @@ class MerkleNode(object):
                 return SHA2_HEX_NONE
             elif self._hashtype == HashTypes.SHA3:
                 return SHA3_HEX_NONE
-            elif self._hashtype == HashTypes.BLAKE2B:
-                return BLAKE2B_HEX_NONE
+            elif self._hashtype == HashTypes.BLAKE2B_256:
+                return BLAKE2B_256_HEX_NONE
             else:
                 raise NotImplementedError
         else:
@@ -507,12 +502,12 @@ class MerkleLeaf(MerkleNode):
             except OSError as exc:
                 report_io_error(exc)
                 hash_ = SHA3_BIN_NONE
-        elif hashtype == HashTypes.BLAKE2B:
+        elif hashtype == HashTypes.BLAKE2B_256:
             try:
-                hash_ = file_blake2b_bin(path_to_file)
+                hash_ = file_blake2b_256_bin(path_to_file)
             except OSError as exc:
                 report_io_error(exc)
-                hash_ = BLAKE2B_BIN_NONE
+                hash_ = BLAKE2B_256_BIN_NONE
         else:
             raise NotImplementedError
 
@@ -527,8 +522,8 @@ class MerkleLeaf(MerkleNode):
                 hash_ = SHA2_HEX_NONE
             elif self._hashtype == HashTypes.SHA3:
                 hash_ = SHA3_HEX_NONE
-            elif self._hashtype == HashTypes.BLAKE2B:
-                hash_ = BLAKE2B_HEX_NONE
+            elif self._hashtype == HashTypes.BLAKE2B_256:
+                hash_ = BLAKE2B_256_HEX_NONE
             else:
                 raise NotImplementedError
         else:
@@ -871,8 +866,8 @@ class MerkleTree(MerkleNode):
                 top = "%s%s %s/\n" % (spaces, SHA2_HEX_NONE, self.name)
             elif self._hashtype == HashTypes.SHA3:
                 top = "%s%s %s/\n" % (spaces, SHA3_HEX_NONE, self.name)
-            elif self._hashtype == HashTypes.BLAKE2B:
-                top = "%s%s %s/\n" % (spaces, BLAKE2B_HEX_NONE, self.name)
+            elif self._hashtype == HashTypes.BLAKE2B_256:
+                top = "%s%s %s/\n" % (spaces, BLAKE2B_256_HEX_NONE, self.name)
             else:
                 raise NotImplementedError
         else:
@@ -904,8 +899,8 @@ class MerkleTree(MerkleNode):
                 top = "%s%s %s/\n" % (spaces, SHA2_HEX_NONE, self.name)
             elif self._hashtype == HashTypes.SHA3:
                 top = "%s%s %s/\n" % (spaces, SHA3_HEX_NONE, self.name)
-            elif self._hashtype == HashTypes.BLAKE2B:
-                top = "%s%s %s/\n" % (spaces, BLAKE2B_HEX_NONE, self.name)
+            elif self._hashtype == HashTypes.BLAKE2B_256:
+                top = "%s%s %s/\n" % (spaces, BLAKE2B_256_HEX_NONE, self.name)
             else:
                 raise NotImplementedError
         else:
