@@ -24,7 +24,7 @@ from argparse import ArgumentParser
 from optionz import dump_options        # requires argparse
 from xlattice import (check_hashtype,
                       parse_hashtype_etc, fix_hashtype)
-#from xlattice.util import make_ex_re, make_match_re
+# from xlutil import make_ex_re, make_match_re
 
 from merkletree import (__version__, __version_date__, MerkleDoc)
 

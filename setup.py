@@ -12,7 +12,7 @@ if exists('README.md'):
         LONG_DESC = file.read()
 
 setup(name='merkletree',
-      version='5.3.11',
+      version='5.3.13',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       long_description=LONG_DESC,

@@ -8,18 +8,13 @@ import shutil
 import sys
 import time
 import unittest
-import hashlib
 
 from rnglib import SimpleRNG
 from xlattice import (HashTypes, check_hashtype,
                       SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
-                      BLAKE2B_HEX_NONE)
+                      BLAKE2B_256_HEX_NONE)
+from xlcrypto.hash import XLSHA1, XLSHA2, XLSHA3, XLBLAKE2B_256
 from merkletree import MerkleTree, MerkleLeaf
-
-if sys.version_info < (3, 6):
-    # pylint:disable=unused-import
-    import sha3                 # monkey-patches hashlib
-    assert sha3                 # get rid of warning
 
 ONE = 1
 FOUR = 4
@@ -52,7 +47,10 @@ class TestMerkleTree(unittest.TestCase):
         """ Make a directory tree with a specific name, depth and width."""
         dir_path = "tmp/%s" % name
         if os.path.exists(dir_path):
-            shutil.rmtree(dir_path)
+            if os.path.isfile(dir_path):
+                os.unlink(dir_path)
+            elif os.path.isdir(dir_path):
+                shutil.rmtree(dir_path)
         self.rng.next_data_dir(dir_path, depth, width, 32)
         return dir_path
 
@@ -77,15 +75,13 @@ class TestMerkleTree(unittest.TestCase):
             data = file.read()
         self.assertFalse(data is None)
         if hashtype == HashTypes.SHA1:
-            sha = hashlib.sha1()
+            sha = XLSHA1()
         elif hashtype == HashTypes.SHA2:
-            sha = hashlib.sha256()
+            sha = XLSHA2()
         elif hashtype == HashTypes.SHA3:
-            # pylint: disable=no-member
-            sha = hashlib.sha3_256()
+            sha = XLSHA3()
         elif hashtype == HashTypes.BLAKE2B:
-            # pylint: disable=no-member
-            sha = hashlib.blake2b(digest_size=32)
+            sha = XLBLAKE2B_256()
         else:
             raise NotImplementedError
         sha.update(data)
@@ -102,15 +98,13 @@ class TestMerkleTree(unittest.TestCase):
         else:
             hash_count = 0
             if hashtype == HashTypes.SHA1:
-                sha = hashlib.sha1()
+                sha = XLSHA1()
             elif hashtype == HashTypes.SHA2:
-                sha = hashlib.sha256()
+                sha = XLSHA2()
             elif hashtype == HashTypes.SHA3:
-                # pylint: disable=no-member
-                sha = hashlib.sha3_256()
+                sha = XLSHA3()
             elif hashtype == HashTypes.BLAKE2B:
-                # pylint: disable=no-member
-                sha = hashlib.blake2b(digest_size=32)
+                sha = XLBLAKE2B_256()
             else:
                 raise NotImplementedError
             for node_ in node.nodes:
@@ -159,8 +153,8 @@ class TestMerkleTree(unittest.TestCase):
             self.assertEqual(SHA2_HEX_NONE, tree1.hex_hash)
         elif hashtype == HashTypes.SHA3:
             self.assertEqual(SHA3_HEX_NONE, tree1.hex_hash)
-        elif hashtype == HashTypes.BLAKE2B:
-            self.assertEqual(BLAKE2B_HEX_NONE, tree1.hex_hash)
+        elif hashtype == HashTypes.BLAKE2B_256:
+            self.assertEqual(BLAKE2B_256_HEX_NONE, tree1.hex_hash)
         else:
             raise NotImplementedError
         tree2 = MerkleTree(dir_name2, hashtype)

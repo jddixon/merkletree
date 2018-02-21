@@ -3,7 +3,6 @@
 
 """ Test Merkletree functionality at the Document level. """
 
-import hashlib
 import os
 import shutil
 import time
@@ -12,6 +11,7 @@ import unittest
 from rnglib import SimpleRNG
 from merkletree import MerkleDoc, MerkleTree, MerkleLeaf
 from xlattice import HashTypes, check_hashtype
+from xlcrypto.hash import XLSHA1, XLSHA2, XLSHA3, XLBLAKE2B_256
 
 ONE = 1
 FOUR = 4
@@ -48,7 +48,10 @@ class TestMerkleDoc(unittest.TestCase):
 
         dir_path = "tmp/%s" % name
         if os.path.exists(dir_path):
-            shutil.rmtree(dir_path)
+            if os.path.isfile(dir_path):
+                os.unlink(dir_path)
+            elif os.path.isdir(dir_path):
+                shutil.rmtree(dir_path)
         self.rng.next_data_dir(dir_path, depth, width, 32)
         return dir_path
 
@@ -77,15 +80,15 @@ class TestMerkleDoc(unittest.TestCase):
             data = file.read()
         self.assertFalse(data is None)
         if hashtype == HashTypes.SHA1:
-            sha = hashlib.sha1()
+            sha = XLSHA1()
         elif hashtype == HashTypes.SHA2:
-            sha = hashlib.sha256()
+            sha = XLSHA2()
         elif hashtype == HashTypes.SHA3:
             # pylint: disable=no-member
-            sha = hashlib.sha3_256()
-        elif hashtype == HashTypes.BLAKE2B:
+            sha = XLSHA3()
+        elif hashtype == HashTypes.BLAKE2B_256:
             # pylint: disable=no-member
-            sha = hashlib.blake2b(digest_size=32)
+            sha = XLBLAKE2B_256()
         else:
             raise NotImplementedError
         sha.update(data)
@@ -104,15 +107,14 @@ class TestMerkleDoc(unittest.TestCase):
         else:
             hash_count = 0
             if hashtype == HashTypes.SHA1:
-                sha = hashlib.sha1()
+                sha = XLSHA1()
             elif hashtype == HashTypes.SHA2:
-                sha = hashlib.sha256()
+                sha = XLSHA2()
             elif hashtype == HashTypes.SHA3:
                 # pylint: disable=no-member
-                sha = hashlib.sha3_256()
-            elif hashtype == HashTypes.BLAKE2B:
-                # pylint: disable=no-member
-                sha = hashlib.blake2b(digest_size=32)
+                sha = XLSHA3()
+            elif hashtype == HashTypes.BLAKE2B_256:
+                sha = XLBLAKE2B_256()
             else:
                 raise NotImplementedError
             for node_ in node.nodes:

@@ -3,7 +3,6 @@
 
 """ Test MerkleTree functionality at the document level (second set). """
 
-import hashlib
 import os
 import shutil
 import time
@@ -11,6 +10,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from merkletree import MerkleDoc, MerkleTree, MerkleLeaf
+from xlcrypto.hash import XLSHA1, XLSHA2, XLSHA3, XLBLAKE2B_256
 
 ONE = 1
 FOUR = 4
@@ -75,7 +75,7 @@ class TestMerkleDoc(unittest.TestCase):
         with open(path_to_file, "rb") as file:
             data = file.read()
         self.assertFalse(data is None)
-        sha = hashlib.sha256()
+        sha = XLSHA2()
         sha.update(data)
         hash_ = sha.digest()
         self.assertEqual(hash_, node.bin_hash)
@@ -90,7 +90,7 @@ class TestMerkleDoc(unittest.TestCase):
             self.assertEqual(None, node.bin_hash)
         else:
             hash_count = 0
-            sha = hashlib.sha256()
+            sha = XLSHA2()
             for node_ in node.nodes:
                 path_to_node = os.path.join(path_to_tree, node_.name)
                 if isinstance(node_, MerkleLeaf):

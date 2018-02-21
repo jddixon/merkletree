@@ -7,7 +7,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from xlattice.util import make_ex_re
+from xlutil import make_ex_re
 
 
 class TestMakeExRE(unittest.TestCase):
