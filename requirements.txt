@@ -1,3 +1,2 @@
 # merkletree/requirements.txt
 setuptools
-pysha3

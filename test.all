@@ -4,7 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/merkletree
   
-  PYTHONPATH=".:src:test" pytest
+  PYTHONPATH=".:src:tests" pytest
   
 else
   echo "DEV_BASE is not defined"
