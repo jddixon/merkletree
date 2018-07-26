@@ -1,6 +1,9 @@
 ~/dev/py/merkletree/CHANGES
 
 
+v5.4.0
+    2018-07-26
+        * fix_hashtype sets args.hashtype, NOT args.using_sha
 v5.3.14
     2018-03-04
         * edit setup.py, tox config files                           SLOC 2620
@@ -298,6 +301,7 @@ v5.0.3
      2011-07-11 
         * jdd dropped HexBinary.py and its test package (in favor of 
                   binascii)
+
 
 
 

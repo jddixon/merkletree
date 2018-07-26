@@ -24,7 +24,7 @@ from argparse import ArgumentParser
 from optionz import dump_options        # requires argparse
 from xlattice import (check_hashtype,
                       parse_hashtype_etc, fix_hashtype)
-# from xlutil import make_ex_re, make_match_re
+#  from xlutil import make_ex_re, make_match_re
 
 from merkletree import (__version__, __version_date__, MerkleDoc)
 
@@ -55,21 +55,20 @@ def merkleize_directory(args):
 
     path_to_dir = os.path.join(path, dir_name)
     doc = MerkleDoc.create_from_file_system(
-        path_to_dir, args.using_sha, args.exclude, matches)
+        path_to_dir, args.hashtype, args.exclude, matches)
     tree = doc.tree
 
     string = []
+    if args.hash_output:
+        # pylint: disable=no-member
+        string.append("%s\n" % tree.hex_hash)
     if args.show_tree:
         # pylint: disable=no-member
         string.append(tree.to_string(0))       # no top-level indent
-    if args.hash_output:
-        # pylint: disable=no-member
-        string.append("%s\n" % tree.hex_hash)                      # ditto
 
     output = ''.join(string)
     if out_path:
         (out_dir, _, out_file) = out_path.rpartition('/')
-        print("OUTPATH: %s => %s %s" % (out_path, out_dir, out_file))
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)         # possile uncaught exception
         with open(out_path, "w") as file:
@@ -95,7 +94,7 @@ def main():
     parser.add_argument('-I', '--indent', default=1, type=int,
                         help='number of spaces to indent list (default=1)')
     parser.add_argument('-i', '--in_dir',
-                        help='write serialized merkletree here')
+                        help='where to get data (directory)')
     parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
     parser.add_argument('-m', '--show_tree', action='store_true',
@@ -114,6 +113,17 @@ def main():
                         help='ignore files matching this pattern')
     parse_hashtype_etc(parser)
     args = parser.parse_args()
+    app_name = 'merkleize %s' % __version__
+    def _show_version():
+        print("%s %s" % (app_name, __version_date__))
+    if args.show_version:
+        _show_version()
+        sys.exit(0)
+
+    if not args.just_show and not args.hash_output and \
+            not args.show_tree :
+        print("nothing to do -- you should specify -x and/or -m")
+        sys.exit(0)
 
     # fixups --------------------------------------------------------
     fix_hashtype(args)
@@ -128,7 +138,7 @@ def main():
         args.out_path = None
 
     # sanity checks -------------------------------------------------
-    check_hashtype(args.using_sha)
+    check_hashtype(args.hashtype)
     if not args.just_show:
         if args.in_dir is None or not args.in_dir:
             print("null or empty input directory name")
@@ -140,13 +150,8 @@ def main():
             sys.exit(1)
 
     # complete setup ------------------------------------------------
-    app_name = 'merkleize %s' % __version__
-
-    # maybe show options and such -----------------------------------
-    if args.verbose or args.just_show or args.show_version:
-        print("%s %s" % (app_name, __version_date__))
-
     if args.verbose or args.just_show:
+        _show_version()
         print(dump_options(args))
     if args.just_show:
         sys.exit(0)
